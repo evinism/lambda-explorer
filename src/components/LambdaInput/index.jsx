@@ -1,5 +1,5 @@
 import React from 'react';
-import { parseTerm, getFreeVars, renderExpression, bReduce, renderAsChurchNumeral } from '../../lib/lambda.js';
+import { parseTerm, getFreeVars, renderExpression, bReduce, renderAsChurchNumeral, renderAsChurchBoolean } from '../../lib/lambda.js';
 
 export default class LambdaInput extends React.Component {
   state = {text: ''};
@@ -51,12 +51,22 @@ export default class LambdaInput extends React.Component {
       renderedNumeral = '[not a church numeral]'
     }
 
+    // -- church booleans
+    const asBoolean = renderAsChurchBoolean(ast);
+    let renderedBoolean;
+    if (asBoolean !== undefined) {
+      renderedBoolean = String(asBoolean);
+    } else {
+      renderedBoolean = '[not a church boolean]'
+    }
+
     return (
       <div>
         <div>Free Variables: {renderedFreeVars}</div>
         <div>Rendered from AST: {renderedFromAst}</div>
         <div>Beta-reduced: {renderedReduced}</div>
         <div>As Church Numeral: {renderedNumeral}</div>
+        <div>As Church Boolean: {renderedBoolean}</div>
       </div>
     );
   }

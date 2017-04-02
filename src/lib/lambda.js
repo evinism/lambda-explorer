@@ -209,6 +209,29 @@ export function renderAsChurchNumeral(expression) {
   return countLevels(outerName, innerName, inner.body);
 }
 
+// expression => Maybe(bool)
+export function renderAsChurchBoolean(expression){
+  if (expression.type !== 'function') {
+    return undefined;
+  }
+  if (expression.body.type !== 'function') {
+    return undefined;
+  }
+  if (expression.body.body.type !== 'token') {
+    return undefined;
+  }
+  const firstArg = expression.argument;
+  const secondArg = expression.body.argument;
+  const target = expression.body.body.name;
+  if (firstArg === target) {
+    return true;
+  }
+  if (secondArg === target) {
+    return false;
+  }
+  return undefined;
+}
+
 export function renderExpression(expression) {
   switch(expression.type) {
     case 'application':
