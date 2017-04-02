@@ -1,5 +1,5 @@
 import React from 'react';
-import { parseTerm, getFreeVars, renderExpression } from '../../lib/lambda.js';
+import { parseTerm, getFreeVars, renderExpression, bReduce, renderAsChurchNumeral } from '../../lib/lambda.js';
 
 export default class LambdaInput extends React.Component {
   state = {text: ''};
@@ -23,17 +23,40 @@ export default class LambdaInput extends React.Component {
     } catch (err) {
       return (<div>{err}</div>);
     }
-    // Success in this case
-    console.log(ast);
+
+    // -- free vars
     const freeVars = getFreeVars(ast);
     const renderedFreeVars = freeVars.map(token => (
       <span key={token.name}>{token.name}</span>
     ));
+
+    // -- ast
     const renderedFromAst = renderExpression(ast);
+
+    // -- beta reduction
+    const betaReduced = bReduce(ast);
+    let renderedReduced;
+    if (betaReduced) {
+      renderedReduced = renderExpression(betaReduced);
+    } else {
+      renderedReduced = '[irreducable]';
+    }
+
+    // -- church numerals
+    const asNumeral = renderAsChurchNumeral(ast);
+    let renderedNumeral;
+    if (asNumeral !== undefined) {
+      renderedNumeral = asNumeral;
+    } else {
+      renderedNumeral = '[not a church numeral]'
+    }
+
     return (
       <div>
         <div>Free Variables: {renderedFreeVars}</div>
         <div>Rendered from AST: {renderedFromAst}</div>
+        <div>Beta-reduced: {renderedReduced}</div>
+        <div>As Church Numeral: {renderedNumeral}</div>
       </div>
     );
   }

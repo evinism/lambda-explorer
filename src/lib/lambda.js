@@ -10,9 +10,6 @@ import { uniqBy } from 'ramda';
     but we'll also expose parsed expressions.
 */
 
-
-// God I can hardly decide whether to make arguments of type token ornot.
-// Probably yes.
 /* type term oneOf:
   { type: 'token', name: 'n'}
   { type: 'function', argument: 'n', body:  [expression]}
@@ -52,7 +49,7 @@ export function getFreeVars(expression){
 
 // str => Expression
 export function parseTerm(str){
-  if (surroundedByParens(str)) {// Is surrounded by
+  if (surroundedByParens(str)) {
     return parseTerm(str.slice(1, -1));
   } else if (/^[a-zA-Z]$/.test(str)) { // looks like a token
     return {
@@ -110,7 +107,6 @@ export function parseTerm(str){
 }
 
 function surroundedByParens(str) {
-  // first check if it starts and ends with
   if (str[0] !== '(' || str.slice(-1) !== ')') {
     return false;
   }
@@ -138,13 +134,82 @@ function bReducable(exp){
 
 // We don't know whether we CAN beta reduce the term
 // Expression => Maybe(Expression)
-function bReduce(exp) {
-  if (!bReducable(exp)) {
+export function bReduce(expression) {
+  if (!bReducable(expression)) {
     return undefined;
   }
+  // do nothing for rn.
+  return replace(
+    expression.left.argument,
+    expression.right,
+    expression.left.body
+  );
 }
 
-export function renderExpression(expression){
+// name => Expression => Expression => Expression
+// Replaces everything named name in expression with replacer
+function replace(nameToReplace, replacer, expression) {
+  switch(expression.type) {
+    case 'application':
+      return {
+        type: 'application',
+        left: replace(nameToReplace, replacer, expression.left),
+        right: replace(nameToReplace, replacer, expression.right)
+      };
+    case 'function':
+      if (nameToReplace === expression.argument) {
+        // We ignore overwritten vars for right now.
+        return expression;
+      }
+      return {
+        type: 'function',
+        argument: expression.argument,
+        body: replace(nameToReplace, replacer, expression.body)
+      };
+    case 'token':
+      return expression.name === nameToReplace ? replacer : expression;
+  }
+};
+
+// expression => Maybe(number)
+export function renderAsChurchNumeral(expression) {
+  if (expression.type !== 'function') {
+    return undefined;
+  }
+  const outerName = expression.argument;
+  const inner = expression.body;
+  if (inner.type !== 'function') {
+    return undefined;
+  }
+  const innerName = inner.argument;
+  // name => name => Expression => int
+  function countLevels(wrapperName, targetName, piece) {
+    if (piece.type === 'token') {
+      if (piece.name !== targetName) {
+        return undefined;
+      } else {
+        return 0;
+      }
+    }
+    if (piece.type === 'application') {
+      if (piece.left.type !== 'token' || piece.left.name !== wrapperName) {
+        return undefined;
+      } else {
+        const nextLevel = countLevels(wrapperName, targetName, piece.right);
+        if (nextLevel === undefined){
+          return undefined;
+        } else {
+          return nextLevel + 1;
+        }
+      }
+    }
+    return undefined;
+  }
+
+  return countLevels(outerName, innerName, inner.body);
+}
+
+export function renderExpression(expression) {
   switch(expression.type) {
     case 'application':
       let leftSide;
@@ -153,7 +218,14 @@ export function renderExpression(expression){
       } else {
         leftSide = `(${renderExpression(expression.left)})`
       }
-      return `${leftSide}${renderExpression(expression.right)}`;
+      // I have no idea whether the rendering of the right side is valid.
+      let rightSide;
+      if(expression.right.type !== 'application'){
+        rightSide = renderExpression(expression.right)
+      } else {
+        rightSide = `(${renderExpression(expression.right)})`
+      }
+      return `${leftSide}${rightSide}`;
     case 'function':
       return `λ${expression.argument}.${renderExpression(expression.body)}`
     case 'token':
