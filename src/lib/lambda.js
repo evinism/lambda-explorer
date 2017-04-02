@@ -10,28 +10,31 @@ import { uniqBy } from 'ramda';
     but we'll also expose parsed expressions.
 */
 
+
+// God I can hardly decide whether to make arguments of type token ornot.
+// Probably yes.
 /* type term oneOf:
   { type: 'token', name: 'n'}
-  { type: 'function', argument: [token], body:  [expression]}
+  { type: 'function', argument: 'n', body:  [expression]}
   { type: 'application', left: [expression], right: [expression]}
 */
 
 // Expression => [Token, ...]
 export function getFreeVars(expression){
   switch(expression.type){
-  case 'token':
-    return [expression];
-  case 'function':
-    return getFreeVars(expression.body).filter(
-      token => token.name !== expression.argument
-    );
-  case 'application':
-    const leftFree = getFreeVars(expression.left);
-    const rightFree = getFreeVars(expression.right);
-    return uniqBy(
-      term => term.name,
-      leftFree.concat(rightFree)
-    );
+    case 'token':
+      return [expression];
+    case 'function':
+      return getFreeVars(expression.body).filter(
+        token => token.name !== expression.argument
+      );
+    case 'application':
+      const leftFree = getFreeVars(expression.left);
+      const rightFree = getFreeVars(expression.right);
+      return uniqBy(
+        term => term.name,
+        leftFree.concat(rightFree)
+      );
   }
 }
 
@@ -103,21 +106,6 @@ export function parseTerm(str){
     }
   }
 
-  /*else if (/^(λ[a-zA-Z]\..+|[a-zA-Z]+){2}$/.test(str)) { // Looks like an un-parens application
-    let splitPoint;
-    if (/^.+λ/.test(str)) { // has a lambda somewhere in the middle
-      splitPoint = str.slice(1).indexOf('λ') + 1;
-    } else {
-      splitPoint = str.length - 1;
-    }
-    return {
-      type: 'application',
-      left: parseTerm(str.slice(0, splitPoint)),
-      right: parseTerm(str.slice(splitPoint))
-    };
-  } else if (/^\((λ[a-zA-Z]\..+|[a-zA-Z]+)\)(λ[a-zA-Z]\..+|[a-zA-Z]+)$/) { // First application is parens'd
-
-}*/
   throw 'Syntax Error';
 }
 
@@ -143,8 +131,32 @@ function surroundedByParens(str) {
   return true;
 }
 
+// Expression -> bool
+function bReducable(exp){
+  return (exp.type === 'application' && exp.left.type === 'function');
+}
+
 // We don't know whether we CAN beta reduce the term
 // Expression => Maybe(Expression)
-function bReduce(){
+function bReduce(exp) {
+  if (!bReducable(exp)) {
+    return undefined;
+  }
+}
 
+export function renderExpression(expression){
+  switch(expression.type) {
+    case 'application':
+      let leftSide;
+      if(expression.left.type !== 'function'){
+        leftSide = renderExpression(expression.left);
+      } else {
+        leftSide = `(${renderExpression(expression.left)})`
+      }
+      return `${leftSide}${renderExpression(expression.right)}`;
+    case 'function':
+      return `λ${expression.argument}.${renderExpression(expression.body)}`
+    case 'token':
+      return expression.name;
+  }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { parseTerm, getFreeVars } from '../../lib/lambda.js';
+import { parseTerm, getFreeVars, renderExpression } from '../../lib/lambda.js';
 
 export default class LambdaInput extends React.Component {
   state = {text: ''};
@@ -13,21 +13,29 @@ export default class LambdaInput extends React.Component {
     });
   };
 
-  renderFreeVars = () => {
+  renderMetadata = () => {
     if (this.state.text.length === 0) {
-      return (<span>[empty]</span>);
+      return (<div>[empty]</div>);
     }
+    let ast;
     try {
-      const ast = parseTerm(this.state.text);
-      console.log(ast);
-      const freeVars = getFreeVars(ast);
-      const rendered = freeVars.map(token => (
-        <span key={token.name}>{token.name}</span>
-      ));
-      return (<span>Free Variables: {rendered}</span>);
+      ast = parseTerm(this.state.text);
     } catch (err) {
-      return (<span>Syntax Error</span>);
+      return (<div>{err}</div>);
     }
+    // Success in this case
+    console.log(ast);
+    const freeVars = getFreeVars(ast);
+    const renderedFreeVars = freeVars.map(token => (
+      <span key={token.name}>{token.name}</span>
+    ));
+    const renderedFromAst = renderExpression(ast);
+    return (
+      <div>
+        <div>Free Variables: {renderedFreeVars}</div>
+        <div>Rendered from AST: {renderedFromAst}</div>
+      </div>
+    );
   }
 
   componentDidUpdate(){
@@ -39,7 +47,7 @@ export default class LambdaInput extends React.Component {
     return (
       <div>
         <input onChange={this.handleChange} value={this.state.text} ref='input' />
-        <div>{this.renderFreeVars()}</div>
+        <div>{this.renderMetadata()}</div>
       </div>
     )
   }
