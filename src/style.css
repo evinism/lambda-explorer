@@ -1,3 +1,21 @@
 h1 {
   text-align: center;
 }
+
+.lambda-holder {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lambda-input {
+  width: 100%;
+  border: 0px;
+  border-bottom: 1px solid gray;
+  margin-bottom: 15px;
+  font-size: 20pt;
+}
+
+.lambda-input:focus {
+  outline: none;
+}

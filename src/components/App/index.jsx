@@ -7,7 +7,6 @@ class App extends React.Component {
   render() {
     return(
       <article>
-        <h1>Application</h1>
         <LambdaInput />
       </article>
     );

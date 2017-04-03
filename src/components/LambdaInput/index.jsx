@@ -1,5 +1,15 @@
 import React from 'react';
-import { parseTerm, getFreeVars, renderExpression, bReduce, renderAsChurchNumeral, renderAsChurchBoolean } from '../../lib/lambda.js';
+import {
+  parseTerm,
+  getFreeVars,
+  renderExpression,
+  bReduce,
+  eReduce,
+  renderAsChurchNumeral,
+  renderAsChurchBoolean,
+  toNormalForm,
+  leftmostOutermostRedex,
+} from '../../lib/lambda.js';
 
 export default class LambdaInput extends React.Component {
   state = {text: ''};
@@ -19,7 +29,7 @@ export default class LambdaInput extends React.Component {
     }
     let ast;
     try {
-      ast = parseTerm(this.state.text);
+      ast = parseTerm(this.state.text.replace(/\s/g, ''));
     } catch (err) {
       return (<div>{err}</div>);
     }
@@ -35,11 +45,20 @@ export default class LambdaInput extends React.Component {
 
     // -- beta reduction
     const betaReduced = bReduce(ast);
-    let renderedReduced;
+    let renderedBetaReduced;
     if (betaReduced) {
-      renderedReduced = renderExpression(betaReduced);
+      renderedBetaReduced = renderExpression(betaReduced);
     } else {
-      renderedReduced = '[irreducable]';
+      renderedBetaReduced = '[beta irreducable]';
+    }
+
+    // -- eta reduction
+    const etaReduced = eReduce(ast);
+    let renderedEtaReduced;
+    if (etaReduced) {
+      renderedEtaReduced = renderExpression(etaReduced);
+    } else {
+      renderedEtaReduced = '[eta irreducable]';
     }
 
     // -- church numerals
@@ -60,13 +79,64 @@ export default class LambdaInput extends React.Component {
       renderedBoolean = '[not a church boolean]'
     }
 
+    // -- normal form
+    const normalForm = toNormalForm(ast);
+    let renderedNormalForm;
+    if (normalForm) {
+      renderedNormalForm = renderExpression(normalForm);
+    } else {
+      renderedNormalForm = renderExpression(ast);
+    }
+
+    // -- normal form church numerals
+    const normAsNumeral = renderAsChurchNumeral(normalForm);
+    let renderedNormNumeral;
+    if (normAsNumeral !== undefined) {
+      renderedNormNumeral = normAsNumeral;
+    } else {
+      renderedNormNumeral = '[not a church numeral]'
+    }
+
+    // -- normal form church booleans
+    const normAsBoolean = renderAsChurchBoolean(normalForm);
+    let renderedNormBoolean;
+    if (normAsBoolean !== undefined) {
+      renderedNormBoolean = String(normAsBoolean);
+    } else {
+      renderedNormBoolean = '[not a church boolean]'
+    }
+
+    // -- Steps to recreate
+    const maxDepth = 100;
+    let stepsToNormal = [ast];
+    for (let i = 0; i < maxDepth; i++) {
+      const nextStep = leftmostOutermostRedex(stepsToNormal[stepsToNormal.length - 1]);
+      if (nextStep === undefined) {
+        break;
+      }
+      stepsToNormal.push(nextStep);
+    }
+    const renderedStepsToNormal = (
+      <ol>
+        {stepsToNormal.map((step, idx) => (
+          <li key={idx}>{renderExpression(step)}</li>
+        ))}
+      </ol>
+    );
+
     return (
       <div>
         <div>Free Variables: {renderedFreeVars}</div>
         <div>Rendered from AST: {renderedFromAst}</div>
-        <div>Beta-reduced: {renderedReduced}</div>
+        <div>Beta-reduced: {renderedBetaReduced}</div>
+        <div>Eta-reduced: {renderedEtaReduced}</div>
         <div>As Church Numeral: {renderedNumeral}</div>
         <div>As Church Boolean: {renderedBoolean}</div>
+        <div>Normal Form: {renderedNormalForm}</div>
+        <div>Normal As Church Numeral: {renderedNormNumeral}</div>
+        <div>Normal As Church Boolean: {renderedNormBoolean}</div>
+        <div><h3>steps to normal form:</h3>{renderedStepsToNormal}</div>
+
       </div>
     );
   }
@@ -78,8 +148,8 @@ export default class LambdaInput extends React.Component {
 
   render(){
     return (
-      <div>
-        <input onChange={this.handleChange} value={this.state.text} ref='input' />
+      <div className="lambda-holder">
+        <input className="lambda-input" onChange={this.handleChange} value={this.state.text} ref='input' />
         <div>{this.renderMetadata()}</div>
       </div>
     )
