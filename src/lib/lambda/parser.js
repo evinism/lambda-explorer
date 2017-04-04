@@ -60,6 +60,9 @@ function parseTerm(str){
     }
   } else if(/^\(/.test(str)) {
     // application, starting with a paren.
+    // This case is wrong-- we should be applying greedily the first two
+    // expressions that make sense, and then applying anything after that
+    // in a wrapper application.
     let depth = 0;
     let splitPoint = -1;
     for (let i = 0; i < str.length; i++){
