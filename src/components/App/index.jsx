@@ -7,6 +7,8 @@ class App extends React.Component {
   render() {
     return(
       <article>
+        <h1>Lambda Explorer</h1>
+        <h3>shift-L to type λ, rigorous syntax only plz</h3>
         <LambdaInput />
       </article>
     );

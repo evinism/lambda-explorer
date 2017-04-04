@@ -107,7 +107,7 @@ export default class LambdaInput extends React.Component {
     }
 
     // -- Steps to recreate
-    const maxDepth = 100;
+    const maxDepth = 10000;
     let stepsToNormal = [ast];
     for (let i = 0; i < maxDepth; i++) {
       const nextStep = leftmostOutermostRedex(stepsToNormal[stepsToNormal.length - 1]);
@@ -149,7 +149,7 @@ export default class LambdaInput extends React.Component {
   render(){
     return (
       <div className="lambda-holder">
-        <input className="lambda-input" onChange={this.handleChange} value={this.state.text} ref='input' />
+        <input className="lambda-input" autoFocus onChange={this.handleChange} value={this.state.text} ref='input' />
         <div>{this.renderMetadata()}</div>
       </div>
     )
