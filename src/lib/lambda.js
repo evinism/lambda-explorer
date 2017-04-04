@@ -229,7 +229,7 @@ export function leftmostOutermostRedex(expression){
       return {
         type: 'application',
         left: expression.left,
-        right: expression.right
+        right: rightReduced,
       };
     }
     return undefined;
