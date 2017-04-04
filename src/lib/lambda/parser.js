@@ -30,7 +30,7 @@
 // without just lambda expressions yet.
 
 // str => Expression
-export function parseTerm(str){
+function parseTerm(str){
   if (surroundedByParens(str)) {
     return parseTerm(str.slice(1, -1));
   } else if (/^[a-zA-Z]$/.test(str)) { // looks like a token
@@ -108,3 +108,5 @@ function surroundedByParens(str) {
   }
   return true;
 }
+
+export { parseTerm };

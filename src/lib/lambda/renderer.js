@@ -1,4 +1,4 @@
-export function renderExpression(expression) {
+function renderExpression(expression) {
   switch(expression.type) {
     case 'application':
       let leftSide;
@@ -21,3 +21,5 @@ export function renderExpression(expression) {
       return expression.name;
   }
 }
+
+export { renderExpression };
