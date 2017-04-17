@@ -13,12 +13,18 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loader: 'babel',
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader',
         exclude: /node_modules/,
       }
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
-  }
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
+  },
+  devtool: 'source-map'
 }

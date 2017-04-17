@@ -10,6 +10,7 @@ import {
   toNormalForm,
   leftmostOutermostRedex,
 } from '../../lib/lambda';
+import Line from './MaybeLineItem';
 
 const LambdaMetadata = ({text}) => {
   if (text.length === 0) {
@@ -94,7 +95,7 @@ const LambdaMetadata = ({text}) => {
   }
 
   // -- Steps to recreate
-  const maxDepth = 10000;
+  const maxDepth = 100;
   let stepsToNormal = [ast];
   for (let i = 0; i < maxDepth; i++) {
     const nextStep = leftmostOutermostRedex(stepsToNormal[stepsToNormal.length - 1]);

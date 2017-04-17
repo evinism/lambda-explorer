@@ -3,7 +3,7 @@ import { bReducable, bReduce } from './operations';
 // Call by name eval strategy
 // Expression -> Expression (with a depth overflow)
 function toNormalForm(expression) {
-  const depthOverflow = 10000;
+  const depthOverflow = 100;
   let count = 0;
   let current;
   let reduced = expression;
