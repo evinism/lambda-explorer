@@ -2,6 +2,8 @@ import React from 'react';
 import LambdaInput from '../LambdaInput';
 import LambdaMetadata from '../LambdaMetadata';
 
+import {tokenize} from '../../lib/lambda/lexer';
+
 class App extends React.Component {
   state = {text: ''};
 

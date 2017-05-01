@@ -7,6 +7,7 @@ import { renderAsChurchNumeral, renderAsChurchBoolean } from './churchPrimitives
 import { getFreeVars } from './util';
 import { bReduce, eReduce } from './operations';
 import { toNormalForm, leftmostOutermostRedex } from './normalize';
+import { tokenize } from './lexer';
 
 export {
   parseTerm,
@@ -17,5 +18,6 @@ export {
   bReduce,
   eReduce,
   toNormalForm,
-  leftmostOutermostRedex
+  leftmostOutermostRedex,
+  tokenize,
 }
