@@ -1,115 +1,94 @@
-/* type Expression oneOf:
-  { type: 'token', name: 'n'}
-  { type: 'function', argument: 'n', body:  [expression]}
-  { type: 'application', left: [expression], right: [expression]}
+import { tokenize } from './lexer';
 
-  We also for performance reasons add a cacheKey so that we don't have to recompute derived data.
-*/
+let item;
 
-/*
-
-  Q: represent textually or not?
-  A: Textual representation allows for unambiguous logic/extensibility.
-
-  Q: do we use lambda symbols in utf?
-  A: hell yeah we do!
-    most functions will have a string => string format (dead simple)
-    but we'll also expose parsed expressions.
-*/
-
-// regex for name
-// [a-zA-Z]
-
-// regex for lambda
-// λ[a-zA-Z]\..+
-
-// regex for application
-// rn I suck at parsing, so I don't know how to handle parens.
-// So a lambda can only end an application.
-// ^(λ[a-zA-Z]\..+[a-zA-Z]){2}$
-// without just lambda expressions yet.
-
-// str => Expression
-function parseTerm(str : string){
-  if (surroundedByParens(str)) {
-    return parseTerm(str.slice(1, -1));
-  } else if (/^[a-zA-Z]$/.test(str)) { // looks like a token
-    return {
-      type: 'token',
-      name: str,
-    }
-  } else if (/^λ[a-zA-Z]\..+/.test(str)) { // Looks like a lambda expression
-    return {
-      type: 'function',
-      argument: str[1],
-      body: parseTerm(str.slice(3)),
-    };
-  } else if (/^[a-zA-Z]+/.test(str)) {
-    // application:
-    // Either gonna start with a sequence of letters,
-    // or a parens'd expression, so we can divide by that.
-    // this case is with a sequence of letters
-    let splitPoint = str.search(/[^a-zA-Z]/);
-    if (splitPoint < 0) {
-      splitPoint = str.length - 1;
-    }
-    return {
-      type: 'application',
-      left: parseTerm(str.slice(0, splitPoint)),
-      right: parseTerm(str.slice(splitPoint)),
-    }
-  } else if(/^\(/.test(str)) {
-    // application, starting with a paren.
-    // This case is wrong-- we should be applying greedily the first two
-    // expressions that make sense, and then applying anything after that
-    // in a wrapper application.
-    let depth = 0;
-    let splitPoint = -1;
-    for (let i = 0; i < str.length; i++){
-      const cur = str[i];
-      if (cur === '(') {
-        depth++;
-      }
-      if (cur === ')') {
-        depth--;
-      }
-      if (depth === 0) {
-        splitPoint = i + 1;
-        break;
-      }
-    }
-    if (splitPoint < 0) {
-      throw 'Unmatched Paren';
-    }
-    return {
-      type: 'application',
-      left: parseTerm(str.slice(0, splitPoint)),
-      right: parseTerm(str.slice(splitPoint)),
-    }
+function parseStream(tokenStream){
+  if(tokenStream.length === 0){
+    throw('Syntax Error: Empty Expression');
   }
-
-  throw 'Syntax Error';
+  let expression, rest;
+  [expression, rest] = popExpression(tokenStream);
+  let applications = [expression];
+  while(rest.length !== 0){
+    [expression, rest] = popExpression(rest);
+    applications.push(expression);
+  }
+  // For right-associativity.
+  return applications.reduce((prev, cur) => ({
+    type: 'application',
+    left: prev,
+    right: cur
+  }));
+  // And reduce to produce the application
 }
 
-function surroundedByParens(str) {
-  if (str[0] !== '(' || str.slice(-1) !== ')') {
-    return false;
+function popExpression(tokenStream){
+  // 3 cases. 1:
+  const nextToken = tokenStream[0];
+  //debugger;
+  switch(nextToken.type){
+    case 'identifier':
+      return [
+        {type: 'token', name: nextToken.value},
+        tokenStream.slice(1)
+      ];
+    case 'lambda':
+      // scan forward to find the dot, add in arguments
+      if(tokenStream.length < 2) {
+        throw('Syntax Error: Unexpected end of lambda');
+      }
+      let dotPosition = 1;
+      while(tokenStream[dotPosition].type !== 'dot') {
+        if(tokenStream[dotPosition].type !== 'identifier'){
+          throw('Syntax Error: non-identifier in argument stream');
+        }
+        dotPosition++;
+        if (dotPosition >= tokenStream.length){
+          throw('Syntax Error: Unexpected end of lambda');
+        }
+      }
+      // right now I'm not handling multiple arguments, but in the future I will!
+      const args = tokenStream.slice(1, dotPosition);
+      if(args.length !== 1){
+        throw('Syntax Error: Bad number of arguments');
+      }
+      return [{
+          type: 'function',
+          argument: args[0].value,
+          body: parseStream(tokenStream.slice(dotPosition + 1)),
+        },
+        [] //because it will always end the whole expression
+      ];
+    case 'openParen':
+      // This one is uncpmpletedaskdgjklajdgkl
+      let depth = 0;
+      let splitPoint = -1;
+      for (let i = 0; i < tokenStream.length; i++){
+        const cur = tokenStream[i];
+        if (cur.type === 'openParen') {
+          depth++;
+        }
+        if (cur.type === 'closeParen') {
+          depth--;
+        }
+        if (depth === 0) {
+          splitPoint = i + 1;
+          break;
+        }
+      }
+      if (splitPoint < 0) {
+        throw 'Syntax Error: Unmatched Paren';
+      }
+      // Match parens and do something like:
+      return [
+        parseStream(tokenStream.slice(1, splitPoint - 1)),
+        tokenStream.slice(splitPoint)
+      ]
+    default:
+      throw('Syntax Error: Unexpected Token');
   }
-  const rest = str.slice(1,-1);
-  let depth = 0;
-  for (let i = 0; i < rest.length; i++){
-    const cur = rest[i];
-    if (cur === '(') {
-      depth++;
-    }
-    if (cur === ')') {
-      depth--;
-    }
-    if (depth < 0) {
-      return false;
-    }
-  }
-  return true;
 }
 
-export { parseTerm };
+export function parseTerm(str){
+  return parseStream(tokenize(str));
+}
