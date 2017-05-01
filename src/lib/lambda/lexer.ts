@@ -26,7 +26,7 @@ function tokenize(str: string){
     const nextChar = str.slice(pos, pos + 1);
     if (/\s/.test(nextChar)){ // skip whitespace.
       continue;
-    } if (nextChar === 'L') {
+    } if (nextChar === 'λ') {
       tokenStream.push({
         type: 'lambda'
       });
@@ -45,14 +45,14 @@ function tokenize(str: string){
     } else if(/[a-zA-Z]/.test(nextChar)){
       // scan ahead to read the whole identifier
       let name = nextChar;
-      while(/[0-9]/.test(str[pos + 1])){
+      while(/[₀-₉]/.test(str[pos + 1])){
         pos++;
         name += str[pos];
       }
       tokenStream.push({
         type: 'identifier',
         value: name,
-      })
+      });
     } else {
       const excerptPadding = 5;
       const lower = Math.max(pos - excerptPadding, 0);

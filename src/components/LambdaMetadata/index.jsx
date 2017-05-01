@@ -9,10 +9,20 @@ import {
   renderAsChurchBoolean,
   toNormalForm,
   leftmostOutermostRedex,
+  tokenize,
 } from '../../lib/lambda';
 import Line from './MaybeLineItem';
 
 const LambdaMetadata = ({text}) => {
+  /*let tokenized;
+  try {
+    tokenized = tokenize(text);
+  } catch (err) {
+    return (<div>{err}</div>);
+  }
+  return (<span>{JSON.stringify(tokenized)}</span>);
+  */
+  // --dead for right now--
   if (text.length === 0) {
     return (<div>[empty]</div>);
   }
