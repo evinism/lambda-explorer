@@ -17,13 +17,15 @@ class App extends React.Component {
     this.setState({text});
     // TODO: omgggg move this stuff out of the component, ickkkk
     const pNum = this.state.problemNumber;
-    let normalForm;
+    let normalForm, ast;
     try {
-      normalForm = toNormalForm(parseTerm(text));
+      ast = parseTerm(text);
+      console.log(ast);
+      normalForm = toNormalForm(ast);
     } catch(e) {
       normalForm = undefined;
     }
-    if (problems[pNum].winCondition({text, normalForm})) {
+    if (problems[pNum].winCondition({text, normalForm, ast})) {
       if (pNum < problems.length - 1){
         this.setState({problemNumber: pNum + 1});
       } else {

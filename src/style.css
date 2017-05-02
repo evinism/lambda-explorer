@@ -15,8 +15,10 @@ article {
 }
 
 aside {
-  width: 200px;
-  margin-left: 10px;
+  width: 300px;
+  border-left: 1px solid lightgray;
+  margin-left: 70px;
+  padding-left: 27px;
 }
 
 .lambda-input {
