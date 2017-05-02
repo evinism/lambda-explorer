@@ -19,3 +19,7 @@ article {
 .lambda-input:focus {
   outline: none;
 }
+
+.start-button {
+  margin-top: 10px;
+}
