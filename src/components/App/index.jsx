@@ -44,7 +44,7 @@ class App extends React.Component {
         <h1>Lambda Explorer</h1>
         <div className="app-content">
           <article>
-            <h3>shift-L to type λ, rigorous syntax only plz</h3>
+            <h3>shift-L to type λ, [0-9] to type subscripts, rigorous syntax only plz</h3>
             <LambdaInput onChange={this.handleInputChange} />
             <LambdaMetadata text={this.state.text} />
             {!this.state.gameStarted && (

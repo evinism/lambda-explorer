@@ -31,7 +31,7 @@ export default [
   {
     number: 3,
     title: "Parentheses",
-    prompt: "Schweet! This takes one argument a and outputs that same argument! Now go ahead and wrap the whole thin in parentheses",
+    prompt: "Schweet! This takes one argument a and outputs that same argument! Now go ahead and wrap the whole thing in parentheses",
     winCondition: ({text, ast}) => {
       return (
         // We could put conditions that we might like to use into lib/lambda when we need to.
@@ -46,7 +46,7 @@ export default [
   {
     number: 4,
     title: "Baby's first β-reduction",
-    prompt: "Nicely done! With that out of the way, we can apply variables to this function! note: not passable because not implemented yet...",
+    prompt: "Nicely done! You can always wrap an expression inside parentheses. With that out of the way, we can apply variables to this function! note: not passable because not implemented yet...",
     winCondition: ({ast}) => {
       return (
         // We could put conditions that we might like to use into lib/lambda when we need to.
@@ -58,4 +58,11 @@ export default [
       );
     }
   }
+  /*
+    considering following types of problems:
+    - illustrating syntactic sugar of multiple arguments, and what that means.
+    - illustrating how you can always replace a variable with a function
+    - illustrating alpha conversion when a naming collision applies.
+    - Challenges...
+  */
 ];
