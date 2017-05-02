@@ -4,7 +4,7 @@ import LambdaMetadata from '../LambdaMetadata';
 import ProblemPrompter from '../ProblemPrompter';
 import problems from '../../game/problems';
 
-import {tokenize} from '../../lib/lambda/lexer';
+import { parseTerm, toNormalForm } from '../../lib/lambda/';
 
 class App extends React.Component {
   state = {
@@ -17,7 +17,13 @@ class App extends React.Component {
     this.setState({text});
     // TODO: omgggg move this stuff out of the component, ickkkk
     const pNum = this.state.problemNumber;
-    if (problems[pNum].winCondition({text})) {
+    let normalForm;
+    try {
+      normalForm = toNormalForm(parseTerm(text));
+    } catch(e) {
+      normalForm = undefined;
+    }
+    if (problems[pNum].winCondition({text, normalForm})) {
       if (pNum < problems.length - 1){
         this.setState({problemNumber: pNum + 1});
       } else {
@@ -32,20 +38,26 @@ class App extends React.Component {
 
   render() {
     return (
-      <article>
+      <div>
         <h1>Lambda Explorer</h1>
-        <h3>shift-L to type λ, rigorous syntax only plz</h3>
-        {this.state.gameStarted && (
-          <ProblemPrompter problems={problems} current={this.state.problemNumber} />
-        )}
-        <LambdaInput onChange={this.handleInputChange} />
-        <LambdaMetadata text={this.state.text} />
-        {!this.state.gameStarted && (
-          <button className="start-button" onClick={this.startGame}>
-            start the game yo
-          </button>
-        )}
-      </article>
+        <div className="app-content">
+          <article>
+            <h3>shift-L to type λ, rigorous syntax only plz</h3>
+            <LambdaInput onChange={this.handleInputChange} />
+            <LambdaMetadata text={this.state.text} />
+            {!this.state.gameStarted && (
+              <button className="start-button" onClick={this.startGame}>
+                start the game yo
+              </button>
+            )}
+          </article>
+          <aside>
+            {this.state.gameStarted && (
+              <ProblemPrompter problems={problems} current={this.state.problemNumber} />
+            )}
+          </aside>
+        </div>
+      </div>
     );
   }
 }

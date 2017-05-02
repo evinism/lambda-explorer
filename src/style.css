@@ -1,11 +1,22 @@
 h1 {
-  text-align: center;
+  margin-left: 10%;
+  margin-bottom: 0px;
 }
 
-article {
+.app-content {
   width: 80%;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+}
+
+article {
+  flex-grow: 1;
+}
+
+aside {
+  width: 200px;
+  margin-left: 10px;
 }
 
 .lambda-input {
@@ -22,4 +33,8 @@ article {
 
 .start-button {
   margin-top: 10px;
+}
+
+.highlighted {
+  font-weight: bold;
 }
