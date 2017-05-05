@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --watch",
-    "dev": "webpack-dev-server --port 8080",
+    "dev": "webpack-dev-server --port 8082",
     "start": "webpack-dev-server --host 0.0.0.0 --port 80"
   },
   "author": "evin",

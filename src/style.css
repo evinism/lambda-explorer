@@ -19,6 +19,7 @@ aside {
   border-left: 1px solid lightgray;
   margin-left: 70px;
   padding-left: 27px;
+  height: calc(100% - 50px);
 }
 
 .lambda-input {
@@ -39,4 +40,8 @@ aside {
 
 .highlighted {
   font-weight: bold;
+}
+
+.variable-form {
+  margin-top: 10px;
 }

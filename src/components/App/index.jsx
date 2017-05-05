@@ -34,6 +34,7 @@ class App extends React.Component {
     }
   }
 
+
   startGame = () => {
     this.setState({gameStarted: true, problemNumber: 0});
   }
@@ -52,6 +53,10 @@ class App extends React.Component {
                 start the game yo
               </button>
             )}
+            <div className="variable-form">
+              <input ref="variable-name"></input>
+              <button className="assign-variable">Assign to variable</button>
+            </div>
           </article>
           <aside>
             {this.state.gameStarted && (
