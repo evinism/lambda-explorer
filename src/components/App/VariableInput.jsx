@@ -9,7 +9,10 @@ export default class VariableInput extends React.Component {
   }
 
   _onClick = () => {
-
+    if(!/^[a-zA-Z][₀-₉]*$/.test(this.state.text)){
+      alert('nope that is of bad form');
+      return;
+    }
     console.log('Defining this: ' + this.state.text);
     this.props.defineVariable(this.state.text);
   }
@@ -17,7 +20,7 @@ export default class VariableInput extends React.Component {
   render(){
     return(
       <div className="variable-form">
-        <LambdaInput onChange={this._onChange} />
+        <LambdaInput onChange={this._onChange} value={this.state.text} />
         <input type="button" onClick={this._onClick} value="Define that thing" />
       </div>
     );

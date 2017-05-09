@@ -10,13 +10,14 @@ class ExecutionContext {
   definedVariables = {};
 
   getResolvableVariables(ast){
-    return getFreeVars(ast).filter(
+    // holy fuck there is so much badness in here.
+    return getFreeVars(ast).map(token => token.name).filter(
       name => this.definedVariables[name] !== undefined
     );
   }
 
   getUnresolvableVariables(ast){
-    return getFreeVars(ast).filter(
+    return getFreeVars(ast).map(token => token.name).filter(
       name => this.definedVariables[name] === undefined
     )
   }
@@ -24,9 +25,13 @@ class ExecutionContext {
   // Defined variables must contain no unresolvableVariables
   // This is so that variable resolution is guaranteed to halt at some point.
   defineVariable(name, string){
+    if(this.definedVariables[name]){
+      throw 'nope, that is already defined';
+    }
     const ast = parseTerm(string);
     if(this.getUnresolvableVariables(ast).length > 0){
-      throw 'nope, you got unresolvables. eradicate those.'
+      const unresolvables = this.getUnresolvableVariables(ast).join(', ');
+      throw 'nope, you got unresolvables ' + unresolvables + '. eradicate those.'
     }
     this.definedVariables[name] = ast;
   }
