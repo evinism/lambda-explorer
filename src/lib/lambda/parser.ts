@@ -1,5 +1,37 @@
 import { tokenize } from './lexer';
 
+
+/*
+  types:
+
+  [name] a character followed by a bunch of subscripts
+
+  [expression] one of:
+    {
+      type: 'application',
+      left: [expression],
+      right: [expression]
+    },
+    {
+      type: 'function'
+      argument: [name],
+      body: [expression],
+    },
+    {
+      type: 'token',
+      value: [name],
+    }
+
+  [statement] one of:
+    [expression],
+    {
+      type: 'assignment'
+      left: [name],
+      right: [expression],
+    }
+
+*/
+
 let item;
 
 function parseStream(tokenStream){
@@ -60,7 +92,6 @@ function popExpression(tokenStream){
         [] //because it will always end the whole expression
       ];
     case 'openParen':
-      // This one is uncpmpletedaskdgjklajdgkl
       let depth = 0;
       let splitPoint = -1;
       for (let i = 0; i < tokenStream.length; i++){
@@ -79,7 +110,6 @@ function popExpression(tokenStream){
       if (splitPoint < 0) {
         throw 'Syntax Error: Unmatched Paren';
       }
-      // Match parens and do something like:
       return [
         parseStream(tokenStream.slice(1, splitPoint - 1)),
         tokenStream.slice(splitPoint)

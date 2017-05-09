@@ -15,6 +15,9 @@
   },
   {
     type: 'closeParen',
+  },
+  {
+    type: 'assignment',
   }
 */
 
@@ -53,7 +56,16 @@ function tokenize(str: string){
         type: 'identifier',
         value: name,
       });
+    } else if(nextChar === ':'){
+      pos++;
+      if (str[pos] !== '=') {
+        throw 'Lexing Error: \'=\' expected after :';
+      }
+      tokenStream.push({
+        type: 'assignment',
+      });
     } else {
+      // TODO: associate every token with a padding, so we can get better syntax errors in the parsing stage.
       const excerptPadding = 5;
       const lower = Math.max(pos - excerptPadding, 0);
       const upper = Math.min(pos + excerptPadding, str.length);

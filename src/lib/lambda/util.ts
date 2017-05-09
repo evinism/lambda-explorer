@@ -1,6 +1,6 @@
 import { uniqBy } from 'ramda';
 
-// Should for consistensy change to [name]
+// TODO: Should for consistensy change to [name]
 // Expression => [Token, ...]
 function getFreeVars(expression){
   switch(expression.type){

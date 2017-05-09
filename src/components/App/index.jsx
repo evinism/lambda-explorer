@@ -77,7 +77,7 @@ class App extends React.Component {
 
     let rawAst, ast, err;
     try {
-      rawAst = parseTerm(this.state.text.replace(/\s/g, ''));
+      rawAst = parseTerm(this.state.text);
     } catch (e) {
       err = e;
     }
