@@ -5,7 +5,8 @@ import {
   replace,
 } from '../lib/lambda';
 
-// Might want to make a whole "Execution" object.
+// There's a better way of doing this I swear.
+// Might want to make a whole "Execution" object
 class ExecutionContext {
   definedVariables = {};
 
@@ -60,6 +61,7 @@ class ExecutionContext {
       );
       resolvableVars = this.getResolvableVariables(currentAst);
     }
+    return currentAst;
   }
 }
 

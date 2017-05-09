@@ -5,7 +5,7 @@ import { parseTerm } from './parser';
 import { renderExpression } from './renderer';
 import { renderAsChurchNumeral, renderAsChurchBoolean } from './churchPrimitives';
 import { getFreeVars } from './util';
-import { bReduce, eReduce } from './operations';
+import { bReduce, eReduce, replace } from './operations';
 import { toNormalForm, leftmostOutermostRedex } from './normalize';
 import { tokenize } from './lexer';
 
@@ -20,4 +20,5 @@ export {
   toNormalForm,
   leftmostOutermostRedex,
   tokenize,
+  replace,
 }

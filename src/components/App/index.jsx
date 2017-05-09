@@ -75,6 +75,18 @@ class App extends React.Component {
 
     const renderedVars = (<ul>{listItems}</ul>);
 
+    let rawAst, ast, err;
+    try {
+      rawAst = parseTerm(this.state.text.replace(/\s/g, ''));
+    } catch (e) {
+      err = e;
+    }
+
+    if(rawAst){
+      ast = this.executionContext.resolveVariables(rawAst);
+    }
+    console.log(rawAst);
+
     return (
       <div>
         <h1>Lambda Explorer</h1>
@@ -86,7 +98,7 @@ class App extends React.Component {
               autoFocus={true}
               onChange={this.handleInputChange}
             />
-            <LambdaMetadata text={this.state.text} />
+            <LambdaMetadata ast={ast} err={err} />
             {!this.state.gameStarted && (
               <button className="start-button" onClick={this.startGame}>
                 start the game yo

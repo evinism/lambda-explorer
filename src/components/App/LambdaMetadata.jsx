@@ -7,14 +7,9 @@ import {
   renderExpression,
 } from '../../lib/lambda';
 
-const LambdaMetadata = ({text}) => {
-  if (text.length === 0) {
-    return (<div>[empty]</div>);
-  }
-  let ast;
-  try {
-    ast = parseTerm(text.replace(/\s/g, ''));
-  } catch (err) {
+const LambdaMetadata = ({ast, err}) => {
+  console.log(ast);
+  if(!ast){
     return (<div>{err}</div>);
   }
 
@@ -87,6 +82,7 @@ const LambdaMetadata = ({text}) => {
 
   return (
     <div>
+      <b>Post variable substitution:</b>
       <div>Free Variables: {renderedFreeVars}</div>
       <div>Rendered from AST: {renderedFromAst}</div>
       <div>Beta-reduced: {renderedBetaReduced}</div>
