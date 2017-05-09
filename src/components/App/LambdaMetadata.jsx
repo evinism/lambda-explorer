@@ -1,28 +1,13 @@
 import React from 'react';
+import astToMetadata from '../../game/astToMetadata';
 import {
   parseTerm,
-  getFreeVars,
-  renderExpression,
-  bReduce,
-  eReduce,
   renderAsChurchNumeral,
   renderAsChurchBoolean,
-  toNormalForm,
-  leftmostOutermostRedex,
-  tokenize,
+  renderExpression,
 } from '../../lib/lambda';
-import Line from './MaybeLineItem';
 
 const LambdaMetadata = ({text}) => {
-  /*let tokenized;
-  try {
-    tokenized = tokenize(text);
-  } catch (err) {
-    return (<div>{err}</div>);
-  }
-  return (<span>{JSON.stringify(tokenized)}</span>);
-  */
-  // --dead for right now--
   if (text.length === 0) {
     return (<div>[empty]</div>);
   }
@@ -33,90 +18,68 @@ const LambdaMetadata = ({text}) => {
     return (<div>{err}</div>);
   }
 
-  // -- free vars
-  const freeVars = getFreeVars(ast);
-  const renderedFreeVars = freeVars.map(token => (
+  const metadata = astToMetadata(ast);
+  const renderedFreeVars = metadata.freeVars.map(token => (
     <span key={token.name}>{token.name}</span>
   ));
 
-  // -- ast
   const renderedFromAst = renderExpression(ast);
-
-  // -- beta reduction
-  const betaReduced = bReduce(ast);
   let renderedBetaReduced;
-  if (betaReduced) {
-    renderedBetaReduced = renderExpression(betaReduced);
+  if (metadata.betaReduced) {
+    renderedBetaReduced = renderExpression(metadata.betaReduced);
   } else {
     renderedBetaReduced = '[beta irreducable]';
   }
 
   // -- eta reduction
-  const etaReduced = eReduce(ast);
   let renderedEtaReduced;
-  if (etaReduced) {
-    renderedEtaReduced = renderExpression(etaReduced);
+  if (metadata.etaReduced) {
+    renderedEtaReduced = renderExpression(metadata.etaReduced);
   } else {
     renderedEtaReduced = '[eta irreducable]';
   }
 
-  // -- church numerals
-  const asNumeral = renderAsChurchNumeral(ast);
   let renderedNumeral;
-  if (asNumeral !== undefined) {
-    renderedNumeral = asNumeral;
+  if (metadata.asNumeral !== undefined) {
+    renderedNumeral = metadata.asNumeral;
   } else {
     renderedNumeral = '[not a church numeral]'
   }
 
   // -- church booleans
-  const asBoolean = renderAsChurchBoolean(ast);
   let renderedBoolean;
-  if (asBoolean !== undefined) {
-    renderedBoolean = String(asBoolean);
+  if (metadata.asBoolean !== undefined) {
+    renderedBoolean = String(metadata.asBoolean);
   } else {
     renderedBoolean = '[not a church boolean]'
   }
 
   // -- normal form
-  const normalForm = toNormalForm(ast);
   let renderedNormalForm;
-  if (normalForm) {
-    renderedNormalForm = renderExpression(normalForm);
+  if (metadata.normalForm) {
+    renderedNormalForm = renderExpression(metadata.normalForm);
   } else {
-    renderedNormalForm = renderExpression(ast);
+    renderedNormalForm = renderExpression(metadata.ast);
   }
   // -- normal form church numerals
-  const normAsNumeral = renderAsChurchNumeral(normalForm);
   let renderedNormNumeral;
-  if (normAsNumeral !== undefined) {
-    renderedNormNumeral = normAsNumeral;
+  if (metadata.normAsNumeral !== undefined) {
+    renderedNormNumeral = metadata.normAsNumeral;
   } else {
     renderedNormNumeral = '[not a church numeral]'
   }
 
   // -- normal form church booleans
-  const normAsBoolean = renderAsChurchBoolean(normalForm);
   let renderedNormBoolean;
-  if (normAsBoolean !== undefined) {
-    renderedNormBoolean = String(normAsBoolean);
+  if (metadata.normAsBoolean !== undefined) {
+    renderedNormBoolean = String(metadata.normAsBoolean);
   } else {
     renderedNormBoolean = '[not a church boolean]'
   }
 
-  // -- Steps to recreate
-  const maxDepth = 100;
-  let stepsToNormal = [ast];
-  for (let i = 0; i < maxDepth; i++) {
-    const nextStep = leftmostOutermostRedex(stepsToNormal[stepsToNormal.length - 1]);
-    if (nextStep === undefined) {
-      break;
-    }
-    stepsToNormal.push(nextStep);
-  }
   const renderedStepsToNormal = (
     <ol>
-      {stepsToNormal.map((step, idx) => (
+      {metadata.stepsToNormal.map((step, idx) => (
         <li key={idx}>{renderExpression(step)}</li>
       ))}
     </ol>

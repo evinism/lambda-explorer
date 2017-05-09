@@ -1,8 +1,11 @@
 import React from 'react';
+import LambdaMetadata from './LambdaMetadata';
+import ProblemPrompter from './ProblemPrompter';
+import VariableInput from './VariableInput';
+
 import LambdaInput from '../LambdaInput';
-import LambdaMetadata from '../LambdaMetadata';
-import ProblemPrompter from '../ProblemPrompter';
 import problems from '../../game/problems';
+import executionContext from '../../game/executionContext';
 
 import { parseTerm, toNormalForm } from '../../lib/lambda/';
 
@@ -34,9 +37,17 @@ class App extends React.Component {
     }
   }
 
+  componentDidMount = () => {
+
+  }
+
 
   startGame = () => {
     this.setState({gameStarted: true, problemNumber: 0});
+  }
+
+  defineVariable = (name) => {
+
   }
 
   render() {
@@ -46,17 +57,18 @@ class App extends React.Component {
         <div className="app-content">
           <article>
             <h3>shift-L to type λ, [0-9] to type subscripts, rigorous syntax only plz</h3>
-            <LambdaInput onChange={this.handleInputChange} />
+            <LambdaInput
+              className="lambda-input"
+              autoFocus={true}
+              onChange={this.handleInputChange}
+            />
             <LambdaMetadata text={this.state.text} />
             {!this.state.gameStarted && (
               <button className="start-button" onClick={this.startGame}>
                 start the game yo
               </button>
             )}
-            <div className="variable-form">
-              <input ref="variable-name"></input>
-              <button className="assign-variable">Assign to variable</button>
-            </div>
+            <VariableInput defineVariable={this.defineVariable} />
           </article>
           <aside>
             {this.state.gameStarted && (

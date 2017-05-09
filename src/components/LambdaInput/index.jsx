@@ -15,26 +15,9 @@ const replacementMapping = {
   'L': 'λ',
 };
 
-
-const replaceAll = rCompose(
-  ...rValues(
-    rMap(
-      (val, key) => str => str.replace(new RegExp(key, 'g'), val),
-      replacementMapping
-    )
-  )
-);
-
-
-const replaceAll2 = str => str.split('').map(
+const replaceAll = str => str.split('').map(
   letter => (replacementMapping[letter] || letter)
 ).join('');
-
-window.replaceAll = replaceAll;
-window.replaceAll2 = replaceAll2;
-
-
-
 
 export default class LambdaInput extends React.Component {
   state = {text: ''};
@@ -58,9 +41,7 @@ export default class LambdaInput extends React.Component {
 
   render(){
     return (
-      <div className="lambda-holder">
-        <input className="lambda-input" autoFocus onChange={this.handleChange} value={this.state.text} ref='input' />
-      </div>
+      <input className={this.props.className} autoFocus={this.props.autoFocus} onChange={this.handleChange} value={this.state.text} ref='input' />
     )
   }
 }
