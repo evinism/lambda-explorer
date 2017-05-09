@@ -5,4 +5,4 @@ To get running:
 npm install
 npm run dev
 ```
-then navigate to localhost:8080
+then navigate to localhost:8082
