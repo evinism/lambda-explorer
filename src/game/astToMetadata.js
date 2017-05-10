@@ -22,7 +22,7 @@ function astToMetadata(ast){
   const normAsBoolean = renderAsChurchBoolean(normalForm);
 
   // -- Steps to recreate
-  const maxDepth = 100;
+  const maxDepth = 1000;
   let stepsToNormal = [ast];
   for (let i = 0; i < maxDepth; i++) {
     const nextStep = leftmostOutermostRedex(stepsToNormal[stepsToNormal.length - 1]);

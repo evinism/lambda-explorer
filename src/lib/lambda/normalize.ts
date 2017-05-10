@@ -3,7 +3,7 @@ import { bReducable, bReduce } from './operations';
 // Call by name eval strategy
 // Expression -> Expression (with a depth overflow)
 function toNormalForm(expression) {
-  const depthOverflow = 100;
+  const depthOverflow = 1000;
   let count = 0;
   let current;
   let reduced = expression;
@@ -12,8 +12,7 @@ function toNormalForm(expression) {
     reduced = leftmostOutermostRedex(current);
     count++;
     if (count >= depthOverflow) {
-      console.warn('normal form depth exceeded');
-      break;
+      throw 'Runtime error: normal form execution exceeded';
     }
   } while (reduced !== undefined);
   return current;

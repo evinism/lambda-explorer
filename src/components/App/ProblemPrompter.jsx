@@ -2,13 +2,13 @@ import React from 'react';
 
 export default ({problems, current}) => (
   <div>
-    <h3>Problem {problems[current].number}</h3>
+    <h3>Problem {current + 1}</h3>
     <p>{problems[current].prompt}</p>
     <ol>
-      {problems.map(problem => (
+      {problems.map((problem, index) => (
         <li
-          key={problem.number}
-          className={problem.number === current ? 'highlighted': ''}
+          key={index}
+          className={index === current ? 'highlighted': ''}
         >
           {problem.title}
         </li>

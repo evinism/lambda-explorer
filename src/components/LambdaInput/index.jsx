@@ -22,7 +22,7 @@ const replaceAll = str => str.split('').map(
 export default class LambdaInput extends React.Component {
   state = {text: ''};
 
-  handleChange = (e) => {
+  _handleChange = (e) => {
     const text = replaceAll(e.target.value);
     this.setState({
       text,
@@ -34,14 +34,31 @@ export default class LambdaInput extends React.Component {
     }
   };
 
+  _handleKeyPress = (e) => {
+    if(e.key == 'Enter'){
+      this.props.submit && this.props.submit();
+    }
+  }
+
   componentDidUpdate(){
     this.refs.input.selectionStart = this.state.selStart;
     this.refs.input.selectionEnd = this.state.selEnd;
   }
 
   render(){
+    // is very controllable yes!!!
+    const value = this.props.value !== undefined
+      ? this.props.value
+      : this.state.text;
     return (
-      <input className={this.props.className} autoFocus={this.props.autoFocus} onChange={this.handleChange} value={this.state.text} ref='input' />
+      <input
+        className={this.props.className}
+        autoFocus={this.props.autoFocus}
+        onChange={this._handleChange}
+        onKeyPress={this._handleKeyPress}
+        value={value}
+        ref='input'
+      />
     )
   }
 }
