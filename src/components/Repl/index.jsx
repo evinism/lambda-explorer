@@ -4,11 +4,18 @@ import ExecutionContext from '../../game/executionContext';
 
 import { renderExpression } from '../../lib/lambda';
 
+const initialOutput = (
+  <div className='initial-prompt'>
+    lambda runtime<br />
+    shift-L to type λ, [0-9] to type subscripts, rigorous syntax only plz
+  </div>
+);
+
 class Repl extends React.Component {
   state = {
     text: '',
     commandHistory: [],
-    output: [],
+    output: [initialOutput],
   }
 
   _onChange = (text) => {

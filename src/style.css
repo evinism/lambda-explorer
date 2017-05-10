@@ -41,6 +41,11 @@ aside {
   position: relative;
 }
 
+.initial-prompt {
+  color: #bbbbbb;
+
+}
+
 .repl .result {
   color: black;
 }
