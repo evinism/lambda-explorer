@@ -8,7 +8,7 @@ export default ({problems, current}) => (
       {problems.map(problem => (
         <li
           key={problem.number}
-          className={problem.number === current ? 'highlighted': ''}
+          className={problem.number === current + 1 ? 'highlighted': ''}
         >
           {problem.title}
         </li>

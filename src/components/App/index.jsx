@@ -21,18 +21,9 @@ class App extends React.Component {
     gameStarted: false
   };
 
-  handleInputChange = (text) => {
-    this.setState({text});
-    // TODO: omgggg move this stuff out of the component, ickkkk
-    const pNum = this.state.problemNumber;
-    let normalForm, ast;
-    try {
-      ast = parseTerm(text);
-      normalForm = toNormalForm(ast);
-    } catch(e) {
-      normalForm = undefined;
-    }
-    if (problems[pNum].winCondition({text, normalForm, ast})) {
+  _handleOnCompute = (computation) => {
+    let pNum = this.state.problemNumber;
+    if (problems[pNum].winCondition(computation)) {
       if (pNum < problems.length - 1){
         this.setState({problemNumber: pNum + 1});
       } else {
@@ -41,11 +32,6 @@ class App extends React.Component {
     }
   }
 
-  componentWillMount = () => {
-    this.executionContext = new ExecutionContext();
-  }
-
-
   startGame = () => {
     this.setState({
       gameStarted: true,
@@ -53,7 +39,7 @@ class App extends React.Component {
     });
   }
 
-  defineVariable = (name) => {
+  /*defineVariable = (name) => {
     try {
       this.executionContext.defineVariable(name, this.state.text);
       // eeeeevil rerender forcing
@@ -61,7 +47,7 @@ class App extends React.Component {
     } catch(e) {
       alert('trying to define a var problem: ' + e);
     }
-  }
+  }*/
 
   render() {
     return (
@@ -69,8 +55,18 @@ class App extends React.Component {
         <h1>Lambda Explorer</h1>
         <div className="app-content">
           <article>
-            <Repl />
+            <Repl onCompute={this._handleOnCompute}/>
           </article>
+          <aside>
+            {!this.state.gameStarted && (
+              <button className="start-button" onClick={this.startGame}>
+                start the game yo
+              </button>
+            )}
+            {this.state.gameStarted && (
+              <ProblemPrompter problems={problems} current={this.state.problemNumber} />
+            )}
+          </aside>
         </div>
       </div>
     );
@@ -125,11 +121,6 @@ class App extends React.Component {
               {renderedVars}
             </div>
           </article>
-          <aside>
-            {this.state.gameStarted && (
-              <ProblemPrompter problems={problems} current={this.state.problemNumber} />
-            )}
-          </aside>
         </div>
       </div>
     );

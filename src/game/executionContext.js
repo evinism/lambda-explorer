@@ -30,12 +30,12 @@ class ExecutionContext {
   // This is so that variable resolution is guaranteed to halt at some point.
   defineVariable(name, string){
     if(this.definedVariables[name]){
-      throw 'nope, that is already defined';
+      throw 'Name Error: nope, that is already defined';
     }
     const ast = parseTerm(string);
     if(this.getUnresolvableVariables(ast).length > 0){
       const unresolvables = this.getUnresolvableVariables(ast).join(', ');
-      throw 'nope, you got unresolvables ' + unresolvables + '. eradicate those.'
+      throw 'Name Error: nope, you got unresolvables ' + unresolvables + '. eradicate those.'
     }
     this.definedVariables[name] = ast;
   }
@@ -45,19 +45,24 @@ class ExecutionContext {
   }
 
   // string => computationData
-  evaluate(string){
+  // a computationData is loosely defined right now-- kind of a grab bag of an object.
+  evaluate(text){
     let ast, metadata;
     try {
-      let ast = parseTerm(string);
+      ast = parseTerm(text);
       ast = this.resolveVariables(ast);
       metadata = astToMetadata(ast);
     } catch(error){
-      return { error }
+      return { text, error }
     }
-    return metadata;
+    return {
+      text,
+      ast,
+      ...metadata,
+    };
   }
 
-  // This does the same thing as evaluate, except spawns off a webworker to do so.
+  // This does the same thing as evaluate, except spawns off a webworker to do so, returning a promise
   evaluateAsync(){
 
   }

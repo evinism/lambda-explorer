@@ -32,6 +32,8 @@ class Repl extends React.Component {
         : (<span className='result'>{renderExpression(normalForm)}</span>),
     ];
 
+    this.props.onCompute && this.props.onCompute(computation);
+
     this.setState({
       text: '',
       commandHistory: [...this.state.commandHistory, text],
