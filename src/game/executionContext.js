@@ -3,7 +3,10 @@ import {
   parseTerm,
   getFreeVars,
   replace,
+  toNormalForm,
 } from '../lib/lambda';
+
+import astToMetadata from './astToMetadata';
 
 // There's a better way of doing this I swear.
 // Might want to make a whole "Execution" object
@@ -43,8 +46,20 @@ class ExecutionContext {
 
   // string => computationData
   evaluate(string){
-    let ast = parseTerm(ast);
-    ast = this.resolveVariables(ast);
+    let ast, metadata;
+    try {
+      let ast = parseTerm(string);
+      ast = this.resolveVariables(ast);
+      metadata = astToMetadata(ast);
+    } catch(error){
+      return { error }
+    }
+    return metadata;
+  }
+
+  // This does the same thing as evaluate, except spawns off a webworker to do so.
+  evaluateAsync(){
+
   }
 
   // ast => ast

@@ -2,6 +2,7 @@ import React from 'react';
 import LambdaMetadata from './LambdaMetadata';
 import ProblemPrompter from './ProblemPrompter';
 import VariableInput from './VariableInput';
+import Repl from '../Repl';
 
 import LambdaInput from '../LambdaInput';
 import problems from '../../game/problems';
@@ -63,6 +64,20 @@ class App extends React.Component {
   }
 
   render() {
+    return (
+      <div>
+        <h1>Lambda Explorer</h1>
+        <div className="app-content">
+          <article>
+            <Repl />
+          </article>
+        </div>
+      </div>
+    );
+
+    // ===
+    // Dead for right now
+    // ===
     const vars = this.executionContext.definedVariables;
     const listItems = Object.keys(vars).map(
       name => ({

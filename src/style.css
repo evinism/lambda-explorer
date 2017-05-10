@@ -1,6 +1,8 @@
 h1 {
   margin-left: 10%;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
+  font-family: Roboto;
+  font-weight: 400;
 }
 
 .app-content {
@@ -22,26 +24,50 @@ aside {
   height: calc(100% - 50px);
 }
 
+.repl {
+  font-size: 15pt;
+  font-weight: 300;
+  padding-left: 5px;
+  border-left: 1px solid lightgray;
+  font-family: Roboto;
+  height: calc(100% - 50px);
+  overflow: auto;
+  position: relative;
+}
+
+.repl .result {
+  color: black;
+}
+
+.repl .command {
+  color: #777777;
+}
+
+.repl .error {
+  color: #ff3333;
+}
+
+.repl .caret {
+  color: #dddddd;
+}
+
+.repl .prompt-caret {
+  color: #777777;
+}
+
+.output > div {
+  padding: 1px 0px;
+}
+
 .lambda-input {
-  width: 100%;
+  width: 90%;
   border: 0px;
-  border-bottom: 1px solid gray;
-  margin-bottom: 15px;
-  font-size: 20pt;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  background-color: transparent;
 }
 
 .lambda-input:focus {
   outline: none;
-}
-
-.start-button {
-  margin-top: 10px;
-}
-
-.highlighted {
-  font-weight: bold;
-}
-
-.variable-form {
-  margin-top: 10px;
 }

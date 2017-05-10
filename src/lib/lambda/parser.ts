@@ -34,6 +34,12 @@ import { tokenize } from './lexer';
 
 let item;
 
+// this one'll be a better entry point
+function parseStatement(tokenStream){
+  // stub for right now.
+  throw 'not implemented';
+}
+
 function parseStream(tokenStream){
   if(tokenStream.length === 0){
     throw('Syntax Error: Empty Expression');
