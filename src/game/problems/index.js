@@ -73,7 +73,26 @@ export default [
   },
   {
     title: 'Curry',
-    prompt: 'As you may have noticed before, lambda expressions can only take one argument.'
+    prompt: 'As you may have noticed before, lambda expressions can only take one argument. this puzzle and all further ones are not yet implemented',
+    winCondition: () => false,
+  },
+  {
+    title: 'Defining numbers',
+  },
+  {
+    title: 'Defining Booleans',
+  },
+  {
+    title: 'Functions on Numbers',
+  },
+  {
+    title: 'Functions as Numbers',
+  },
+  {
+    title: 'The Y-Combinator'
+  },
+  {
+    title: 'lol these arent finished yet',
   },
   {
     title: "Challenge: Can't stop, won't stop executing."
