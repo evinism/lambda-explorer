@@ -39,6 +39,7 @@ aside {
   height: calc(100% - 50px);
   overflow: auto;
   position: relative;
+  cursor: default;
 }
 
 .initial-prompt {
@@ -67,7 +68,7 @@ aside {
 }
 
 .output > div {
-  padding: 1px 0px;
+  padding: 2px 0px;
 }
 
 .lambda-input {
@@ -81,4 +82,29 @@ aside {
 
 .lambda-input:focus {
   outline: none;
+}
+
+.expand-collapse-button {
+  visibility: hidden;
+  font-size: 10px;
+  line-height: 20px;
+  vertical-align: middle;
+  line-height: 20px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.result:hover .expand-collapse-button {
+  visibility: visible;
+}
+
+.metadata {
+  margin-left: -5px;
+  padding: 10px;
+  font-size: 10pt;
+  border-left: 5px solid lightgrey;
+}
+
+.result i {
+  color: #777777;
 }
