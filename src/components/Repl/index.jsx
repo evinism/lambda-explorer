@@ -1,6 +1,7 @@
 import React from 'react';
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
+import Computation from './Computation';
 
 import { renderExpression } from '../../lib/lambda';
 
@@ -31,12 +32,19 @@ class Repl extends React.Component {
     const computation = this.executionContext.evaluate(text);
     const { error, normalForm } = computation;
 
+    const result = (error
+      ? (<span className='error'>{error.toString()}</span>)
+      : (
+        <span className='result'>
+          <Computation computation={computation}>{renderExpression(normalForm)}</Computation>
+        </span>
+      )
+    );
+
     let nextOutput = [
       ...this.state.output,
       (<span className='command'><span className='caret'>> </span>{this.state.text}</span>),
-      error
-        ? (<span className='error'>{error.toString()}</span>)
-        : (<span className='result'>{renderExpression(normalForm)}</span>),
+      result,
     ];
 
     this.props.onCompute && this.props.onCompute(computation);
@@ -57,6 +65,11 @@ class Repl extends React.Component {
   }
 
   render(){
+    const renderedOutputs = this.state.output.map((elem, idx) => (
+      <div key={idx}>
+        {elem}
+      </div>
+    ));
     return (
       <div className='repl' ref='repl'>
         <div className='output'>

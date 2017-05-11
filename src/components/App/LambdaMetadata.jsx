@@ -81,8 +81,7 @@ const LambdaMetadata = ({ast, err}) => {
   );
 
   return (
-    <div>
-      <b>Post variable substitution:</b>
+    <div className='metadata'>
       <div>Free Variables: {renderedFreeVars}</div>
       <div>Rendered from AST: {renderedFromAst}</div>
       <div>Beta-reduced: {renderedBetaReduced}</div>
