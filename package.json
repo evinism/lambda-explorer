@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 8082",
-    "start": "webpack-dev-server --host 0.0.0.0 --port 80"
+    "start": "webpack && http-server -p $PORT"
   },
   "author": "evin",
   "license": "MIT",
