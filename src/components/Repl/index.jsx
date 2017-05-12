@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
 import Computation from './Computation';
@@ -25,6 +26,10 @@ class Repl extends React.Component {
 
   _scrollToBottom = () => {
     this.refs.repl.scrollTop = 1000000;
+  }
+
+  _handleClick = () => {
+    this.refs.prompt.querySelector('.lambda-input').focus();
   }
 
   _submit = () => {
@@ -71,7 +76,7 @@ class Repl extends React.Component {
       </div>
     ));
     return (
-      <div className='repl' ref='repl'>
+      <div className='repl' ref='repl' onClick={this._handleClick}>
         <div className='output'>
           {this.state.output.map((elem, idx) => (
             <div key={idx}>
@@ -79,7 +84,7 @@ class Repl extends React.Component {
             </div>
           ))}
         </div>
-        <div className='prompt'>
+        <div className='prompt' ref='prompt'>
           <span className='prompt-caret'>> </span>
           <LambdaInput
             onChange={this._onChange}

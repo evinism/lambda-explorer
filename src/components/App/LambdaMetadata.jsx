@@ -8,7 +8,6 @@ import {
 } from '../../lib/lambda';
 
 const LambdaMetadata = ({ast, err}) => {
-  console.log(ast);
   if(!ast){
     return (<div>{err}</div>);
   }
