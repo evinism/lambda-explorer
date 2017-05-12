@@ -9,7 +9,7 @@ import { renderExpression } from '../../lib/lambda';
 const initialOutput = (
   <div className='initial-prompt'>
     lambda runtime<br />
-    shift-L to type λ, [0-9] to type subscripts, rigorous syntax only plz
+    shift-L to type λ, [0-9] to type subscripts, := for assignment
   </div>
 );
 

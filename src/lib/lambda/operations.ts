@@ -46,6 +46,13 @@ function eReduce(expression){
   return expression.body.left;
 }
 
+// When you're doing a replace of an expression that has a free variable,
+// and that expression binds a variable of that same name in the closure,
+// the function must rename the variable internally to one that isn't being used.
+function hasNameConflict(){
+  // alpha-convert...
+}
+
 // name => Expression => Expression => Expression
 // Replaces everything named name in expression with replacer
 function replace(nameToReplace, replacer, expression) {
