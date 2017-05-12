@@ -26,8 +26,8 @@ import { tokenize } from './lexer';
     [expression],
     {
       type: 'assignment'
-      left: [name],
-      right: [expression],
+      lhs: [name],
+      rhs: [expression],
     }
 
 */
@@ -36,11 +36,21 @@ let item;
 
 // this one'll be a better entry point
 function parseStatement(tokenStream){
-  // stub for right now.
-  throw 'not implemented';
+  // could handle errors better-- this one just will say unexpected token
+  // when it reaches a nonstandard assignment token.
+  if (
+    tokenStream.length >= 2
+    && tokenStream[0].type === 'identifier'
+    && tokenStream[1].type === 'assignment'
+  ) {
+    let lhs = tokenStream[0].value;
+    let rhs = parseExpression(tokenStream.splice(2));
+    return { type: 'assignment', lhs, rhs };
+  }
+  return parseExpression(tokenStream);
 }
 
-function parseStream(tokenStream){
+function parseExpression(tokenStream){
   if(tokenStream.length === 0){
     throw('Syntax Error: Empty Expression');
   }
@@ -93,7 +103,7 @@ function popExpression(tokenStream){
       return [{
           type: 'function',
           argument: args[0].value,
-          body: parseStream(tokenStream.slice(dotPosition + 1)),
+          body: parseExpression(tokenStream.slice(dotPosition + 1)),
         },
         [] //because it will always end the whole expression
       ];
@@ -117,7 +127,7 @@ function popExpression(tokenStream){
         throw 'Syntax Error: Unmatched Paren';
       }
       return [
-        parseStream(tokenStream.slice(1, splitPoint - 1)),
+        parseExpression(tokenStream.slice(1, splitPoint - 1)),
         tokenStream.slice(splitPoint)
       ]
     default:
@@ -125,6 +135,12 @@ function popExpression(tokenStream){
   }
 }
 
-export function parseTerm(str){
-  return parseStream(tokenize(str));
+export function parseTerm(str) {
+  return parseExpression(tokenize(str));
+}
+
+// This isn't understood by most helper functions, as it's an extension of the lambda calculus.
+// TODO: make this more well supported.
+export function parseExtendedSyntax(str){
+  return parseStatement(tokenize(str));
 }

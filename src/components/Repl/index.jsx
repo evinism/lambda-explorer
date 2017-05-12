@@ -29,19 +29,23 @@ class Repl extends React.Component {
   }
 
   _handleClick = () => {
-    this.refs.prompt.querySelector('.lambda-input').focus();
+    if(window.getSelection().isCollapsed){
+      this.refs.prompt.querySelector('.lambda-input').focus();
+    }
   }
 
   _submit = () => {
     const text = this.state.text;
     const computation = this.executionContext.evaluate(text);
-    const { error, normalForm } = computation;
+    const { error, normalForm, lhs } = computation;
+    const renderedNF = normalForm && renderExpression(normalForm);
+    const outputText = lhs ? `${lhs}: ${renderedNF}` : renderedNF;
 
     const result = (error
       ? (<span className='error'>{error.toString()}</span>)
       : (
         <span className='result'>
-          <Computation computation={computation}>{renderExpression(normalForm)}</Computation>
+          <Computation computation={computation}>{outputText}</Computation>
         </span>
       )
     );
