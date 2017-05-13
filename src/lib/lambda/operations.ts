@@ -46,12 +46,36 @@ function eReduce(expression){
   return expression.body.left;
 }
 
+
+// Total garbage implementation
+const replacementMapping = {
+  0: '₀',
+  1: '₁',
+  2: '₂',
+  3: '₃',
+  4: '₄',
+  5: '₅',
+  6: '₆',
+  7: '₇',
+  8: '₈',
+  9: '₉',
+  'L': 'λ',
+};
+
+const replaceAll = str => str.split('').map(
+  letter => (replacementMapping[letter] || letter)
+).join('');
+
+
+let nextName = 0;
+function generateNewName(){
+  nextName++;
+  return replaceAll('z' + nextName);
+}
+
 // When you're doing a replace of an expression that has a free variable,
 // and that expression binds a variable of that same name in the closure,
-// the function must rename the variable internally to one that isn't being used.
-function hasNameConflict(){
-  // alpha-convert...
-}
+// the source expression must rename the variable internally to one that isn't being used.
 
 // name => Expression => Expression => Expression
 // Replaces everything named name in expression with replacer
@@ -68,10 +92,27 @@ function replace(nameToReplace, replacer, expression) {
         // We ignore overwritten vars for right now.
         return expression;
       }
+      // aahah
+      // for alpha conversion
+      const freeInReplacer = getFreeVars(replacer).map(node => node.name);
+      let alphaSafeExpression = expression;
+      if (freeInReplacer.includes(expression.argument)) {
+        //console.log('name conflict between ' + JSON.stringify(freeInReplacer) + ' and ' + expression.argument);
+        let newName = generateNewName();
+        alphaSafeExpression = {
+          type: 'function',
+          argument: newName,
+          body: replace(
+            expression.argument,
+            { type: 'token', name: newName },
+            expression.body
+          ),
+        };
+      }
       return {
         type: 'function',
-        argument: expression.argument,
-        body: replace(nameToReplace, replacer, expression.body)
+        argument: alphaSafeExpression.argument,
+        body: replace(nameToReplace, replacer, alphaSafeExpression.body)
       };
     case 'token':
       return expression.name === nameToReplace ? replacer : expression;

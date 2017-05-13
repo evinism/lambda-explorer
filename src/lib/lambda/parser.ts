@@ -19,7 +19,7 @@ import { tokenize } from './lexer';
     },
     {
       type: 'token',
-      value: [name],
+      name: [name],
     }
 
   [statement] one of:
