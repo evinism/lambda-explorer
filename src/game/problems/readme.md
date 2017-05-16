@@ -8,22 +8,21 @@ Each one of these should be approximately a problem
 
 ## Basics
 - Identifiers
-- Free Variables.
 - Parentheses
-- Binding Variables in Lambda expressions (end with the identity function)
-- Beta reductions with free variables
-- The "apply to itself" function, to illustrate just how
-- Beta reductions with functions
-- Replacing variable names when we need to.
+- Lambda expression syntax.
+- Free Variables.
 - Multiple argument functions / currying
-- Leftmost Innermost Redex.
-- Normal form
-- Normal form with a Redex.
+- The "apply to itself" function, to illustrate the copy paste aspect of it.
+- Beta reductions with functions as the input.
+- Replacing variable names when we need to, via alpha conversion.
+- Leftmost Outermost Redex (normal order)
+- Normal form (no redexes exist);
+- Functions with no normal form, i.e. (λa.aa)λb.bb
 - The Y-Combinator, where there is no normal form!
 
 - Binding variables in the global scope (an extension of the lambda calculus)
 - Reusing variables
-- (maybe say what variables we've defined???)
+-- (maybe say what variables we've defined???)
 
 ## Boolean expressions: building the XOR operator.
 - How do we define true and false? Let's put them both into
@@ -34,10 +33,12 @@ Each one of these should be approximately a problem
 - Build Or -- should get O: (λa.λb.atb)
 - We can build NAND or NOR out of this. (λa.λb.O(A(Na)b)(A(Nb)a))
 
-# Numbers: Building the Exponentiation function
+## Numbers: Building the Exponentiation function
 - Defining numbers
-- Go through Multiply by two
+- Go through Multiply by two.
 - Summation function. This is hard... S: (λi.(λf.λx.if(fx)))
+- Teach going through the subtract by 1 function
+
 - Compose 2 function. Something like, maybe ordered otherwise: (λf₁.λf₂.λa.f₁(f₂(a)))
 - Compose 3 function (same thing).
 [...]
@@ -56,7 +57,12 @@ Each one of these should be approximately a problem
 - Let's try exponentiation with the number 0 in certain places. Do we get what we expect?
 -- We do get it!
 
-# Challenges (i have no idea how hard these are)
-- Write the "subtract 1" function.
-- Write the [Max(n, n)] function.
+## More obscure data types
+- List
+- Pair
+
+
+## Challenges (i have no idea how hard these are)
+- Write the [Max(n, n)] function
+- Gray encoding
 - Write the [bitwise xor] function

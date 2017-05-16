@@ -97,14 +97,17 @@ function popExpression(tokenStream){
       }
       // right now I'm not handling multiple arguments, but in the future I will!
       const args = tokenStream.slice(1, dotPosition);
-      if(args.length !== 1){
+      if(args.length === 0){
         throw('Syntax Error: Bad number of arguments');
       }
-      return [{
-          type: 'function',
-          argument: args[0].value,
-          body: parseExpression(tokenStream.slice(dotPosition + 1)),
-        },
+      const childExp = parseExpression(tokenStream.slice(dotPosition + 1));
+      const exp = args.reduceRight((acc, cur) => ({
+        type: 'function',
+        argument: cur.value,
+        body: acc,
+      }), childExp);
+      return [
+        exp,
         [] //because it will always end the whole expression
       ];
     case 'openParen':

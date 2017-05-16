@@ -70,7 +70,7 @@ const replaceAll = str => str.split('').map(
 let nextName = 0;
 function generateNewName(){
   nextName++;
-  return replaceAll('z' + nextName);
+  return replaceAll('ε' + nextName);
 }
 
 // When you're doing a replace of an expression that has a free variable,
