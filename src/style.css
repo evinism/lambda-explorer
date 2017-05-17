@@ -67,6 +67,10 @@ aside {
   color: #777777;
 }
 
+.repl .prompt.error .prompt-caret {
+  color: #ff1111;
+}
+
 .output > div {
   padding: 2px 0px;
 }

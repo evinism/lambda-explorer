@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import cx from 'classnames';
+
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
 import Computation from './Computation';
 
-import { renderExpression } from '../../lib/lambda';
+
+import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
 
 const initialOutput = (
   <div className='initial-prompt'>
@@ -21,7 +24,23 @@ class Repl extends React.Component {
   }
 
   _onChange = (text) => {
+    let error = false;
     this.setState({text});
+    this.setError(text);
+  }
+
+  setError = (text) => {
+    let error = false;
+    if (text === '') {
+      this.setState({error: false});
+      return;
+    }
+    try {
+      parseExtendedSyntax(text);
+    } catch (e) {
+      error = true;
+    }
+    this.setState({error: error});
   }
 
   _scrollToBottom = () => {
@@ -58,6 +77,7 @@ class Repl extends React.Component {
 
     this.props.onCompute && this.props.onCompute(computation);
 
+    this.setError('');
     this.setState({
       text: '',
       commandHistory: [...this.state.commandHistory, text],
@@ -88,7 +108,7 @@ class Repl extends React.Component {
             </div>
           ))}
         </div>
-        <div className='prompt' ref='prompt'>
+        <div className={cx('prompt', {error: this.state.error})} ref='prompt'>
           <span className='prompt-caret'>> </span>
           <LambdaInput
             onChange={this._onChange}
