@@ -44,7 +44,8 @@ class Repl extends React.Component {
   }
 
   _scrollToBottom = () => {
-    this.refs.repl.scrollTop = 1000000;
+    const repl = this.refs.repl;
+    repl.scrollTop = repl.scrollHeight;
   }
 
   _handleClick = () => {
@@ -55,6 +56,15 @@ class Repl extends React.Component {
 
   _submit = () => {
     const text = this.state.text;
+    if (text === '') {
+      this.setState({
+        output: [
+          ...this.state.output,
+          (<span className='command'><span className='caret'>> </span></span>)
+        ],
+      });
+      return;
+    }
     const computation = this.executionContext.evaluate(text);
     const { error, normalForm, lhs } = computation;
     const renderedNF = normalForm && renderExpression(normalForm);
