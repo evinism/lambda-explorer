@@ -66,3 +66,80 @@ Each one of these should be approximately a problem
 - Write the [Max(n, n)] function
 - Gray encoding
 - Write the [bitwise xor] function
+
+# Script outlines
+
+## Basic syntax.
+
+### 1: Variables
+
+The first type of expression in the lambda calculus are variables.
+
+Variables are placeholders for other functions. In this REPL, single letters optionally followed by subscripts are allowed as variable names.
+
+Try typing any variable!
+
+### 2: Applications
+
+The second type of expression in the lambda calculus are applying an expression for another expression. Placing them one after another looks like so.
+
+Applications are right associative, so `abcdef` will parse to `((((ab)c)d)e)f`. This might seem a little odd, but in a few steps, it'll be very convenient.
+
+### 3: Parentheses
+
+Let's say we want to do this grouping a little differently. Any expression in the lambda calculus can be surrounded by parentheses. Try writing a valid expression with parentheses.
+
+### 4: Lambda Abstractions
+
+The third and final type of expressions are Lambda abstractions. Lambda abstractions consist of a head and a body. The head is a variable, the body is any lambda expression.
+
+(show image here)
+
+Generally, if two functions are exactly the same but have different names, they are considered equivalent. For example, `La.a` and `Lb.b` are considered to be equivalent.
+
+This completes the basic syntax of the lambda calculus.
+
+### 5: Multiple arguments
+
+Let's say we quite reasonably want to represent a function which takes multiple arguments.
+
+With lambda abstractions, we can only represent functions that take single arguments, but we can sort of get around the restriction by making it so that a function returns another function that
+
+In practice, this looks like `La.Lb.([some expression])`.
+
+The reason function application is right associative is that it makes this structure very convenient-- if you have a function `S` that takes three arguments `a`, `b` and `c`, you can write `Sabc` rather than `((Sa)b)c`
+
+### 6: Syntactic sugar
+
+Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write `Lab.([some expression])` as shorthand for `La.Lb.([some expression])`. Try writing a function using that syntax!
+
+## Computation
+
+### : Beta Reduction
+
+So what does computation look like in the lambda calculus? Essentially, we do a copy paste of the assigned value within.
+
+### : Beta reduction with a function
+
+Beta reduction works with any expression, including functions! Try writing a beta reduction with another function as input.
+
+### : Beta + Alpha conversion.
+Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a variable that it shouldn't be. For example, if we tried beta-reducing `(λab.ab)b` without renaming, we'd get `λb.bb`, which is  not quite what we intended. We likely wanted `b` to remain a free variable.
+
+Instead, we do an alpha-conversion of the lambda expression prior to doing the beta reduction.
+
+Try it out!
+
+### : Leftmost Innermost Redex
+
+Often, an expression is not beta reducible itself, but contains one or more beta reducible expression within.
+
+### : Normal Form
+
+If we do this repeatedly, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact what this repl does when you enter an expression. In this repl you can see the steps to normal form by pressing the (+) button.
+
+### : Or not.
+
+This process doesn't necessarily ever end. The simplest example is `(λa.aa)λa.aa`. Since the process never ends, this expression does not have a normal form.
+
+### : The Y-Combinator
