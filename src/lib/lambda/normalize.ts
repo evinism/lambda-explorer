@@ -35,7 +35,7 @@ function leftmostOutermostRedex(expression){
       }
     }
   }
-  if (expression.type === 'token') {
+  if (expression.type === 'variable') {
     return undefined;
   }
   if (expression.type === 'application'){

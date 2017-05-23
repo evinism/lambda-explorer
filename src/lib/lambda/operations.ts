@@ -23,7 +23,7 @@ function eReducable(expression){
   if (
     expression.type !== 'function' ||
     expression.body.type !== 'application' ||
-    expression.body.right.type !== 'token'
+    expression.body.right.type !== 'variable'
   ) {
     return false;
   }
@@ -104,7 +104,7 @@ function replace(nameToReplace, replacer, expression) {
           argument: newName,
           body: replace(
             expression.argument,
-            { type: 'token', name: newName },
+            { type: 'variable', name: newName },
             expression.body
           ),
         };
@@ -114,7 +114,7 @@ function replace(nameToReplace, replacer, expression) {
         argument: alphaSafeExpression.argument,
         body: replace(nameToReplace, replacer, alphaSafeExpression.body)
       };
-    case 'token':
+    case 'variable':
       return expression.name === nameToReplace ? replacer : expression;
   }
 };

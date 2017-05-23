@@ -1,10 +1,10 @@
 import { uniqBy } from 'ramda';
 
 // TODO: Should for consistensy change to [name]
-// Expression => [Token, ...]
+// Expression => [VariableNode, ...]
 function getFreeVars(expression){
   switch(expression.type){
-    case 'token':
+    case 'variable':
       return [expression];
     case 'function':
       return getFreeVars(expression.body).filter(

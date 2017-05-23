@@ -12,7 +12,7 @@ export function renderAsChurchNumeral(expression) {
   const innerName = inner.argument;
   // name => name => Expression => int
   function countLevels(wrapperName, targetName, piece) {
-    if (piece.type === 'token') {
+    if (piece.type === 'variable') {
       if (piece.name !== targetName) {
         return undefined;
       } else {
@@ -20,7 +20,7 @@ export function renderAsChurchNumeral(expression) {
       }
     }
     if (piece.type === 'application') {
-      if (piece.left.type !== 'token' || piece.left.name !== wrapperName) {
+      if (piece.left.type !== 'variable' || piece.left.name !== wrapperName) {
         return undefined;
       } else {
         const nextLevel = countLevels(wrapperName, targetName, piece.right);
@@ -45,7 +45,7 @@ export function renderAsChurchBoolean(expression){
   if (expression.body.type !== 'function') {
     return undefined;
   }
-  if (expression.body.body.type !== 'token') {
+  if (expression.body.body.type !== 'variable') {
     return undefined;
   }
   const firstArg = expression.argument;

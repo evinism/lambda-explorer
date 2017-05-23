@@ -18,7 +18,7 @@ import { tokenize } from './lexer';
       body: [expression],
     },
     {
-      type: 'token',
+      type: 'variable',
       name: [name],
     }
 
@@ -77,7 +77,7 @@ function popExpression(tokenStream){
   switch(nextToken.type){
     case 'identifier':
       return [
-        {type: 'token', name: nextToken.value},
+        {type: 'variable', name: nextToken.value},
         tokenStream.slice(1)
       ];
     case 'lambda':

@@ -17,7 +17,7 @@ function renderExpression(expression) {
       return `${leftSide}${rightSide}`;
     case 'function':
       return `λ${expression.argument}.${renderExpression(expression.body)}`
-    case 'token':
+    case 'variable':
       return expression.name;
   }
 }
