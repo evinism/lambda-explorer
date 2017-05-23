@@ -35,12 +35,7 @@ Each one of these should be approximately a problem
 
 ## Numbers: Building the Exponentiation function
 - Defining numbers
-- Go through Multiply by two.
 - Summation function. This is hard... S: (λi.(λf.λx.if(fx)))
-- Teach going through the subtract by 1 function
-
-- Compose 2 function. Something like, maybe ordered otherwise: (λf₁.λf₂.λa.f₁(f₂(a)))
-- Compose 3 function (same thing).
 [...]
 - Compose N function (comes out nice and simple). looking for as C := (λf.λn.nf)
 - Compose N Successor functions together. looking for A := (CS)
@@ -73,21 +68,26 @@ Each one of these should be approximately a problem
 
 ### 1: Variables
 
-The first type of expression in the lambda calculus are variables.
+Let's get started with some basic syntax
 
-Variables are placeholders for other functions. In this REPL, single letters optionally followed by subscripts are allowed as variable names.
+Try typing something like a₁. Single letters optionally followed by subscripts are allowed as variable names.
 
 Try typing any variable!
 
 ### Applications
+
+You just wrote a lambda expression which contains only the variable 'a₁', which is not currently bound to anything.
 
 The second type of expression in the lambda calculus are applying an expression for another expression. Placing them one after another looks like so.
 
 Applications are right associative, so `abcdef` will parse to `((((ab)c)d)e)f`. This might seem a little odd, but in a few steps, it'll be very convenient.
 
 ### Lambda Abstractions
+Nice! The third and final type of expressions are Lambda abstractions.
 
-The third and final type of expressions are Lambda abstractions. Lambda abstractions consist of a head and a body. The head is a variable, the body is any lambda expression.
+Lambda abstractions represent functions in the lambda calculus.
+
+Lambda abstractions consist of a head and a body. The head is a variable, the body is any lambda expression.
 
 (show image here)
 
@@ -101,15 +101,26 @@ Let's say we want to do this grouping a little differently. Any expression in th
 
 Let's say we quite reasonably want to represent a function which takes multiple arguments.
 
-With lambda abstractions, we can only represent functions that take single arguments, but we can sort of get around the restriction by making it so that a function returns another function that
+With lambda abstractions, we can only represent functions that take single arguments, but we can sort of get around the restriction by making it so that a function returns another function, which subsequently gives you the answer.
 
 In practice, this looks like `La.Lb.([some expression])`.
 
-The reason function application is right associative is that it makes this structure very convenient-- if you have a function `S` that takes three arguments `a`, `b` and `c`, you can write `Sabc` rather than `((Sa)b)c`
+
+probably not:
+The reason function application is right associative is that it makes this structure very convenient-- if you have a function `M` that takes three arguments `a`, `b` and `c`, you can write `Mabc` rather than `((Sa)b)c`
 
 ### Syntactic sugar
+Getting the hang of it!
 
 Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write `Lab.([some expression])` as shorthand for `La.Lb.([some expression])`. Try writing a function using that syntax!
+
+### Defining Variables
+
+In the lambda calculus, there's no notion formal notion of defining variables, but you'll see lots of mathematicians define variables for convenience anyways.
+
+In this repl, we've added a basic syntax around defining variables.
+
+Try assigning I to your identity function by typing `I := La.a`
 
 ## Computation
 
@@ -165,8 +176,20 @@ Write Church Numeral 5
 
 ### The successor function
 
-Try to define the successor function. This'll require playing around to get it just right, so don't worry if this takes a little while.
+We can write functions for these numbers. For example, let's look
 
-Hint: Try to make x(x(x(x(y)))) first, where x and y are free variables. Then, start abstracting away the variables
+If you're feeling brave, you can attempt to write the successor function yourself. It's pretty interesting.
 
-###
+Or hover over this for the answer: λn.λf.λx.f(nfx)
+
+### The successor function (cot'd)
+
+So what we did there is we replaced all the f's with f's again, and then replaced the n with a f(n), thus creating a stack one higher than we had before!
+
+Bind that function to a variable (we're going with S), we'll need it later.
+
+### Composition function
+
+It turns out if you want to think of the 'meaning' of a number n, the number composes it's first argument n times, then applies the result
+
+With this in mind,
