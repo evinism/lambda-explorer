@@ -9,7 +9,7 @@ function renderExpression(expression) {
       }
       // I have no idea whether the rendering of the right side is valid.
       let rightSide;
-      if(expression.right.type !== 'application'){
+      if(expression.right.type === 'variable'){
         rightSide = renderExpression(expression.right)
       } else {
         rightSide = `(${renderExpression(expression.right)})`
