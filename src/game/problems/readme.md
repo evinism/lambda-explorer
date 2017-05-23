@@ -79,17 +79,13 @@ Variables are placeholders for other functions. In this REPL, single letters opt
 
 Try typing any variable!
 
-### 2: Applications
+### Applications
 
 The second type of expression in the lambda calculus are applying an expression for another expression. Placing them one after another looks like so.
 
 Applications are right associative, so `abcdef` will parse to `((((ab)c)d)e)f`. This might seem a little odd, but in a few steps, it'll be very convenient.
 
-### 3: Parentheses
-
-Let's say we want to do this grouping a little differently. Any expression in the lambda calculus can be surrounded by parentheses. Try writing a valid expression with parentheses.
-
-### 4: Lambda Abstractions
+### Lambda Abstractions
 
 The third and final type of expressions are Lambda abstractions. Lambda abstractions consist of a head and a body. The head is a variable, the body is any lambda expression.
 
@@ -97,9 +93,11 @@ The third and final type of expressions are Lambda abstractions. Lambda abstract
 
 Generally, if two functions are exactly the same but have different names, they are considered equivalent. For example, `La.a` and `Lb.b` are considered to be equivalent.
 
-This completes the basic syntax of the lambda calculus.
+### Parentheses
 
-### 5: Multiple arguments
+Let's say we want to do this grouping a little differently. Any expression in the lambda calculus can be surrounded by parentheses. Try writing a valid expression with parentheses.
+
+### Multiple arguments
 
 Let's say we quite reasonably want to represent a function which takes multiple arguments.
 
@@ -109,37 +107,66 @@ In practice, this looks like `La.Lb.([some expression])`.
 
 The reason function application is right associative is that it makes this structure very convenient-- if you have a function `S` that takes three arguments `a`, `b` and `c`, you can write `Sabc` rather than `((Sa)b)c`
 
-### 6: Syntactic sugar
+### Syntactic sugar
 
 Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write `Lab.([some expression])` as shorthand for `La.Lb.([some expression])`. Try writing a function using that syntax!
 
 ## Computation
 
-### : Beta Reduction
+### Beta Reduction
 
-So what does computation look like in the lambda calculus? Essentially, we do a copy paste of the assigned value within.
+So what does computation look like in the lambda calculus? We'll execute
 
-### : Beta reduction with a function
+### Beta reduction with a function
 
 Beta reduction works with any expression, including functions! Try writing a beta reduction with another function as input.
 
-### : Beta + Alpha conversion.
+### Beta + Alpha conversion.
 Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a variable that it shouldn't be. For example, if we tried beta-reducing `(λab.ab)b` without renaming, we'd get `λb.bb`, which is  not quite what we intended. We likely wanted `b` to remain a free variable.
 
 Instead, we do an alpha-conversion of the lambda expression prior to doing the beta reduction.
 
 Try it out!
 
-### : Leftmost Innermost Redex
+### : Leftmost Outermost Redex
 
-Often, an expression is not beta reducible itself, but contains one or more beta reducible expression within.
+Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within. The operation we perform
+
+We traverse the tree, looking for the leftmost outermost redex.
+
+Try writing a function with a nested redex!
 
 ### : Normal Form
 
-If we do this repeatedly, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact what this repl does when you enter an expression. In this repl you can see the steps to normal form by pressing the (+) button.
+If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact what this repl does when you enter an expression. In this repl you can see the steps to normal form by pressing the (+) button.
 
 ### : Or not.
 
-This process doesn't necessarily ever end. The simplest example is `(λa.aa)λa.aa`. Since the process never ends, this expression does not have a normal form.
+It's possible that this process never halts, meaning that a normal form for the expression doesn't exist. See if you can find an expression whose normal form doesn't exist!
+
+Hint: [determine hint from going through the puzzle with folk]
+
+Answer:
+The simplest example is `(λa.aa)λa.aa`. Since the process never ends, this expression does not have a normal form. Take a look at what happens!
 
 ### : The Y-Combinator
+
+The famed Y-Combinator is one of these expressions. Try inputting the Y-Combinator, and see what happens: `λg.(λx.g(xx))(λx.g(xx))`
+
+## Math
+
+### Encoding numbers
+
+Now we're getting into the meat of it. We can encode numbers in the lambda calculus.
+
+A Church Numeral is a function of the form: [explanatory image]
+
+Write Church Numeral 5
+
+### The successor function
+
+Try to define the successor function. This'll require playing around to get it just right, so don't worry if this takes a little while.
+
+Hint: Try to make x(x(x(x(y)))) first, where x and y are free variables. Then, start abstracting away the variables
+
+###
