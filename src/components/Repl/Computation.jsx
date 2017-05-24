@@ -23,17 +23,19 @@ export default class Computation extends React.Component {
     (normAsBoolean !== undefined) && addlInfo.push(`church boolean ${normAsBoolean}`);
     const addlInfoString = addlInfo.join(', ');
 
-    const renderedAddlInfo = addlInfoString && (
-      <i>{` <${addlInfoString}>`}</i>
-    );
+    const renderedAddlInfo = addlInfoString && ` <${addlInfoString}>`;
 
     return (
       <div>
-        {this.props.children}
-        {renderedAddlInfo}
-        <span onClick={this.handleButtonClick} className='expand-collapse-button'>
-          {this.state.expanded ? '(-)' : '(+)'}
-        </span>
+        <div className="result-inner">
+          <span>{this.props.children}</span>
+          <div>
+            <i>{renderedAddlInfo}</i>
+            <span onClick={this.handleButtonClick} className='expand-collapse-button'>
+              {this.state.expanded ? '(-)' : '(+)'}
+            </span>
+          </div>
+        </div>
         {this.state.expanded && <Metadata ast={this.props.computation.ast} />}
       </div>
     );

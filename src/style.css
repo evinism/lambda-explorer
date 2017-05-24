@@ -20,12 +20,14 @@ h1 {
 
 article {
   flex-grow: 1;
+  overflow: hidden;
 }
 
 aside {
-  width: 300px;
+  width: 250px;
+  min-width: 250px;
   border-left: 3px dashed #f0f0f0;
-  margin-left: 70px;
+  margin-left: 5px;
   padding-left: 27px;
   height: calc(100% - 50px);
 }
@@ -102,11 +104,30 @@ aside {
   visibility: visible;
 }
 
+
+.result-inner {
+  display: flex;
+  max-width: calc(100% - 10px);
+  white-space: nowrap;
+}
+
+.result-inner > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-inner > div {
+  flex-grow: 1;
+  padding-left: 3px;
+}
+
 .metadata {
   margin-left: -5px;
   padding: 10px;
   font-size: 10pt;
-  border-left: 5px solid lightgrey;
+  border-left: 8px solid lightgrey;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 .result i {
