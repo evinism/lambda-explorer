@@ -14,6 +14,18 @@ import {
   renderExpression
 } from '../../lib/lambda/';
 
+
+const StartPrompt = ({start}) => (
+  <div>
+    <p>
+      Interactive REPL and tutorial for the untyped Lambda Calculus
+    </p>
+    <p>
+      Click <button onClick={start}>here</button> to begin the tutorial
+    </p>
+  </div>
+);
+
 class App extends React.Component {
   state = {
     text: '',
@@ -51,9 +63,7 @@ class App extends React.Component {
           </article>
           <aside>
             {!this.state.gameStarted && (
-              <button className="start-button" onClick={this.startGame}>
-                start the game yo
-              </button>
+              <StartPrompt start={this.startGame} />
             )}
             {this.state.gameStarted && (
               <ProblemPrompter problems={problems} current={this.state.problemNumber} />
@@ -61,8 +71,9 @@ class App extends React.Component {
           </aside>
         </div>
         <footer>
-          <a href="https://github.com/evinism/lambda-explorer">github</a>
-          <a href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus wiki</a>
+          <a href="https://github.com/evinism/lambda-explorer">Github</a>
+          <a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus Wiki</a>
+          Lambda Calculus tutorial in the style of <a href="https://www.tryhaskell.org/">Try Haskell</a>
         </footer>
       </div>
     );
