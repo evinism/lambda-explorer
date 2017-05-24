@@ -41,8 +41,10 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Lambda Explorer</h1>
+      <div className="app-wrapper">
+        <header>
+          <h1>Lambda Explorer</h1>
+        </header>
         <div className="app-content">
           <article>
             <Repl onCompute={this._handleOnCompute}/>
@@ -58,6 +60,10 @@ class App extends React.Component {
             )}
           </aside>
         </div>
+        <footer>
+          <a href="https://github.com/evinism/lambda-explorer">github</a>
+          <a href="https://en.wikipedia.org/wiki/Lambda_calculus">lambda calculus wiki</a>
+        </footer>
       </div>
     );
   }

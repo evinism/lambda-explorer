@@ -1,7 +1,29 @@
-h1 {
+body {
+  margin: 0px;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+header {
   padding-left: 10%;
-  padding-bottom: 10px;
-  margin-bottom: 0px;
+}
+
+footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10%;
+}
+
+footer > a {
+  margin-right: 15px;
+}
+
+h1 {
+  margin: 10px 0;
   font-family: Roboto;
   font-weight: 400;
 }
@@ -13,6 +35,8 @@ h1 {
   display: flex;
   font-family: Roboto;
   font-weight: 300;
+  height: calc(100% - 100px);
+  overflow: hidden;
 }
 
 .highlighted {
@@ -30,7 +54,6 @@ aside {
   border-left: 3px dashed #f0f0f0;
   margin-left: 5px;
   padding-left: 27px;
-  height: calc(100% - 50px);
 }
 
 .repl {
@@ -39,7 +62,7 @@ aside {
   padding-left: 5px;
   border-left: 1px solid lightgray;
   font-family: Roboto;
-  height: calc(100% - 50px);
+  height: 100%;
   overflow: auto;
   position: relative;
   cursor: default;
@@ -126,7 +149,7 @@ aside {
   margin-left: -5px;
   padding: 10px;
   font-size: 10pt;
-  border-left: 8px solid lightgrey;
+  border-left: 5px solid lightgrey;
   overflow: auto;
   white-space: nowrap;
 }
