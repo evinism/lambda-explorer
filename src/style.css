@@ -79,7 +79,7 @@ aside {
 
 .initial-prompt {
   color: #bbbbbb;
-
+  padding-top: 7px;
 }
 
 .repl .result {
@@ -104,6 +104,10 @@ aside {
 
 .repl .prompt.error .prompt-caret {
   color: #ff1111;
+}
+
+.prompt {
+  padding-bottom: 7px;
 }
 
 .output > div {
