@@ -34,9 +34,6 @@ class ExecutionContext {
   // Defined variables must contain no unresolvableVariables
   // This is so that variable resolution is guaranteed to halt at some point.
   defineVariable(name, ast){
-    if(this.definedVariables[name]){
-      throw 'Name Error: nope, that is already defined';
-    }
     if(this.getUnresolvableVariables(ast).length > 0){
       const unresolvables = this.getUnresolvableVariables(ast).join(', ');
       throw 'Name Error: nope, you got unresolvables ' + unresolvables + '. eradicate those.'
