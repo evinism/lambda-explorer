@@ -27,7 +27,7 @@ footer {
 }
 
 footer > a {
-  margin-right: 15px;
+  margin-right: 20px;
   color: inherit;
 }
 
@@ -173,4 +173,13 @@ aside {
 
 aside button {
   vertical-align: bottom;
+}
+
+.secret {
+  color: darkgray;
+  background-color: darkgray;
+}
+
+.secret:hover {
+  background-color: transparent;
 }

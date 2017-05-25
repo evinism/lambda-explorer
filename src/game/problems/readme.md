@@ -62,94 +62,18 @@ Each one of these should be approximately a problem
 - Gray encoding
 - Write the [bitwise xor] function
 
-# Script outlines
-
-## Basic syntax.
-
-### 1: Variables
-
-Let's get started with some basic syntax
-
-Try typing something like a₁. Single letters optionally followed by subscripts are allowed as variable names.
-
-Try typing any variable!
-
-### Applications
-
-You just wrote a lambda expression which contains only the variable 'a₁', which is not currently bound to anything.
-
-The second type of expression in the lambda calculus are applying an expression for another expression. Placing them one after another looks like so.
-
-Applications are right associative, so `abcdef` will parse to `((((ab)c)d)e)f`. This might seem a little odd, but in a few steps, it'll be very convenient.
-
-### Lambda Abstractions
-Nice! The third and final type of expressions are Lambda abstractions.
-
-Lambda abstractions represent functions in the lambda calculus.
-
-Lambda abstractions consist of a head and a body. The head is a variable, the body is any lambda expression.
-
-(show image here)
-
-Generally, if two functions are exactly the same but have different names, they are considered equivalent. For example, `La.a` and `Lb.b` are considered to be equivalent.
-
-### Parentheses
-
-Let's say we want to do this grouping a little differently. Any expression in the lambda calculus can be surrounded by parentheses. Try writing a valid expression with parentheses.
-
-### Multiple arguments
-
-Let's say we quite reasonably want to represent a function which takes multiple arguments.
-
-With lambda abstractions, we can only represent functions that take single arguments, but we can sort of get around the restriction by making it so that a function returns another function, which subsequently gives you the answer.
-
-In practice, this looks like `La.Lb.([some expression])`.
-
-
-probably not:
-The reason function application is right associative is that it makes this structure very convenient-- if you have a function `M` that takes three arguments `a`, `b` and `c`, you can write `Mabc` rather than `((Sa)b)c`
-
-### Syntactic sugar
-Getting the hang of it!
-
-Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write `Lab.([some expression])` as shorthand for `La.Lb.([some expression])`. Try writing a function using that syntax!
-
-### Defining Variables
-
-In the lambda calculus, there's no notion formal notion of defining variables, but you'll see lots of mathematicians define variables for convenience anyways.
-
-In this repl, we've added a basic syntax around defining variables.
-
-Try assigning I to your identity function by typing `I := La.a`
-
-## Computation
-
-### Beta Reduction
-
-So what does computation look like in the lambda calculus? We'll execute
-
-### Beta reduction with a function
-
-Beta reduction works with any expression, including functions! Try writing a beta reduction with another function as input.
-
-### Beta + Alpha conversion.
-Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a variable that it shouldn't be. For example, if we tried beta-reducing `(λab.ab)b` without renaming, we'd get `λb.bb`, which is  not quite what we intended. We likely wanted `b` to remain a free variable.
-
-Instead, we do an alpha-conversion of the lambda expression prior to doing the beta reduction.
-
-Try it out!
+# Scratchwork:
 
 ### : Leftmost Outermost Redex
 
-Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within. The operation we perform
-
-We traverse the tree, looking for the leftmost outermost redex.
+Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within.
 
 Try writing a function with a nested redex!
 
+
 ### : Normal Form
 
-If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact what this repl does when you enter an expression. In this repl you can see the steps to normal form by pressing the (+) button.
+If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact exactly what this repl does when you enter an expression. In this repl you can see the steps to normal form by pressing the (+) button.
 
 ### : Or not.
 

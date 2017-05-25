@@ -9,11 +9,6 @@ export default ({problems, current}) => {
 
   return (
     <div>
-      <div>
-        <div>{prev && formatted(current, prev)}</div>
-        <div><b>{formatted(current + 1, problem)}</b></div>
-        <div>{next && formatted(current + 2, next)}</div>
-      </div>
       <h3>Problem {current + 1}: {problem.title}</h3>
       {problem.prompt}
     </div>

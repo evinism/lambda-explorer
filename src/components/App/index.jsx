@@ -71,9 +71,9 @@ class App extends React.Component {
           </aside>
         </div>
         <footer>
+          Lambda Calculus tutorial by Evin Sellin in the style of <a href="https://www.tryhaskell.org/">Try Haskell</a>
           <a href="https://github.com/evinism/lambda-explorer">Github</a>
           <a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus Wiki</a>
-          Lambda Calculus tutorial in the style of <a href="https://www.tryhaskell.org/">Try Haskell</a>
         </footer>
       </div>
     );

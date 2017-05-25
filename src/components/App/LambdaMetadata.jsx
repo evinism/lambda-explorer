@@ -85,8 +85,6 @@ const LambdaMetadata = ({ast, err}) => {
       <div>Rendered from AST: {renderedFromAst}</div>
       <div>Beta-reduced: {renderedBetaReduced}</div>
       <div>Eta-reduced: {renderedEtaReduced}</div>
-      <div>As Church Numeral: {renderedNumeral}</div>
-      <div>As Church Boolean: {renderedBoolean}</div>
       <div>Normal Form: {renderedNormalForm}</div>
       <div>Normal As Church Numeral: {renderedNormNumeral}</div>
       <div>Normal As Church Boolean: {renderedNormBoolean}</div>
