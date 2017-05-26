@@ -114,6 +114,6 @@ Bind that function to a variable (we're going with S), we'll need it later.
 
 ### Composition function
 
-It turns out if you want to think of the 'meaning' of a number n, the number composes it's first argument n times, then applies the result
+It turns out if you want to think of the 'meaning' of a number n, the number composes it's first argument n times. We can bootstrap off of this to come up with.
 
-With this in mind,
+With this in mind, we can come up

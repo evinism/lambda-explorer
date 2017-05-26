@@ -212,7 +212,8 @@ export default [
     title: 'The Y-Combinator',
     prompt: (
       <div>
-        <p>The famed Y-Combinator is one of these expressions. Try inputting the Y-Combinator, and see what happens: <Code>λg.(λx.g(xx))(λx.g(xx))</Code></p>
+        <p>The famed Y-Combinator is one of these expressions. Try inputting the Y-Combinator, and see what happens:</p>
+        <p>Y: <Code>λg.(λx.g(xx))(λx.g(xx))</Code></p>
       </div>
     ),
     winCondition: () => true,
@@ -225,7 +226,7 @@ export default [
         <p>Let's start off by introducing the booleans! The two booleans are:</p>
         <p>true: <Code>λab.a</Code></p>
         <p>false: <Code>λab.b</Code></p>
-        <p>You'll notice that these values are themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a cerain form.</p>
+        <p>You'll notice that these values are themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a cerain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
         <p>It'll be helpful to assign them to <Code>t</Code> and <Code>f</Code> respectively. Do that.</p>
       </div>
     ),
@@ -274,7 +275,7 @@ export default [
     prompt: (
       <div>
         <p></p>
-        <p>For reference, the XOR operation is true iff one parameter is true, but not the other. So TF would be true, but TT would be false.</p>
+        <p>For reference, the XOR operation is true iff one parameter or the other is true, but not both. So <Code>XOR(true, false)</Code> would be true, but <Code>XOR(true, true)</Code> would be false.</p>
         <p>Let's see if you can translate that into a composition of the functions you've defined so far.</p>
       </div>
     ),
@@ -285,14 +286,37 @@ export default [
     prompt: (
       <div>
         <p>Well, that was a marathon. Take a little break, you've earned it.</p>
-        <p>Onto numbers:</p>
+        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus.</p>
+        <p>A Church Numeral is a function of the form: [explanatory image]</p>
+        <p>Write Church Numeral 5</p>
+        <p>Answer: <span className="secret">O := λab.atb</span></p>
       </div>
     ),
     winCondition: () => true,
   },
   {
-    title: "lol these aren't finished yet",
-    prompt: "aaaahahahahahahah",
+    title: 'The Successor Function',
+    prompt: (
+      <div>
+        <p>We can write functions for these numbers. For example, let's look </p>
+        <p>If you're feeling brave, you can attempt to write the successor function yourself. It's a pretty interesting exercise. Otherwise, just copy/paste from the answer key, but feel a little defeated while doing so.</p>
+        <p>Answer: <span className="secret">λn.λf.λx.f(nfx)</span></p>
+      </div>
+    ),
     winCondition: () => false,
   },
+  {
+    title: "The Successor Function(cot'd)",
+    prompt: (
+      <div>
+        <p>So what we did there is we replaced all the f's with f's again, and then replaced the n with a f(n), thus creating a stack one higher than we had before!</p>
+        <p>Assign the successor function to <Code>S</Code>, we'll need it later</p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+
+  },
+  {title: 'nope', prompt: 'nope', winCondition: () => false}
 ];
