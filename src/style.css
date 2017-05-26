@@ -176,10 +176,17 @@ aside button {
 }
 
 .secret {
-  color: darkgray;
-  background-color: darkgray;
+  color: transparent;
+  background-color: #555555;
 }
 
 .secret:hover {
-  background-color: transparent;
+  background-color: aliceblue;
+  color: black;
+}
+
+.code {
+  padding: 0px 4px;
+  background: aliceblue;
+  white-space: nowrap;
 }
