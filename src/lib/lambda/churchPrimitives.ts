@@ -1,3 +1,5 @@
+import { equal } from './equality';
+import { parseTerm } from './parser';
 
 // expression => Maybe(number)
 export function renderAsChurchNumeral(expression) {
@@ -37,24 +39,15 @@ export function renderAsChurchNumeral(expression) {
   return countLevels(outerName, innerName, inner.body);
 }
 
+const churchTrue = parseTerm('λab.a');
+const churchFalse = parseTerm('λab.b');
+
 // expression => Maybe(bool)
 export function renderAsChurchBoolean(expression){
-  if (expression.type !== 'function') {
-    return undefined;
-  }
-  if (expression.body.type !== 'function') {
-    return undefined;
-  }
-  if (expression.body.body.type !== 'variable') {
-    return undefined;
-  }
-  const firstArg = expression.argument;
-  const secondArg = expression.body.argument;
-  const target = expression.body.body.name;
-  if (firstArg === target) {
+  if (equal(expression, churchTrue)) {
     return true;
   }
-  if (secondArg === target) {
+  if (equal(expression, churchFalse)) {
     return false;
   }
   return undefined;
