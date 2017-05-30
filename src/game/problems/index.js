@@ -87,7 +87,8 @@ export default [
     title: 'β-reduction function',
     prompt: (
       <div>
-        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The result is in what's called <i>normal form</i>, which we'll get into a little later.</p>
+        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of taking a function and evaluating it is called a <i>beta reduction</i>.</p>
+        <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll get into a little later.</p>
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
     ),
@@ -97,7 +98,7 @@ export default [
     title: 'Bound and Free Variables',
     prompt: (
       <div>
-        <p>Nice! We've probably driven the point home hard enough.</p>
+        <p>So we can perform beta reductions with other functions as the argument! We've probably driven the point home hard enough.</p>
         <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that variable.</p>
         <p>For quick example, if you've got the expression <Code>Lx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
@@ -153,8 +154,8 @@ export default [
     title: "Assigning variables",
     prompt: (
       <div>
-        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to define variables for convenience anyways.</p>
-        <p>In this repl, we've added a basic syntax around defining variables.  (Note: You can't assign an expression with free variables.)</p>
+        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to define variables anyways.</p>
+        <p>In this repl, we've added a basic syntax around defining variables. (Note: You can't assign an expression with free variables.)</p>
         <p>This kind of environment around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
         <p>Try assigning I to your identity function by typing <Code>I := λa.a</Code></p>
       </div>
@@ -174,8 +175,8 @@ export default [
     prompt: (
       <div>
         <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a variable that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming, we'd get <Code>λb.bb</Code>, which is  not quite what we intended. We likely wanted <Code>b</Code> to remain a free variable.</p>
-        <p>Instead, we do an alpha-conversion (fancy name for renaming variables) of the lambda expression prior to doing the beta reduction, so we can eliminate the conflict.</p>
-        <p>Try it out!</p>
+        <p>Instead, we have to do an alpha-conversion (fancy name for renaming variables) of the lambda expression prior to doing the beta reduction, so we can eliminate the conflict.</p>
+        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an alpha conversion.</p>
       </div>
     ),
     // lol this win condition.
@@ -187,7 +188,7 @@ export default [
     title: "Nested Redexes",
     prompt: (
       <div>
-        <p>Notice that eta that pops up? That's this REPL's placeholder variable for when it needs to rename something.</p>
+        <p>Notice that eta that pops up? That's this REPL's placeholder variable for when it needs to rename a variable due to a conflict.</p>
         <p>Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within. We can still evaluate the expression!</p>
         <p>Try writing a function with a nested redex!</p>
         <p>Possible solution: <span className='secret'>λa.(λb.b)c</span></p>
@@ -203,7 +204,7 @@ export default [
       <div>
         <p>That probably makes sense.</p>
         <p>"But wait," I hear you shout. "What if I have more than one reducible subexpression in my expression? Which do I evaluate first?"</p>
-        <p>Let's traverse the tree, left to right, outer scope to inner scope, find the <i>leftmost outermost redex</i>, and evaluate that one. This is called the <i>normal order</i>.</p>
+        <p>Let's traverse the expression, left to right, outer scope to inner scope, find the <i>leftmost outermost redex</i>, and evaluate that one. This is called the <i>normal order</i>.</p>
         <p>Try typing and expanding <Code>((λb.b)c)((λd.d)e)</Code> to see what I mean.</p>
       </div>
     ),
