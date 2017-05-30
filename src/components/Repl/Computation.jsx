@@ -4,10 +4,12 @@ import Metadata from '../App/LambdaMetadata';
 export default class Computation extends React.Component {
   state = { expanded: false };
 
-  handleButtonClick = () => {
+  handleButtonClick = (e) => {
     this.setState({
       expanded: !this.state.expanded,
     });
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   render(){
