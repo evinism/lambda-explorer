@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+  equal,
+  parseTerm as parse,
+  leftmostOutermostRedex,
+  bReduce,
+  getFreeVars,
+  tokenize,
+  renderExpression,
+} from '../../lib/lambda';
 // interface for each should be roughly:
 /*
   {
@@ -7,6 +16,8 @@ import React from 'react';
     winCondition: computationData => bool
   }
 */
+
+const safeEqual = (a, b) => (a && b) ? equal(a, b) : false;
 
 const Code = props => (<span className="code">{props.children}</span>)
 
@@ -18,10 +29,7 @@ export default [
         <p>Let's get acquainted with some basic syntax. First, type <Code>a₁</Code>. Letters followed optionally by numbers represent variables in the lambda calculus.</p>
       </div>
     ),
-    winCondition: ({text}) => {
-      return text === 'a₁';
-    },
-    winCondition: () => true,
+    winCondition: ({ast}) => safeEqual(ast, parse('a₁')),
   },
   // okay the first problem I actually care about
   {
@@ -30,12 +38,12 @@ export default [
       <div>
         <p>You just wrote a lambda expression which contains only the variable <Code>a₁</Code>, which is not currently bound to anything. In the lambda calculus, variables can be bound to functions, and variables can be applied to one another.</p>
         <p>To apply the variable <Code>b₁</Code> to the variable <Code>a₁</Code>, type in <Code>a₁b₁</Code>. This is akin to saying that we're calling the function <Code>a₁</Code> with <Code>b₁</Code> as an argument.</p>
+        <p>Try applying one variable to another.</p>
       </div>
     ),
-    winCondition: ({text}) => {
-      return text === 'a₁b₁';
+    winCondition: ({ast}) => {
+      return safeEqual(ast, parse('a₁b₁'));
     },
-    winCondition: () => true,
   },
   {
     title: 'Identity',
@@ -46,15 +54,8 @@ export default [
       </div>
     ),
     winCondition: ({ast}) => {
-      return (
-        // We could put conditions that we might like to use into lib/lambda when we need to.
-        ast &&
-        ast.type === "function" &&
-        ast.body.type === "variable" &&
-        ast.argument === ast.body.name
-      );
+      return safeEqual(ast, parse('λa.a'));
     },
-    winCondition: () => true,
   },
   {
     title: "Parentheses",
@@ -66,13 +67,9 @@ export default [
     winCondition: ({text, ast}) => {
       return (
         /^\s*\(.*\)\s*$/.test(text) &&
-        ast &&
-        ast.type === "function" &&
-        ast.body.type === "variable" &&
-        ast.argument === ast.body.name
+        safeEqual(ast, parse('λa.a'))
       );
     },
-    winCondition: () => true,
   },
   {
     title: "Baby's first β-reduction",
@@ -82,19 +79,7 @@ export default [
         <p>Now in the same way that we can apply variables to other variables, we can apply variables to functions. Try applying <Code>b</Code> to your identity function, by writing <Code>(λa.a)b</Code>.</p>
       </div>
     ),
-    winCondition: ({ast, text}) => {
-      // These win conditions need work
-      return text === '(λa.a)b';
-      /*return (
-        // We could put conditions that we might like to use into lib/lambda when we need to.
-        ast &&
-        ast.type === "function" &&
-        ast.body.type === "token" &&
-        ast.argument === ast.body.name &&
-        false //because i haven't implemented this yet.
-      );*/
-    },
-    winCondition: () => true,
+    winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)b')),
   },
   {
     title: 'β-reduction function',
@@ -104,8 +89,7 @@ export default [
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
     ),
-    winCondition: ({text}) => text === '(λa.a)λb.b',
-    winCondition: () => true,
+    winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)λb.b')),
   },
   {
     title: 'Bound and Free Variables',
@@ -117,7 +101,7 @@ export default [
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => ast && getFreeVars(ast).map(item => item.name).includes('c'),
   },
   {
     title: 'Curry',
@@ -126,10 +110,14 @@ export default [
         <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
         <p>As you may have noticed before, lambda expressions can only take one argument, which is kind of annoying.</p>
         <p>Let's say we quite reasonably want to write a function which more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
-        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>.</p>
+        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write a 'multi-argument' function!</p>
       </div>
     ),
-    winCondition: () => true,// anything works here.
+    winCondition: ({ast}) => (
+      ast &&
+      ast.type === 'function' &&
+      ast.body.type === 'function'
+    ),
   },
   {
     title: 'And a Dash of Sugar',
@@ -139,18 +127,44 @@ export default [
         <p>Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write <Code>λab. [some expression]</Code> as shorthand for <Code>λa.λb. [some expression]</Code>. Try writing a function using that syntax!</p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({text, ast}) => {
+      // wow this is a garbage win condition
+      const isMultiargumentFn = ast &&
+        ast.type === 'function' &&
+        ast.body.type === 'function';
+      if (!isMultiargumentFn) {
+        return false;
+      }
+      // has special syntax.. better way than pulling the lexer??
+      // this shouldn't throw because by here we're guaranteed ast exists.
+      const tokenStream = tokenize(text).filter(
+        // only try to match '(((Lab' and don't care about the rest of the string.
+        token => token.type !== 'openParen'
+      );
+      return tokenStream.length >= 3 &&
+        tokenStream[0].type === 'lambda' &&
+        tokenStream[1].type === 'identifier' &&
+        tokenStream[2].type === 'identifier';
+    },
   },
   {
-    title: "Defining variables",
+    title: "Assigning variables",
     prompt: (
       <div>
-        <p>In the lambda calculus, there's no formal notion of defining variables, but you'll see lots of mathematicians define variables for convenience anyways.</p>
-        <p>In this repl, we've added a basic syntax around defining variables.</p>
+        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to define variables for convenience anyways.</p>
+        <p>In this repl, we've added a basic syntax around defining variables.  (Note: You can't assign an expression with free variables.)</p>
+        <p>This kind of environment around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
         <p>Try assigning I to your identity function by typing <Code>I := λa.a</Code></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast, lhs}) => {
+      return (
+        // could probably be simplified by including execution context in winCondition.
+        ast &&
+        lhs === 'I' &&
+        safeEqual(ast, parse('λa.a'))
+      );
+    }
   },
   // --- Computation ---
   {
@@ -162,7 +176,10 @@ export default [
         <p>Try it out!</p>
       </div>
     ),
-    winCondition: () => true,
+    // lol this win condition.
+    winCondition: ({normalForm}) => (
+      normalForm && renderExpression(normalForm).includes('ε')
+    ),
   },
   {
     title: "Nested Redexes",
@@ -171,9 +188,12 @@ export default [
         <p>Notice that eta that pops up? That's this REPL's placeholder variable for when it needs to rename something.</p>
         <p>Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within. We can still evaluate the expression!</p>
         <p>Try writing a function with a nested redex!</p>
+        <p>Possible solution: <span className='secret'>λa.(λb.b)c</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => (
+      ast && !bReduce(ast) && leftmostOutermostRedex(ast)
+    ),
   },
   {
     title: "Leftmost Outermost Redex",
@@ -185,7 +205,8 @@ export default [
         <p>Try typing and expanding <Code>((λb.b)c)((λd.d)e)</Code> to see what I mean.</p>
       </div>
     ),
-    winCondition: () => true,
+    // no need to be super restrictive in what they paste in here
+    winCondition: ({ast}) => ast && equal(ast, parse('((λb.b)c)((λd.d)e)')),
   },
   {
     title: 'Normal Form',
@@ -274,9 +295,9 @@ export default [
     title: 'Composing them all together',
     prompt: (
       <div>
-        <p></p>
+        <p>One last step!</p>
         <p>For reference, the XOR operation is true iff one parameter or the other is true, but not both. So <Code>XOR(true, false)</Code> would be true, but <Code>XOR(true, true)</Code> would be false.</p>
-        <p>Let's see if you can translate that into a composition of the functions you've defined so far.</p>
+        <p>Let's see if you can translate that into a composition of the functions you've defined so far. Assign your answer to <Code>X</Code></p>
       </div>
     ),
     winCondition: () => true,
@@ -289,7 +310,7 @@ export default [
         <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus.</p>
         <p>A Church Numeral is a function of the form: [explanatory image]</p>
         <p>Write Church Numeral 5</p>
-        <p>Answer: <span className="secret">O := λab.atb</span></p>
+        <p>Answer: <span className="secret">λfn.f(f(f(f(fn))))</span></p>
       </div>
     ),
     winCondition: () => true,
@@ -303,7 +324,7 @@ export default [
         <p>Answer: <span className="secret">λn.λf.λx.f(nfx)</span></p>
       </div>
     ),
-    winCondition: () => false,
+    winCondition: () => true,
   },
   {
     title: "The Successor Function(cot'd)",
@@ -316,7 +337,68 @@ export default [
     winCondition: () => true,
   },
   {
-
+    title: "Adding Numbers",
+    prompt: (
+      <div>
+        <p>The nice thing about Church numbers as we've defined them is they encode "compose this function n times".</p>
+        <p>Try it out with a few numbers to see that it works</p>
+        <p>Write the "add 4" function by composing the successor function 4 times.</p>
+      </div>
+    ),
+    winCondition: () => true,
   },
-  {title: 'nope', prompt: 'nope', winCondition: () => false}
+  {
+    title: "Defining the Addition Function",
+    prompt: (
+      <div>
+        <p>You can take this structure and abstract it out a little</p>
+        <p>Go ahead and redefine A to be your newly crafted addition function.</p>
+        <p>Answer: <Code>λab.aSb</Code></p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Defining the Multiplication Function",
+    prompt: (
+      <div>
+        <p>P</p>
+        <p>If you've got two variables, </p>
+        <p>Going for <Code>M := λab.b(Aa)i₀</Code></p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "To Exponentiation!",
+    prompt: (
+      <div>
+        <p>This shouldn't be too difficult, as it's very similar to the previous problem.</p>
+        <p>Compose together a bunch of multiplications, for some starting position, to get the exponentiation function. Assign that to E to win, and complete the tutorial.</p>
+        <p>Answer is: <span className="secret">E := λab.b(Ma)i₀</span></p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Challenge: Max(a, b)",
+    prompt: (
+      <div>
+        <p>You made it through! <a href="http://i.imgur.com/GX9DgUd.gif">We're hiring, you know.</a></p>
+        <p>So begin the challenges. Your first challenge is to write the <Code>Max(a, b)</Code> function, a function that takes two numbers and outputs the larger of the two.</p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Challenge: Gray Encoding",
+    prompt: (
+      <div>
+        <p>This is about to be brutal. I haven't even attempted it yet.</p>
+        <p>Write a function that computes the decimal equivalent of its input in <a href="https://en.wikipedia.org/wiki/Gray_code">Gray code</a>. In other words, compute <a href="https://oeis.org/A003188">A003188</a></p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {title: 'done fully', prompt: 'nope', winCondition: () => false}
 ];

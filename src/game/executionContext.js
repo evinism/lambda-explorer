@@ -36,7 +36,7 @@ class ExecutionContext {
   defineVariable(name, ast){
     if(this.getUnresolvableVariables(ast).length > 0){
       const unresolvables = this.getUnresolvableVariables(ast).join(', ');
-      throw 'Name Error: nope, you got unresolvables ' + unresolvables + '. eradicate those.'
+      throw 'Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.'
     }
     this.definedVariables[name] = ast;
   }

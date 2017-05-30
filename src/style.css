@@ -62,6 +62,7 @@ aside {
   padding-top: 10px;
   margin-left: 5px;
   padding-left: 27px;
+  overflow: auto;
 }
 
 .repl {
@@ -189,4 +190,9 @@ aside button {
   padding: 0px 4px;
   background: aliceblue;
   white-space: nowrap;
+}
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
 }

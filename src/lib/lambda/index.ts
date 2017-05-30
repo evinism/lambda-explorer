@@ -8,6 +8,7 @@ import { getFreeVars } from './util';
 import { bReduce, eReduce, replace } from './operations';
 import { toNormalForm, leftmostOutermostRedex } from './normalize';
 import { tokenize } from './lexer';
+import { equal } from './equality';
 
 export {
   parseTerm,
@@ -22,4 +23,5 @@ export {
   leftmostOutermostRedex,
   tokenize,
   replace,
+  equal
 }

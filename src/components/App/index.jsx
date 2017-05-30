@@ -8,13 +8,6 @@ import LambdaInput from '../LambdaInput';
 import problems from '../../game/problems';
 import ExecutionContext from '../../game/executionContext';
 
-import {
-  parseTerm,
-  toNormalForm,
-  renderExpression
-} from '../../lib/lambda/';
-
-
 const StartPrompt = ({start}) => (
   <div>
     <p>
