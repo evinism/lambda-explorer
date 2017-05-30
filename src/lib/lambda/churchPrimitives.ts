@@ -1,6 +1,8 @@
 import { equal } from './equality';
 import { parseTerm } from './parser';
 
+// TODO: do the inverse of these -- generation of church primitives
+
 // expression => Maybe(number)
 export function renderAsChurchNumeral(expression) {
   if (expression.type !== 'function') {

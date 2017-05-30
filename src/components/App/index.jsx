@@ -22,8 +22,8 @@ const StartPrompt = ({start}) => (
 class App extends React.Component {
   state = {
     text: '',
-    problemNumber: 0,
-    gameStarted: false
+    problemNumber: 16,
+    gameStarted: true
   };
 
   _handleOnCompute = (computation) => {

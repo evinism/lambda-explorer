@@ -3,6 +3,7 @@ import {
   equal,
   parseTerm as parse,
   leftmostOutermostRedex,
+  toNormalForm,
   bReduce,
   getFreeVars,
   tokenize,
@@ -20,6 +21,35 @@ import {
 */
 
 const safeEqual = (a, b) => (a && b) ? equal(a, b) : false;
+
+const t = parse('λab.a');
+const f = parse('λab.b');
+
+// (ast, [[arg, arg, result]])  => bool
+// should be able to handle non-boolean arguments too...
+function satisfiesTruthTable(ast, rules){
+  return rules.map(
+    rule => {
+      const mutable = [].concat(rule);
+      const target = mutable.pop();
+      const ruleArgs = mutable;
+
+      const testAst = ruleArgs.reduceRight((acc, cur) => ({
+        type: 'application',
+        left: acc,
+        right: cur,
+      }), ast);
+
+      try {
+        const res = equal(target, toNormalForm(testAst));
+        return res;
+      } catch (e) {
+        console.log("Error in test: " + e);
+        return false;
+      }
+    }
+  ).reduce((a, b) => a && b, true);
+};
 
 const Code = props => (<span className="code">{props.children}</span>)
 
@@ -53,6 +83,7 @@ export default [
       <div>
         <p>Nice! Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [arg] . [body]</Code> where [arg] is the input, and [body] is the output.</p>
         <p>Let's write the identity function; a function which takes its argument, does nothing to it, and spits it back out. In the lambda calculus, that looks something like <Code>λa.a</Code></p>
+        <p>(as a reminder, you can type capital L for λ)</p>
       </div>
     ),
     winCondition: ({ast}) => {
@@ -87,7 +118,7 @@ export default [
     title: 'β-reduction function',
     prompt: (
       <div>
-        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of taking a function and evaluating it is called a <i>beta reduction</i>.</p>
+        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called a <i>beta reduction</i>.</p>
         <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll get into a little later.</p>
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
@@ -281,7 +312,13 @@ export default [
     ),
     winCondition: ({ast, lhs}) => (
       // should probably be a broader condition-- test for true and false respectively using N.
-      lhs === 'N' && safeEqual(ast, parse('λm.m(λa.λb.b)(λa.λb.a)'))
+      lhs === 'N' && ast && satisfiesTruthTable(
+        ast,
+        [
+          [t, f],
+          [f, t]
+        ]
+      )// safeEqual(ast, parse('λm.m(λa.λb.b)(λa.λb.a)'))
     ),
   },
   {
@@ -296,7 +333,16 @@ export default [
     ),
     winCondition: ({ast, lhs}) => (
       // same here
-      lhs === 'O' && safeEqual(ast, parse('λm.λn.m(λa.λb.a)n'))
+      lhs === 'O' && ast && satisfiesTruthTable(
+        ast,
+        [
+          [t, t, t],
+          [t, f, t],
+          [f, t, t],
+          [f, f, f]
+        ]
+      )
+      //safeEqual(ast, parse('λm.λn.m(λa.λb.a)n'))
     ),
   },
   {
@@ -311,7 +357,15 @@ export default [
     ),
     winCondition: ({ast, lhs}) => (
       // same here
-      lhs === 'A' && safeEqual(ast, parse('λm.λn.mn(λa.λb.b)'))
+      lhs === 'A' && ast && satisfiesTruthTable(
+        ast,
+        [
+          [t, t, t],
+          [t, f, f],
+          [f, t, f],
+          [f, f, f]
+        ]
+      ) //&& safeEqual(ast, parse('λm.λn.mn(λa.λb.b)'))
     ),
   },
   {
