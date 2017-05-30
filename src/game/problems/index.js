@@ -58,7 +58,8 @@ export default [
     title: 'Simple Identifier',
     prompt: (
       <div>
-        <p>Let's get acquainted with some basic syntax. First, type <Code>a₁</Code>. Letters followed optionally by numbers represent variables in the lambda calculus.</p>
+        <p>Let's get acquainted with some basic syntax. First, type <Code>a₁</Code>. Letters followed optionally by numbers represent variables in this REPL.</p>
+        <p>In the actual lambda calculus, it's a bit broader, but we'll keep it simple right now.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('a₁')),
@@ -349,9 +350,9 @@ export default [
     title: 'The And Function',
     prompt: (
       <div>
-        <p>Prime </p>
+        <p>Closer and closer.</p>
         <p>This one's very similar to the previous one. See if you can define the AND function, a function which takes two booleans and outputs true if both parameters are true, otherwise false.</p>
-        <p></p>
+        <p>Assign your answer to <Code>A</Code></p>
         <p>Answer: <span className="secret">A := λmn.mnf</span></p>
       </div>
     ),
@@ -380,7 +381,15 @@ export default [
     ),
     winCondition: ({ast, lhs}) => (
       // The likelihood that they got this exact one is pretty small... we really need to define truth tables.
-      lhs === 'X' && safeEqual(ast, parse('λm.λn.(λm.λn.m(λa.λb.a)n)((λm.λn.mn(λa.λb.b))((λm.m(λa.λb.b)(λa.λb.a))m)n)((λm.λn.mn(λa.λb.b))m((λm.m(λa.λb.b)(λa.λb.a))n))'))
+      lhs === 'X' && ast && satisfiesTruthTable(
+        ast,
+        [
+          [t, t, f],
+          [t, f, t],
+          [f, t, t],
+          [f, f, f]
+        ]
+      )
     ),
   },
   {
@@ -400,12 +409,20 @@ export default [
     title: 'The Successor Function',
     prompt: (
       <div>
-        <p>We can write functions for these numbers. For example, let's look </p>
+        <p>We can write functions for these numbers. For example, let's look at the <i>successor function</i>, a function which simply adds 1 to its argument.</p>
         <p>If you're feeling brave, you can attempt to write the successor function yourself. It's a pretty interesting exercise. Otherwise, just copy/paste from the answer key, but feel a little defeated while doing so.</p>
         <p>Answer: <span className="secret">λn.λf.λx.f(nfx)</span></p>
       </div>
     ),
-    winCondition: ({ast}) => safeEqual(ast, parse('λn.λf.λx.f(nfx)')),
+    winCondition: ({ast}) => ast && satisfiesTruthTable(
+      ast,
+      [
+        [parse('λfn.n'), parse('λfn.fn')],
+        [parse('λfn.fn'), parse('λfn.f(f(n))')],
+        [parse('λfn.f(f(n))'), parse('λfn.f(f(f(n)))')],
+        [parse('λfn.f(f(f(n)))'), parse('λfn.f(f(f(f(n))))')],
+      ]
+    ),
   },
   {
     title: "The Successor Function(cot'd)",
@@ -416,7 +433,15 @@ export default [
       </div>
     ),
     winCondition: ({executionContext}) => (
-      safeEqual(executionContext.definedVariables.S, parse('λn.λf.λx.f(nfx)'))
+      executionContext.definedVariables.S && satisfiesTruthTable(
+        executionContext.definedVariables.S,
+        [
+          [parse('λfn.n'), parse('λfn.fn')],
+          [parse('λfn.fn'), parse('λfn.f(f(n))')],
+          [parse('λfn.f(f(n))'), parse('λfn.f(f(f(n)))')],
+          [parse('λfn.f(f(f(n)))'), parse('λfn.f(f(f(f(n))))')],
+        ]
+      )
     ),
   },
   {
@@ -428,24 +453,42 @@ export default [
         <p>Write the "add 4" function by composing the successor function 4 times.</p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => (
+      ast && satisfiesTruthTable(
+        ast,
+        [
+          [parse('λfn.n'), parse('λfn.f(f(f(f(n))))')],
+          [parse('λfn.fn'), parse('λfn.f(f(f(f(f(n)))))')],
+          [parse('λfn.f(fn)'), parse('λfn.f(f(f(f(f(f(n))))))')],
+        ]
+      )
+    ),
   },
   {
     title: "Defining the Addition Function",
     prompt: (
       <div>
-        <p>You can take this structure and abstract it out a little</p>
+        <p>You can take this structure and abstract it out a little by turning into a function.</p>
         <p>Go ahead and redefine A to be your newly crafted addition function.</p>
-        <p>Answer: <Code>λab.aSb</Code></p>
+        <p>Answer: <span className="secret">λab.aSb</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => (
+      ast && satisfiesTruthTable(
+        ast,
+        [
+          [parse('λfn.n'), parse('λfn.n'), parse('λfn.n')],
+          [parse('λfn.f(n)'), parse('λfn.f(n)'), parse('λfn.f(fn)')],
+          [parse('λfn.f(f(n))'), parse('λfn.f(f(f(n)))'), parse('λfn.f(f(f(f(f(n)))))')],
+        ]
+      )
+    ),
   },
   {
     title: "Defining the Multiplication Function",
     prompt: (
       <div>
-        <p>P</p>
+        <p>[unfinished]</p>
         <p>If you've got two variables, </p>
         <p>Going for <Code>M := λab.b(Aa)i₀</Code></p>
       </div>
@@ -456,6 +499,8 @@ export default [
     title: "To Exponentiation!",
     prompt: (
       <div>
+        <p>[unfinished]</p>
+
         <p>This shouldn't be too difficult, as it's very similar to the previous problem.</p>
         <p>Compose together a bunch of multiplications, for some starting position, to get the exponentiation function. Assign that to E to win, and complete the tutorial.</p>
         <p>Answer is: <span className="secret">E := λab.b(Ma)i₀</span></p>
@@ -467,6 +512,7 @@ export default [
     title: "Challenge: Max(a, b)",
     prompt: (
       <div>
+        <p>[unfinished]</p>
         <p>You made it through! <a href="http://i.imgur.com/GX9DgUd.gif">We're hiring, you know.</a></p>
         <p>So begin the challenges. Your first challenge is to write the <Code>Max(a, b)</Code> function, a function that takes two numbers and outputs the larger of the two.</p>
       </div>
@@ -477,11 +523,12 @@ export default [
     title: "Challenge: Gray Encoding",
     prompt: (
       <div>
+        <p>[unfinished]</p>
         <p>This is about to be brutal. I haven't even attempted it yet.</p>
         <p>Write a function that computes the decimal equivalent of its input in <a href="https://en.wikipedia.org/wiki/Gray_code">Gray code</a>. In other words, compute <a href="https://oeis.org/A003188">A003188</a></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: () => false,
   },
   {title: 'done fully', prompt: 'nope', winCondition: () => false}
 ];
