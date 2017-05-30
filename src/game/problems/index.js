@@ -339,7 +339,7 @@ export default [
         <p>Answer: <span className="secret">λfn.f(f(f(f(fn))))</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => ast && (renderAsChurchNumeral(ast) === 5),
   },
   {
     title: 'The Successor Function',
@@ -350,7 +350,7 @@ export default [
         <p>Answer: <span className="secret">λn.λf.λx.f(nfx)</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => safeEqual(ast, parse('λn.λf.λx.f(nfx)')),
   },
   {
     title: "The Successor Function(cot'd)",
@@ -360,7 +360,9 @@ export default [
         <p>Assign the successor function to <Code>S</Code>, we'll need it later</p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({executionContext}) => (
+      safeEqual(executionContext.definedVariables.S, parse('λn.λf.λx.f(nfx)'))
+    ),
   },
   {
     title: "Adding Numbers",
