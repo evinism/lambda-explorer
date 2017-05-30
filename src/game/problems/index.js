@@ -7,6 +7,8 @@ import {
   getFreeVars,
   tokenize,
   renderExpression,
+  renderAsChurchNumeral,
+  renderAsChurchBoolean,
 } from '../../lib/lambda';
 // interface for each should be roughly:
 /*
@@ -214,6 +216,7 @@ export default [
       <div>
         <p>If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact exactly what this REPL does when you enter an expression.</p>
         <p>In this REPL you can see the steps it took to get to normal form by pressing the (+) button beside the evaluated expression.</p>
+        <p>Otherwise, I can't think of a win condition for this, so just type in anything to continue.</p>
       </div>
     ),
     winCondition: () => true,
@@ -227,7 +230,10 @@ export default [
         <p>Possible answer: <span className="secret">(λa.aa)λa.aa</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({error}) => (
+      // TODO: make it so errors aren't compared by user string, that's dumb
+      error && error === 'Runtime error: normal form execution exceeded'
+    )
   },
   {
     title: 'The Y-Combinator',
@@ -237,7 +243,7 @@ export default [
         <p>Y: <Code>λg.(λx.g(xx))(λx.g(xx))</Code></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast}) => equal(ast, parse('λg.(λx.g(xx))(λx.g(xx))')),
   },
   {
     title: "Church Booleans",
@@ -251,7 +257,14 @@ export default [
         <p>It'll be helpful to assign them to <Code>t</Code> and <Code>f</Code> respectively. Do that.</p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({executionContext}) => {
+      const t = executionContext.definedVariables.t;
+      const f = executionContext.definedVariables.f;
+      if (!t || !f) {
+        return false;
+      }
+      return renderAsChurchBoolean(t) === true && renderAsChurchBoolean(f) === false;
+    },
   },
   {
     title: 'The Not Function',
@@ -265,7 +278,10 @@ export default [
         <p>Answer: <span className="secret">N := λm.mft</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast, lhs}) => (
+      // should probably be a broader condition-- test for true and false respectively using N.
+      lhs === 'N' && safeEqual(ast, parse('λm.m(λa.λb.b)(λa.λb.a)'))
+    ),
   },
   {
     title: 'The Or Function',
@@ -274,10 +290,13 @@ export default [
         <p>Nice! We've now done the heavy mental lifting of how to use the structure of the value to our advantage.</p>
         <p>You should be well equipped enough to come up with the OR function, a function which takes two booleans and outputs true if either of parameters are true, otherwise false.</p>
         <p>Give it a shot, and assign it to <Code>O</Code></p>
-        <p>Answer: <span className="secret">O := λab.atb</span></p>
+        <p>Answer: <span className="secret">O := λmn.mtn</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast, lhs}) => (
+      // same here
+      lhs === 'O' && safeEqual(ast, parse('λm.λn.m(λa.λb.a)n'))
+    ),
   },
   {
     title: 'The And Function',
@@ -286,10 +305,13 @@ export default [
         <p>Prime </p>
         <p>This one's very similar to the previous one. See if you can define the AND function, a function which takes two booleans and outputs true if both parameters are true, otherwise false.</p>
         <p></p>
-        <p>Answer: <span className="secret">O := λab.atb</span></p>
+        <p>Answer: <span className="secret">A := λmn.mnf</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast, lhs}) => (
+      // same here
+      lhs === 'A' && safeEqual(ast, parse('λm.λn.mn(λa.λb.b)'))
+    ),
   },
   {
     title: 'Composing them all together',
@@ -298,9 +320,13 @@ export default [
         <p>One last step!</p>
         <p>For reference, the XOR operation is true iff one parameter or the other is true, but not both. So <Code>XOR(true, false)</Code> would be true, but <Code>XOR(true, true)</Code> would be false.</p>
         <p>Let's see if you can translate that into a composition of the functions you've defined so far. Assign your answer to <Code>X</Code></p>
+        <p>Answer: <span className="secret">X := λmn.O (A(Nm)n)(Am(Nn))</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({ast, lhs}) => (
+      // The likelihood that they got this exact one is pretty small... we really need to define truth tables.
+      lhs === 'X' && safeEqual(ast, parse('λm.λn.(λm.λn.m(λa.λb.a)n)((λm.λn.mn(λa.λb.b))((λm.m(λa.λb.b)(λa.λb.a))m)n)((λm.λn.mn(λa.λb.b))m((λm.m(λa.λb.b)(λa.λb.a))n))'))
+    ),
   },
   {
     title: 'Defining numbers',

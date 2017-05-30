@@ -66,20 +66,25 @@ class ExecutionContext {
         this.defineVariable(lhs, metadata.normalForm);
       }
     } catch(error){
-      return { text, error }
+      // we pass AST because in the case that we parsed successfully,
+      // we still want to be able to use it in win conditions
+      return { text, error, ast };
     }
 
     return {
       text,
       lhs,
       ast,
+      // Might not want to put this in computation,
+      // does a computation make sense separate from it's executionContext?
+      executionContext: this,
       ...metadata,
     };
   }
 
   // This does the same thing as evaluate, except spawns off a webworker to do so, returning a promise
   evaluateAsync(){
-
+    // stub...
   }
 
   // ast => ast
