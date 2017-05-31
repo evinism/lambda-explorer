@@ -119,7 +119,7 @@ export default [
     title: 'β-reduction function',
     prompt: (
       <div>
-        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called a <i>beta reduction</i>.</p>
+        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called <i>beta reduction</i>.</p>
         <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll get into a little later.</p>
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
@@ -144,7 +144,7 @@ export default [
       <div>
         <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
         <p>As you may have noticed before, lambda expressions can only take one argument, which is kind of annoying.</p>
-        <p>Let's say we quite reasonably want to write a function which more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
+        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
         <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write a 'multi-argument' function!</p>
       </div>
     ),
@@ -397,8 +397,17 @@ export default [
     prompt: (
       <div>
         <p>Well, that was a marathon. Take a little break, you've earned it.</p>
-        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus.</p>
-        <p>A Church Numeral is a function of the form: [explanatory image]</p>
+        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. Church numerals are 2 argument functions in the following format:</p>
+        <p>
+          <pre>
+            {`
+0: λfn.n
+1: λfn.f(n)
+2: λfn.f(f(n))
+3: λfn.f(f(f(n)))
+            `}
+          </pre>
+        </p>
         <p>Write Church Numeral 5</p>
         <p>Answer: <span className="secret">λfn.f(f(f(f(fn))))</span></p>
       </div>
@@ -445,11 +454,10 @@ export default [
     ),
   },
   {
-    title: "Adding Numbers",
+    title: "Adding Numbers bigger than 1",
     prompt: (
       <div>
-        <p>The nice thing about Church numbers as we've defined them is they encode "compose this function n times".</p>
-        <p>Try it out with a few numbers to see that it works</p>
+        <p>The nice thing about Church numerals as we've defined them is they encode "compose this function n times", so in order to compose a function 3 times, just apply the target function to the Church numeral 3.</p>
         <p>Write the "add 4" function by composing the successor function 4 times.</p>
       </div>
     ),
@@ -468,7 +476,8 @@ export default [
     title: "Defining the Addition Function",
     prompt: (
       <div>
-        <p>You can take this structure and abstract it out a little by turning into a function.</p>
+        <p>What's convenient about this is in order to add the numbers <Code>a</Code> and <Code>b</Code>, we just create the <Code>(add a)</Code> function and apply it to <Code>b</Code></p>
+        <p>You can take this structure and abstract it out a little, turning it into a function.</p>
         <p>Go ahead and redefine A to be your newly crafted addition function.</p>
         <p>Answer: <span className="secret">λab.aSb</span></p>
       </div>

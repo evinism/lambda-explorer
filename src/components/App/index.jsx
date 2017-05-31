@@ -22,9 +22,9 @@ const StartPrompt = ({start}) => (
 class App extends React.Component {
   state = {
     text: '',
-    currentProblem: 16,
-    gameStarted: true,
-    shownProblem: 16,
+    currentProblem: 0,
+    gameStarted: false,
+    shownProblem: 0,
   };
 
   _handleOnCompute = (computation) => {
