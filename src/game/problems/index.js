@@ -132,7 +132,7 @@ export default [
       <div>
         <p>So we can perform beta reductions with other functions as the argument! We've probably driven the point home hard enough.</p>
         <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that variable.</p>
-        <p>For quick example, if you've got the expression <Code>Lx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
+        <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
       </div>
     ),
@@ -473,8 +473,8 @@ export default [
         <p>Answer: <span className="secret">λab.aSb</span></p>
       </div>
     ),
-    winCondition: ({ast}) => (
-      ast && satisfiesTruthTable(
+    winCondition: ({lhs, ast}) => (
+      lhs === 'A' && ast && satisfiesTruthTable(
         ast,
         [
           [parse('λfn.n'), parse('λfn.n'), parse('λfn.n')],
@@ -489,24 +489,42 @@ export default [
     prompt: (
       <div>
         <p>[unfinished]</p>
-        <p>If you've got two variables, </p>
-        <p>Going for <Code>M := λab.b(Aa)i₀</Code></p>
+        <p>Let's go ahead write the Multiply function by composing adds together. One possible way to think about a multiply function that takes <Code>x</Code> and <Code>y</Code> "Compose the <Code>Add x</Code> function <Code>y</Code> times, and evaluate that at zero".</p>
+        <p>Go ahead and assign that to <Code>M</Code></p>
+        <p>Answer: <span className="secret">M := λab.b(Aa)λfn.n</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({lhs, ast}) => (
+      lhs === 'M' && ast && satisfiesTruthTable(
+        ast,
+        [
+          [parse('λfn.n'), parse('λfn.n'), parse('λfn.n')],
+          [parse('λfn.f(n)'), parse('λfn.f(n)'), parse('λfn.f(n)')],
+          [parse('λfn.f(f(n))'), parse('λfn.f(f(f(n)))'), parse('λfn.f(f(f(f(f(fn)))))')],
+        ]
+      )
+    )
   },
   {
     title: "To Exponentiation!",
     prompt: (
       <div>
         <p>[unfinished]</p>
-
         <p>This shouldn't be too difficult, as it's very similar to the previous problem.</p>
-        <p>Compose together a bunch of multiplications, for some starting position, to get the exponentiation function. Assign that to E to win, and complete the tutorial.</p>
-        <p>Answer is: <span className="secret">E := λab.b(Ma)i₀</span></p>
+        <p>Compose together a bunch of multiplications, for some starting position to get the exponentiation function. Assign that to E to win, and complete the tutorial.</p>
+        <p>Answer is: <span className="secret">E := λab.b(Ma)λfn.fn</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({lhs, ast}) => (
+      lhs === 'M' && ast && satisfiesTruthTable(
+        ast,
+        [
+          [parse('λfn.n'), parse('λfn.n'), parse('λfn.f(n)')],
+          [parse('λfn.f(n)'), parse('λfn.f(n)'), parse('λfn.f(n)')],
+          [parse('λfn.f(f(n))'), parse('λfn.f(f(f(n)))'), parse('λfn.f(f(f(f(f(f(f(fn)))))))')],
+        ]
+      )
+    )
   },
   {
     title: "Challenge: Max(a, b)",
@@ -517,7 +535,7 @@ export default [
         <p>So begin the challenges. Your first challenge is to write the <Code>Max(a, b)</Code> function, a function that takes two numbers and outputs the larger of the two.</p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: () => false,
   },
   {
     title: "Challenge: Gray Encoding",
