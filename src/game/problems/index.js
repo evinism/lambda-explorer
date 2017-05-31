@@ -488,7 +488,6 @@ export default [
     title: "Defining the Multiplication Function",
     prompt: (
       <div>
-        <p>[unfinished]</p>
         <p>Let's go ahead write the Multiply function by composing adds together. One possible way to think about a multiply function that takes <Code>x</Code> and <Code>y</Code> "Compose the <Code>Add x</Code> function <Code>y</Code> times, and evaluate that at zero".</p>
         <p>Go ahead and assign that to <Code>M</Code></p>
         <p>Answer: <span className="secret">M := λab.b(Aa)λfn.n</span></p>
@@ -509,7 +508,6 @@ export default [
     title: "To Exponentiation!",
     prompt: (
       <div>
-        <p>[unfinished]</p>
         <p>This shouldn't be too difficult, as it's very similar to the previous problem.</p>
         <p>Compose together a bunch of multiplications, for some starting position to get the exponentiation function. Assign that to E to win, and complete the tutorial.</p>
         <p>Answer is: <span className="secret">E := λab.b(Ma)λfn.fn</span></p>
@@ -531,7 +529,7 @@ export default [
     prompt: (
       <div>
         <p>[unfinished]</p>
-        <p>You made it through! <a href="http://i.imgur.com/GX9DgUd.gif">We're hiring, you know.</a></p>
+        <p>You made it through! <a href="http://i.imgur.com/GX9DgUd.gif" target="blank">We're hiring, you know.</a></p>
         <p>So begin the challenges. Your first challenge is to write the <Code>Max(a, b)</Code> function, a function that takes two numbers and outputs the larger of the two.</p>
       </div>
     ),

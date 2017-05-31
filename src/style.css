@@ -59,9 +59,8 @@ aside {
   width: 300px;
   min-width: 300px;
   border-left: 3px dashed #f0f0f0;
-  padding-top: 10px;
   margin-left: 5px;
-  padding-left: 27px;
+  padding: 10px 27px 15px 27px;
   overflow: auto;
 }
 
@@ -192,7 +191,27 @@ aside button {
   white-space: nowrap;
 }
 
-::-webkit-scrollbar {
+.solved-badge {
+  margin-top: -14px;
+  font-size: 10pt;
+  color: #888888;
+}
+
+.problem-navigator {
+  position: absolute;
+  bottom: 60px;
+  width: 47px;
+}
+
+.problem-navigator > button {
+  font-size: 10pt;
+}
+
+.problem-navigator > .next-problem {
+  float: right; /* don't hate me- this is like one line */
+}
+
+.repl::-webkit-scrollbar {
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
 }

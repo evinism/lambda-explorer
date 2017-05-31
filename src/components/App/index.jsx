@@ -22,15 +22,19 @@ const StartPrompt = ({start}) => (
 class App extends React.Component {
   state = {
     text: '',
-    problemNumber: 0,
-    gameStarted: false,
+    currentProblem: 16,
+    gameStarted: true,
+    shownProblem: 16,
   };
 
   _handleOnCompute = (computation) => {
-    let pNum = this.state.problemNumber;
+    let pNum = this.state.currentProblem;
     if (problems[pNum].winCondition(computation)) {
       if (pNum < problems.length - 1){
-        this.setState({problemNumber: pNum + 1});
+        this.setState({
+          currentProblem: pNum + 1,
+          shownProblem: pNum + 1,
+        });
       } else {
         this.setState({gameStarted: false});
       }
@@ -40,11 +44,35 @@ class App extends React.Component {
   startGame = () => {
     this.setState({
       gameStarted: true,
-      problemNumber: 0
+      currentProblem: 0,
+      shownProblem: 0,
+    });
+  }
+
+  _handleNext = () => {
+    this.setState({
+      shownProblem: Math.min(
+        this.state.shownProblem + 1,
+        this.state.currentProblem
+      ),
+    });
+  }
+
+  _handlePrev = () => {
+    this.setState({
+      shownProblem: Math.max(
+        this.state.shownProblem - 1,
+        0
+      )
     });
   }
 
   render() {
+    const {
+      gameStarted,
+      shownProblem,
+      currentProblem,
+    } = this.state;
     return (
       <div className="app-wrapper">
         <header>
@@ -55,11 +83,25 @@ class App extends React.Component {
             <Repl onCompute={this._handleOnCompute}/>
           </article>
           <aside>
-            {!this.state.gameStarted && (
+            {!gameStarted && (
               <StartPrompt start={this.startGame} />
             )}
-            {this.state.gameStarted && (
-              <ProblemPrompter problems={problems} current={this.state.problemNumber} />
+            {gameStarted && (
+              <div>
+                <ProblemPrompter
+                  problems={problems}
+                  current={currentProblem}
+                  shown={shownProblem}
+                />
+                <div className="problem-navigator">
+                  {shownProblem > 0 && (
+                    <button className='prev-problem' onClick={this._handlePrev}>‹</button>
+                  )}
+                  {shownProblem < currentProblem && (
+                    <button className='next-problem' onClick={this._handleNext}>›</button>
+                  )}
+                </div>
+              </div>
             )}
           </aside>
         </div>
