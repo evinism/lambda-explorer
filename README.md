@@ -7,6 +7,8 @@ npm run dev
 ```
 then navigate to localhost:8082
 
+To not persist or destroy local copy of the game, visit `/?nopersist`
+
 ### Contributing
 
 [Please contribute!](https://github.com/evinism/lambda-explorer/issues)

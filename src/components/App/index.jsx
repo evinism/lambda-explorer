@@ -75,7 +75,7 @@ class App extends React.Component {
       'component/App',
       () => this.state,
       newState => this.setState(newState || {})
-    )
+    );
   }
 
   render() {
