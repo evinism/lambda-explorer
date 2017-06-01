@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import cx from 'classnames';
 
+import persistComponent from '../../util/persist';
+
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
 import Computation from './Computation';
@@ -151,16 +153,12 @@ class Repl extends React.Component {
 
   componentWillMount(){
     this.executionContext = new ExecutionContext();
-    // Persistent hack, certainly not excellent code, for singleton only
-    const prevVars = (window.location.search !== '?reset') &&
-      JSON.parse(localStorage.getItem('component/Repl')) ||
-      {};
-    this.executionContext.definedVariables = prevVars;
-    window.addEventListener('beforeunload', () => {
-      localStorage.setItem('component/Repl', JSON.stringify(
-        this.executionContext.definedVariables
-      ));
-    });
+
+    persistComponent (
+      'component/App',
+      () => this.executionContext.definedVariables,
+      oldVars => this.executionContext.definedVariables = oldVars || {}
+    );
   }
 
   render(){

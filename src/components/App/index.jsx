@@ -5,6 +5,8 @@ import ProblemPrompter from './ProblemPrompter';
 import VariableInput from './VariableInput';
 import Repl from '../Repl';
 
+import persistComponent from '../../util/persist';
+
 import LambdaInput from '../LambdaInput';
 import problems from '../../game/problems';
 
@@ -68,15 +70,12 @@ class App extends React.Component {
     });
   }
 
-  // Persistent hack, certainly not excellent code, for singleton only
   componentWillMount() {
-    const prevState = (window.location.search !== '?reset') &&
-      JSON.parse(localStorage.getItem('component/App')) ||
-      {};
-    this.setState(prevState);
-    window.addEventListener('beforeunload', () => {
-      localStorage.setItem('component/App', JSON.stringify(this.state));
-    });
+    persistComponent (
+      'component/App',
+      () => this.state,
+      newState => this.setState(newState || {})
+    )
   }
 
   render() {
