@@ -131,8 +131,8 @@ export default [
     prompt: (
       <div>
         <p>So we can perform beta reductions with other functions as the argument! We've probably driven the point home hard enough.</p>
-        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that variable.</p>
-        <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
+        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that argument.</p>
+        <p>For quick example, if you've got the expression <Code>λx.(xy)</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
       </div>
     ),
@@ -143,7 +143,7 @@ export default [
     prompt: (
       <div>
         <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
-        <p>As you may have noticed before, lambda expressions can only take one argument, which is kind of annoying.</p>
+        <p>As you may have noticed before, functions can only take one argument, which is kind of annoying.</p>
         <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
         <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write a 'multi-argument' function!</p>
       </div>
@@ -186,8 +186,8 @@ export default [
     title: "Assigning variables",
     prompt: (
       <div>
-        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to define variables anyways.</p>
-        <p>In this repl, we've added a basic syntax around defining variables. (Note: You can't assign an expression with free variables.)</p>
+        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to assign variables anyways.</p>
+        <p>In this repl, we've added a basic syntax around assign variables. (Note: You can't assign an expression with free variables.)</p>
         <p>This kind of environment around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
         <p>Try assigning I to your identity function by typing <Code>I := λa.a</Code></p>
       </div>
@@ -286,7 +286,7 @@ export default [
         <p>Let's start off by introducing the booleans! The two booleans are:</p>
         <p>true: <Code>λab.a</Code></p>
         <p>false: <Code>λab.b</Code></p>
-        <p>You'll notice that these values are themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a cerain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
+        <p>You'll notice that these values are themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a certain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
         <p>It'll be helpful to assign them to <Code>t</Code> and <Code>f</Code> respectively. Do that.</p>
       </div>
     ),
