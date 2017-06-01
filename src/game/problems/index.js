@@ -34,7 +34,7 @@ function satisfiesTruthTable(ast, rules){
       const target = mutable.pop();
       const ruleArgs = mutable;
 
-      const testAst = ruleArgs.reduceRight((acc, cur) => ({
+      const testAst = ruleArgs.reduce((acc, cur) => ({
         type: 'application',
         left: acc,
         right: cur,
@@ -479,7 +479,7 @@ export default [
         <p>What's convenient about this is in order to add the numbers <Code>a</Code> and <Code>b</Code>, we just create the <Code>(add a)</Code> function and apply it to <Code>b</Code></p>
         <p>You can take this structure and abstract it out a little, turning it into a function.</p>
         <p>Go ahead and redefine A to be your newly crafted addition function.</p>
-        <p>Answer: <span className="secret">λab.aSb</span></p>
+        <p>Answer: <span className="secret">A := λab.aSb</span></p>
       </div>
     ),
     winCondition: ({lhs, ast}) => (
@@ -523,7 +523,7 @@ export default [
       </div>
     ),
     winCondition: ({lhs, ast}) => (
-      lhs === 'M' && ast && satisfiesTruthTable(
+      lhs === 'E' && ast && satisfiesTruthTable(
         ast,
         [
           [parse('λfn.n'), parse('λfn.n'), parse('λfn.f(n)')],
