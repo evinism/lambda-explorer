@@ -151,6 +151,16 @@ class Repl extends React.Component {
 
   componentWillMount(){
     this.executionContext = new ExecutionContext();
+    // Persistent hack, certainly not excellent code, for singleton only
+    const prevVars = (window.location.search !== '?reset') &&
+      JSON.parse(localStorage.getItem('component/Repl')) ||
+      {};
+    this.executionContext.definedVariables = prevVars;
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('component/Repl', JSON.stringify(
+        this.executionContext.definedVariables
+      ));
+    });
   }
 
   render(){

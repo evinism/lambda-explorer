@@ -1,4 +1,5 @@
 import React from 'react';
+
 import LambdaMetadata from './LambdaMetadata';
 import ProblemPrompter from './ProblemPrompter';
 import VariableInput from './VariableInput';
@@ -6,7 +7,6 @@ import Repl from '../Repl';
 
 import LambdaInput from '../LambdaInput';
 import problems from '../../game/problems';
-import ExecutionContext from '../../game/executionContext';
 
 const StartPrompt = ({start}) => (
   <div>
@@ -19,13 +19,14 @@ const StartPrompt = ({start}) => (
   </div>
 );
 
+const defaultState = {
+  currentProblem: 0,
+  gameStarted: false,
+  shownProblem: 0,
+};
+
 class App extends React.Component {
-  state = {
-    text: '',
-    currentProblem: 0,
-    gameStarted: false,
-    shownProblem: 0,
-  };
+  state = defaultState;
 
   _handleOnCompute = (computation) => {
     let pNum = this.state.currentProblem;
@@ -64,6 +65,17 @@ class App extends React.Component {
         this.state.shownProblem - 1,
         0
       )
+    });
+  }
+
+  // Persistent hack, certainly not excellent code, for singleton only
+  componentWillMount() {
+    const prevState = (window.location.search !== '?reset') &&
+      JSON.parse(localStorage.getItem('component/App')) ||
+      {};
+    this.setState(prevState);
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('component/App', JSON.stringify(this.state));
     });
   }
 
