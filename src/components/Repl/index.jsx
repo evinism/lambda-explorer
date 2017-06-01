@@ -155,7 +155,7 @@ class Repl extends React.Component {
     this.executionContext = new ExecutionContext();
 
     persistComponent (
-      'component/App',
+      'component/Repl',
       () => this.executionContext.definedVariables,
       oldVars => this.executionContext.definedVariables = oldVars || {}
     );
