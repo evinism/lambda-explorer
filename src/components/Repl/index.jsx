@@ -7,7 +7,7 @@ import persistComponent from '../../util/persist';
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
 import Computation from './Computation';
-
+import Error from './Error'
 
 import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
 
@@ -73,13 +73,15 @@ class Repl extends React.Component {
       return;
     }
     const computation = this.executionContext.evaluate(text);
-    const { error, normalForm, lhs } = computation;
+    const { error, normalForm, lhs, ast } = computation;
     const renderedNF = normalForm && renderExpression(normalForm);
     const outputText = lhs ? `${lhs}: ${renderedNF}` : renderedNF;
 
     const result = (error
-      ? (<span className='error'>{error.toString()}</span>)
-      : (
+      ? (<span className='error'>
+          <Error ast={ast}>{error.toString()}</Error>
+        </span>
+      ) : (
         <span className='result'>
           <Computation computation={computation}>{outputText}</Computation>
         </span>

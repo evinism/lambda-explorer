@@ -129,14 +129,13 @@ aside {
 .expand-collapse-button {
   visibility: hidden;
   font-size: 10px;
-  line-height: 20px;
   vertical-align: middle;
-  line-height: 20px;
+  line-height: 24px;
   cursor: pointer;
   margin-left: 5px;
 }
 
-.result:hover .expand-collapse-button {
+.result:hover .expand-collapse-button, .error:hover .expand-collapse-button {
   visibility: visible;
 }
 
@@ -158,12 +157,17 @@ aside {
 }
 
 .metadata {
+  color: black;
   margin-left: -5px;
   padding: 10px;
   font-size: 10pt;
   border-left: 5px solid lightgrey;
   overflow: auto;
   white-space: nowrap;
+}
+
+.error-metadata-header {
+  margin-top: 0px;
 }
 
 .result i {
