@@ -1,10 +1,12 @@
 import { equal } from './equality';
 import { parseTerm } from './parser';
+import { cannonize } from './cannonize';
 
 // TODO: do the inverse of these -- generation of church primitives
 
 // expression => Maybe(number)
-export function renderAsChurchNumeral(expression) {
+export function renderAsChurchNumeral(uncannonized) {
+  const expression = cannonize(uncannonized);
   if (expression.type !== 'function') {
     return undefined;
   }
