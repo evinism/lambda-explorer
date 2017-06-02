@@ -68,7 +68,6 @@ aside {
   font-size: 15pt;
   font-weight: 300;
   padding-left: 5px;
-  font-family: Roboto;
   height: 100%;
   width: 100%;
   overflow: auto;
@@ -175,17 +174,19 @@ aside button {
   vertical-align: bottom;
 }
 
-.secret {
+.secret.secret {
   color: transparent;
-  background-color: #555555;
+  background: #555555;
 }
 
-.secret:hover {
+.secret.secret:hover {
   background-color: aliceblue;
   color: black;
 }
 
-.code {
+.code, .secret {
+  font-family: 'Roboto Mono';
+  font-size: 11pt;
   padding: 0px 4px;
   background: aliceblue;
   white-space: nowrap;

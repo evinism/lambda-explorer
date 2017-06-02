@@ -518,7 +518,8 @@ export default [
     prompt: (
       <div>
         <p>This shouldn't be too difficult, as it's very similar to the previous problem.</p>
-        <p>Compose together a bunch of multiplications, for some starting position to get the exponentiation function. Assign that to E to win, and complete the tutorial.</p>
+        <p>Compose together a bunch of multiplications, for some starting position to get the exponentiation function. What's cool is that constructing the exponentiation this way means the function behaves correctly for the number 0 straight out of the box!</p>
+        <p>Assign your exponentiation function to E to win, and complete the tutorial.</p>
         <p>Answer is: <span className="secret">E := λab.b(Ma)λfn.fn</span></p>
       </div>
     ),
@@ -526,34 +527,27 @@ export default [
       lhs === 'E' && ast && satisfiesTruthTable(
         ast,
         [
-          [parse('λfn.n'), parse('λfn.n'), parse('λfn.f(n)')],
+          [parse('λfn.n'), parse('λfn.fn'), parse('λfn.n')],
           [parse('λfn.f(n)'), parse('λfn.f(n)'), parse('λfn.f(n)')],
+          [parse('λfn.f(f(n))'), parse('λfn.n'), parse('λfn.f(n)')],
           [parse('λfn.f(f(n))'), parse('λfn.f(f(f(n)))'), parse('λfn.f(f(f(f(f(f(f(fn)))))))')],
         ]
       )
     )
   },
   {
-    title: "Challenge: Max(a, b)",
+    title: "Challenges",
     prompt: (
       <div>
-        <p>[unfinished]</p>
-        <p>You made it through! <a href="http://i.imgur.com/GX9DgUd.gif" target="blank">We're hiring, you know.</a></p>
-        <p>So begin the challenges. Your first challenge is to write the <Code>Max(a, b)</Code> function, a function that takes two numbers and outputs the larger of the two.</p>
+        <p>You made it through! <a href="https://www.procore.com/jobs/openings.php" target="blank">We're hiring, you know.</a></p>
+        <p></p>
+        <p><b>Miscellaneous Challenges:</b></p>
+        <p>(full disclosure: I haven't attempted these)</p>
+        <p>1: Write the Subtract 1 function. (there are a number of tutorials you can find on this on the internet)</p>
+        <p>2: Write the <Code>Max(a, b)</Code> function, a function that takes two numbers and outputs the larger of the two.</p>
+        <p>3: Write a function that computes the decimal equivalent of its input in <a href="https://en.wikipedia.org/wiki/Gray_code">Gray code</a>. In other words, compute <a href="https://oeis.org/A003188">A003188</a></p>
       </div>
     ),
     winCondition: () => false,
   },
-  {
-    title: "Challenge: Gray Encoding",
-    prompt: (
-      <div>
-        <p>[unfinished]</p>
-        <p>This is about to be brutal. I haven't even attempted it yet.</p>
-        <p>Write a function that computes the decimal equivalent of its input in <a href="https://en.wikipedia.org/wiki/Gray_code">Gray code</a>. In other words, compute <a href="https://oeis.org/A003188">A003188</a></p>
-      </div>
-    ),
-    winCondition: () => false,
-  },
-  {title: 'done fully', prompt: 'nope', winCondition: () => false}
 ];

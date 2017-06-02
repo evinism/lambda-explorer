@@ -153,12 +153,6 @@ class Repl extends React.Component {
 
   componentWillMount(){
     this.executionContext = new ExecutionContext();
-
-    /*persistComponent (
-      'component/Repl',
-      () => this.executionContext.definedVariables,
-      oldVars => this.executionContext.definedVariables = oldVars || {}
-    );*/
   }
 
   render(){
