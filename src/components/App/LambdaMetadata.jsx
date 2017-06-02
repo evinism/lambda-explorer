@@ -22,7 +22,7 @@ const LambdaMetadata = ({ast, err}) => {
   if (metadata.betaReduced) {
     renderedBetaReduced = renderExpression(metadata.betaReduced);
   } else {
-    renderedBetaReduced = '[beta irreducable]';
+    renderedBetaReduced = '[beta irreducible]';
   }
 
   // -- eta reduction
@@ -30,7 +30,7 @@ const LambdaMetadata = ({ast, err}) => {
   if (metadata.etaReduced) {
     renderedEtaReduced = renderExpression(metadata.etaReduced);
   } else {
-    renderedEtaReduced = '[eta irreducable]';
+    renderedEtaReduced = '[eta irreducible]';
   }
 
   let renderedNumeral;
