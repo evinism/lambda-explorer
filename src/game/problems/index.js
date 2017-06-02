@@ -437,7 +437,7 @@ export default [
     title: "The Successor Function(cot'd)",
     prompt: (
       <div>
-        <p>So what we did there is we replaced all the f's with f's again, and then replaced the n with a f(n), thus creating a stack one higher than we had before!</p>
+        <p>So here's what we just did: Let's say we were adding 1 to <Code>λfn.f(f(f(f(n))))</Code>. We just wrote a function that replaced all the f's with f's again, and then replaced the n with a f(n), thus creating a stack one higher than we had before! Magic!</p>
         <p>Assign the successor function to <Code>S</Code>, we'll need it later</p>
       </div>
     ),
