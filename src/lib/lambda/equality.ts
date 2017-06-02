@@ -1,8 +1,47 @@
 // Equality up to alpha conversion.
 import { replace } from './operations';
+import { renderExpression } from './renderer';
 
-// ast1, ast2 => bool
-export function equal(a, b){
+// Cannonize changes all names of arguments to a preset
+function cannonize(ast){
+  let count = 0;
+  return rCannonize(ast);
+
+  function generateNewName(){
+    count++;
+    return `[_c${count}]`;
+  }
+
+  function rCannonize(a) {
+    switch(a.type){
+      case 'variable':
+        return a;
+      case 'application':
+        return {
+          type: 'application',
+          left: rCannonize(a.left),
+          right: rCannonize(a.right),
+        };
+      case 'function':
+        let newName = generateNewName();
+        return {
+          type: 'function',
+          argument: newName,
+          body: rCannonize(
+            replace(
+              a.argument,
+              { type: 'variable', name: newName },
+              a.body,
+            )
+          )
+        };
+      default:
+        throw `what kind of ast node is ${a.type} you nerd?`;
+    }
+  }
+}
+
+function rEqual(a, b){
   if(a.type !== b.type) {
     return false;
   }
@@ -12,25 +51,19 @@ export function equal(a, b){
     case 'variable':
       return a.name === b.name;
     case 'application':
-      return equal(a.left, b.left) && equal(a.right, b.right);
+      return rEqual(a.left, b.left) && rEqual(a.right, b.right);
     case 'function':
-      // TODO: combine this rename with the one that's in replace, so they share the code.
-      // should be a simple interface when it happens
-      if (a.argument !== b.argument){
-        const renamedB = {
-          type: 'function',
-          argument: a.argument,
-          body: replace(
-            b.argument,
-            { type: 'variable', name: a.argument },
-            b.body
-          ),
-        };
-        return equal(a.body, renamedB.body)
-      } else {
-        return equal(a.body, b.body)
-      }
+      return rEqual(a.body, b.body)
     default:
       throw `what kind of ast node is ${a.type} you nerd?`;
   }
+}
+
+
+// ast1, ast2 => bool
+export function equal(a, b){
+  const cA = cannonize(a);
+  const cB = cannonize(b);
+  console.log(renderExpression(cA));
+  return rEqual(cA, cB);
 }

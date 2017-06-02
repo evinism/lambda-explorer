@@ -220,7 +220,7 @@ export default [
     title: "Nested Redexes",
     prompt: (
       <div>
-        <p>Notice that eta that pops up? That's this REPL's placeholder variable for when it needs to rename a variable due to a conflict.</p>
+        <p>Notice that epsilon that pops up? That's this REPL's placeholder variable for when it needs to rename a variable due to a conflict.</p>
         <p>Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within. We can still evaluate the expression!</p>
         <p>Try writing a function with a nested redex!</p>
         <p>Possible solution: <span className='secret'>λa.(λb.b)c</span></p>
