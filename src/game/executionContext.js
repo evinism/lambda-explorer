@@ -66,9 +66,9 @@ class ExecutionContext {
         this.defineVariable(lhs, metadata.normalForm);
       }
     } catch(error){
-      // we pass AST because in the case that we parsed successfully,
-      // we still want to be able to use it in win conditions
-      return { text, error, ast };
+      // we pass AST, executionContext because in the case that we parsed
+      // successfully, we still want to be able to use it in win conditions
+      return { text, error, ast, executionContext: this };
     }
 
     return {
