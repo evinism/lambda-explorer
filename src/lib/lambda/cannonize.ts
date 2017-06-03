@@ -1,10 +1,11 @@
 import { replace } from './operations';
+import { cacheOnAst } from './util';
 
 // Deterministically renames all variables in an expression
 // such that if there exists an alpha conversion between two ASTs,
 // the cannonized asts are identical
 // Expression => Expression
-export function cannonize(ast){
+function cannonizeUnmemoized(ast){
   let count = 0;
   return rCannonize(ast);
 
@@ -41,3 +42,5 @@ export function cannonize(ast){
     }
   }
 }
+
+export const cannonize = cacheOnAst(cannonizeUnmemoized);

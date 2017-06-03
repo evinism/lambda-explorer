@@ -1,8 +1,26 @@
 import { uniqBy } from 'ramda';
 
+function cacheOnAst(fn){
+  const cacheSymbol = `__cache__${fn.name}_${Math.random().toString().slice(2)}`;
+  return ast => {
+    if (ast[cacheSymbol] && (ast[cacheSymbol].computedWith === ast)) {
+      return ast[cacheSymbol].value;
+    } else {
+      const result = fn(ast);
+      ast[cacheSymbol] = {
+        // if the property accidentally gets included on the wrong node (like
+        // via the splat operator), this invalidates it.
+        computedWith: ast,
+        value: result,
+      };
+      return result;
+    }
+  }
+}
+
 // TODO: Should for consistensy change to [name]
 // Expression => [VariableNode, ...]
-function getFreeVars(expression){
+const getFreeVars = cacheOnAst(function getFreeVarsUnmemoized(expression){
   switch(expression.type){
     case 'variable':
       return [expression];
@@ -18,15 +36,9 @@ function getFreeVars(expression){
         leftFree.concat(rightFree)
       );
   }
-}
-
-function nextAvailableName(names){
-  // shit alg that works.
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  return alphabet.split('').filter(letter => names.includes(letter))[0];
-}
+});
 
 export {
   getFreeVars,
-  nextAvailableName
+  cacheOnAst,
 };
