@@ -1,8 +1,6 @@
 import React from 'react';
 
-import LambdaMetadata from './LambdaMetadata';
 import ProblemPrompter from './ProblemPrompter';
-import VariableInput from './VariableInput';
 import Repl from '../Repl';
 
 import persistComponent from '../../util/persist';
