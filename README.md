@@ -1,5 +1,7 @@
 # Lambda Explorer!
 
+[![Build Status](https://travis-ci.org/evinism/lambda-explorer.svg?branch=master)](https://travis-ci.org/evinism/lambda-explorer)
+
 To get running:
 ```
 npm install
