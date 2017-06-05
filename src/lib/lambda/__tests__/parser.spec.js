@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { parseExpression, parseStatement } from '../parser.ts';
+import { parseExpression, parseStatement } from '../parser';
 
 describe('Parser', function(){
   it('correctly parses an expression', function(done){
@@ -15,18 +15,18 @@ describe('Parser', function(){
     ];
     const expected = ({
       type: 'application',
-      left: { type: 'variable', name: 'a' },
-      right: {
+      left: {
         type: 'application',
-        left: { type: 'variable', name: 'b' },
-        right: {
+        left: {
           type: 'application',
-          left: { type: 'variable', name: 'c' },
-          right:{ type: 'variable', name: 'd' },
-        }
-      }
+          left: { type: 'variable', name: 'a' },
+          right:{ type: 'variable', name: 'b' },
+        },
+        right: { type: 'variable', name: 'c' },
+      },
+      right: { type: 'variable', name: 'd' },
     });
     assert.deepEqual(parseExpression(tokenStream), expected);
     done();
-  })
+  });
 });

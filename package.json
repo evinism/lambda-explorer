@@ -8,7 +8,7 @@
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 8082",
     "start": "webpack && http-server -p $PORT",
-    "test": "mocha --compilers js:babel-core/register --compilers ts:babel-core/register src/util/testhelper.js"
+    "test": "mocha -r ts-node/register -r babel-core/register src/util/testhelper.js"
   },
   "author": "evin",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "jquery": "^2.2.3",
     "mocha": "^3.4.2",
     "questy": "^1.1.1",
+    "ts-node": "^3.0.4",
     "typescript": "^2.2.2",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
