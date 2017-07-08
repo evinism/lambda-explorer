@@ -18,6 +18,25 @@ const initialOutput = (
   </div>
 );
 
+const renderEvaluation = (evaluation) => {
+  const { error, normalForm, ast, lhs } = evaluation;
+
+  switch (evaluation.type) {
+    case 'assignment': {
+      const renderedNF = normalForm && renderExpression(normalForm);
+      const outputText = `${lhs}: ${renderedNF}`;
+      return ( <Computation computation={evaluation}>{outputText}</Computation> );
+    }
+    case 'computation': {
+      const renderedNF = normalForm && renderExpression(normalForm);
+      return ( <Computation computation={evaluation}>{renderedNF}</Computation> );
+    }
+    case 'error': {
+      return ( <Error ast={ast}>{error.toString()}</Error> );
+    }
+  }
+};
+
 class Repl extends React.Component {
   state = {
     text: '',
@@ -72,21 +91,9 @@ class Repl extends React.Component {
       });
       return;
     }
-    const computation = this.executionContext.evaluate(text);
-    const { error, normalForm, lhs, ast } = computation;
-    const renderedNF = normalForm && renderExpression(normalForm);
-    const outputText = lhs ? `${lhs}: ${renderedNF}` : renderedNF;
 
-    const result = (error
-      ? (<span className='error'>
-          <Error ast={ast}>{error.toString()}</Error>
-        </span>
-      ) : (
-        <span className='result'>
-          <Computation computation={computation}>{outputText}</Computation>
-        </span>
-      )
-    );
+    const evaluation = this.executionContext.evaluate(text);
+    const result = renderEvaluation(evaluation);
 
     let nextOutput = [
       ...this.state.output,
@@ -96,7 +103,7 @@ class Repl extends React.Component {
 
     const nextHistory = [...this.state.commandHistory, text];
 
-    this.props.onCompute && this.props.onCompute(computation);
+    this.props.onCompute && this.props.onCompute(evaluation);
 
     this.setError('');
     this.setState({

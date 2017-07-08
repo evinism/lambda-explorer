@@ -68,10 +68,17 @@ class ExecutionContext {
     } catch(error){
       // we pass AST, executionContext because in the case that we parsed
       // successfully, we still want to be able to use it in win conditions
-      return { text, error, ast, executionContext: this };
+      return {
+        type: 'error',
+        error,
+        text,
+        ast,
+        executionContext: this
+      };
     }
 
     return {
+      type: assignment ? 'assignment' : 'computation',
       text,
       lhs,
       ast,
