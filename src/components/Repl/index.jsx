@@ -6,6 +6,7 @@ import persistComponent from '../../util/persist';
 
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
+import Assignment from './Assignment';
 import Computation from './Computation';
 import Error from './Error'
 
@@ -19,19 +20,19 @@ const initialOutput = (
 );
 
 const renderEvaluation = (evaluation) => {
-  const { error, normalForm, ast, lhs } = evaluation;
-
   switch (evaluation.type) {
     case 'assignment': {
-      const renderedNF = normalForm && renderExpression(normalForm);
-      const outputText = `${lhs}: ${renderedNF}`;
-      return ( <Computation computation={evaluation}>{outputText}</Computation> );
+      const { lhs, ast } = evaluation;
+      const outputText = `${lhs}: ${renderExpression(ast)}`
+      return ( <Assignment computation={evaluation}>{outputText}</Assignment> );
     }
     case 'computation': {
+      const { normalForm } = evaluation;
       const renderedNF = normalForm && renderExpression(normalForm);
       return ( <Computation computation={evaluation}>{renderedNF}</Computation> );
     }
     case 'error': {
+      const { error, ast } = evaluation;
       return ( <Error ast={ast}>{error.toString()}</Error> );
     }
   }
