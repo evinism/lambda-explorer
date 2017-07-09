@@ -6,6 +6,7 @@ import persistComponent from '../../util/persist';
 
 import LambdaInput from '../LambdaInput';
 import ExecutionContext from '../../game/executionContext';
+import Assignment from './Assignment';
 import Computation from './Computation';
 import Error from './Error'
 
@@ -17,6 +18,25 @@ const initialOutput = (
     shift-L to type λ, [0-9] to type subscripts, := for assignment
   </div>
 );
+
+const renderEvaluation = (evaluation) => {
+  switch (evaluation.type) {
+    case 'assignment': {
+      const { lhs, ast } = evaluation;
+      const outputText = `${lhs}: ${renderExpression(ast)}`
+      return ( <Assignment computation={evaluation}>{outputText}</Assignment> );
+    }
+    case 'computation': {
+      const { normalForm } = evaluation;
+      const renderedNF = normalForm && renderExpression(normalForm);
+      return ( <Computation computation={evaluation}>{renderedNF}</Computation> );
+    }
+    case 'error': {
+      const { error, ast } = evaluation;
+      return ( <Error ast={ast}>{error.toString()}</Error> );
+    }
+  }
+};
 
 class Repl extends React.Component {
   state = {
@@ -72,21 +92,9 @@ class Repl extends React.Component {
       });
       return;
     }
-    const computation = this.executionContext.evaluate(text);
-    const { error, normalForm, lhs, ast } = computation;
-    const renderedNF = normalForm && renderExpression(normalForm);
-    const outputText = lhs ? `${lhs}: ${renderedNF}` : renderedNF;
 
-    const result = (error
-      ? (<span className='error'>
-          <Error ast={ast}>{error.toString()}</Error>
-        </span>
-      ) : (
-        <span className='result'>
-          <Computation computation={computation}>{outputText}</Computation>
-        </span>
-      )
-    );
+    const evaluation = this.executionContext.evaluate(text);
+    const result = renderEvaluation(evaluation);
 
     let nextOutput = [
       ...this.state.output,
@@ -96,7 +104,7 @@ class Repl extends React.Component {
 
     const nextHistory = [...this.state.commandHistory, text];
 
-    this.props.onCompute && this.props.onCompute(computation);
+    this.props.onCompute && this.props.onCompute(evaluation);
 
     this.setError('');
     this.setState({
