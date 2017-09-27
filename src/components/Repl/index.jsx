@@ -81,7 +81,7 @@ class Repl extends React.Component {
     }
   }
 
-  _submit = () => {
+  _submit = async () => {
     const text = this.state.mutableHistory[this.state.currentPos];
     if (text === '') {
       this.setState({
@@ -93,7 +93,7 @@ class Repl extends React.Component {
       return;
     }
 
-    const evaluation = this.executionContext.evaluate(text);
+    const evaluation = await this.executionContext.evaluateAsync(text);
     const result = renderEvaluation(evaluation);
 
     let nextOutput = [

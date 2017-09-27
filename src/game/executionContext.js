@@ -45,7 +45,7 @@ class ExecutionContext {
     this.definedVariables = {};
   }
 
-  // string => computationData
+  // string => Promise<computationData>
   // a computationData is loosely defined right now-- kind of a grab bag of an object.
   evaluate(text){
     let ast;
@@ -94,8 +94,10 @@ class ExecutionContext {
   }
 
   // This does the same thing as evaluate, except spawns off a webworker to do so, returning a promise
-  evaluateAsync(){
-    // stub...
+  evaluateAsync(text){
+    return new Promise((resolve, reject) => {
+      resolve(this.evaluate(text));
+    });
   }
 
   // ast => ast
