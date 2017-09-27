@@ -1,4 +1,5 @@
 import { assert } from 'chai';
+import { resetEpsilonCounter } from '../operations';
 import { toNormalForm } from '../normalize';
 import { parseTerm } from '../parser';
 import suiteData from './generated_suite.data.js';
@@ -14,12 +15,13 @@ import suiteData from './generated_suite.data.js';
     ...
   ]
 
-  To generate a suite, output text and normalized, don't assign anything, avoid eta convrsions, ensure depth 1000
+  To generate a suite, output text and normalized, don't assign anything, avoid epsilon issues, ensure depth 1000
   Later on i'll put in some nice scripts. When i'm not on a plane, i'll look up how to actually do this.
 */
 
 describe('Generated Expression Suite', function(){
   it('is unchanged from previous versions', function(done){
+    resetEpsilonCounter();
     suiteData.forEach(datum => {
       assert.deepEqual(toNormalForm(parseTerm(datum.text), 1000), datum.normalForm);
     });

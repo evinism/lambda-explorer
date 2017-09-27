@@ -75,6 +75,10 @@ function generateNewName(){
   return replaceAll('ε' + nextName);
 }
 
+export function resetEpsilonCounter(){
+  nextName = 0;
+}
+
 // When you're doing a replace of an expression that has a free variable,
 // and that expression binds a variable of that same name in the closure,
 // the source expression must rename the variable internally to one that isn't being used.
