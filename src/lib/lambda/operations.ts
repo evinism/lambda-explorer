@@ -67,10 +67,16 @@ const replaceAll = str => str.split('').map(
 ).join('');
 
 
+
+// TODO: remove this statefulness from the program. This is god awful and should be removed.
 let nextName = 0;
 function generateNewName(){
   nextName++;
   return replaceAll('ε' + nextName);
+}
+
+export function resetEpsilonCounter(){
+  nextName = 0;
 }
 
 // When you're doing a replace of an expression that has a free variable,
