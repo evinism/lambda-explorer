@@ -70,6 +70,12 @@ class ExecutionContext {
       } else {
         ast = this.resolveVariables(ast);
         const metadata = astToMetadata(ast);
+
+        // for generating expression suite (should be commented in most situations)
+        // window.expSuite = window.expSuite || [];
+        // window.expSuite.push({text, normalForm: metadata.normalForm});
+        // -- retrieved via copy(JSON.stringify(expSuite));
+
         return {
           type: 'computation',
           text,
