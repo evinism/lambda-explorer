@@ -287,7 +287,7 @@ export default [
         <p>Let's start off by introducing the booleans! The two booleans are:</p>
         <p>true: <Code>λab.a</Code></p>
         <p>false: <Code>λab.b</Code></p>
-        <p>You'll notice that these values are themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a certain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
+        <p>You'll notice that these values themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a certain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
         <p>It'll be helpful to assign them to <Code>t</Code> and <Code>f</Code> respectively. Do that.</p>
       </div>
     ),

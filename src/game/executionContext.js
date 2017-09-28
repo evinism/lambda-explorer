@@ -48,38 +48,55 @@ class ExecutionContext {
   // string => computationData
   // a computationData is loosely defined right now-- kind of a grab bag of an object.
   evaluate(text){
-    let ast, metadata;
-    let assignment = false, lhs;
+    let ast;
     try {
       // lambda + assignment
       ast = parseExtendedSyntax(text);
       if (ast.type === 'assignment') {
-        assignment = true;
-        lhs = ast.lhs;
+        const lhs = ast.lhs;
         ast = ast.rhs;
-      }
-      ast = this.resolveVariables(ast);
-      metadata = astToMetadata(ast);
-      // it would be sweet to do the check for whether we can define the variable
-      // before we actually do all the computation associated with it.
-      if (assignment) {
-        this.defineVariable(lhs, metadata.normalForm);
+        ast = this.resolveVariables(ast);
+        this.defineVariable(lhs, ast);
+        // duped, but we can continue separating them.
+        return {
+          type: 'assignment',
+          text,
+          lhs,
+          ast,
+          // Might not want to put this in computation,
+          // does a computation make sense separate from it's executionContext?
+          executionContext: this,
+        };
+      } else {
+        ast = this.resolveVariables(ast);
+        const metadata = astToMetadata(ast);
+
+        // for generating expression suite (should be commented in most situations)
+        // window.expSuite = window.expSuite || [];
+        // window.expSuite.push({text, normalForm: metadata.normalForm});
+        // -- retrieved via copy(JSON.stringify(expSuite));
+
+        return {
+          type: 'computation',
+          text,
+          ast,
+          // Might not want to put this in computation,
+          // does a computation make sense separate from it's executionContext?
+          executionContext: this,
+          ...metadata,
+        };
       }
     } catch(error){
       // we pass AST, executionContext because in the case that we parsed
       // successfully, we still want to be able to use it in win conditions
-      return { text, error, ast, executionContext: this };
+      return {
+        type: 'error',
+        error,
+        text,
+        ast,
+        executionContext: this
+      };
     }
-
-    return {
-      text,
-      lhs,
-      ast,
-      // Might not want to put this in computation,
-      // does a computation make sense separate from it's executionContext?
-      executionContext: this,
-      ...metadata,
-    };
   }
 
   // This does the same thing as evaluate, except spawns off a webworker to do so, returning a promise

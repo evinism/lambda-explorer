@@ -35,7 +35,7 @@ import { tokenize } from './lexer';
 let item;
 
 // this one'll be a better entry point
-function parseStatement(tokenStream){
+export function parseStatement(tokenStream){
   // could handle errors better-- this one just will say unexpected token
   // when it reaches a nonstandard assignment token.
   if (
@@ -50,7 +50,7 @@ function parseStatement(tokenStream){
   return parseExpression(tokenStream);
 }
 
-function parseExpression(tokenStream){
+export function parseExpression(tokenStream){
   if(tokenStream.length === 0){
     throw('Syntax Error: Empty Expression');
   }
@@ -138,6 +138,8 @@ function popExpression(tokenStream){
   }
 }
 
+
+// We should rename these to be better.
 export function parseTerm(str) {
   return parseExpression(tokenize(str));
 }

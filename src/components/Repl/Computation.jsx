@@ -1,5 +1,5 @@
 import React from 'react';
-import Metadata from '../App/LambdaMetadata';
+import Metadata from './LambdaMetadata';
 
 export default class Computation extends React.Component {
   state = { expanded: false };
@@ -28,18 +28,20 @@ export default class Computation extends React.Component {
     const renderedAddlInfo = addlInfoString && ` <${addlInfoString}>`;
 
     return (
-      <div>
-        <div className="result-inner">
-          <span>{this.props.children}</span>
-          <div>
-            <i>{renderedAddlInfo}</i>
-            <span onClick={this.handleButtonClick} className='expand-collapse-button'>
-              {this.state.expanded ? '(-)' : '(+)'}
-            </span>
+      <span className='result'>
+        <div>
+          <div className="result-inner">
+            <span>{this.props.children}</span>
+            <div>
+              <i>{renderedAddlInfo}</i>
+              <span onClick={this.handleButtonClick} className='expand-collapse-button'>
+                {this.state.expanded ? '(-)' : '(+)'}
+              </span>
+            </div>
           </div>
+          {this.state.expanded && <Metadata ast={this.props.computation.ast} />}
         </div>
-        {this.state.expanded && <Metadata ast={this.props.computation.ast} />}
-      </div>
+      </span>
     );
   }
 }

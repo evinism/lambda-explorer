@@ -76,4 +76,4 @@ function tokenize(str: string){
   return tokenStream;
 }
 
-export {tokenize};
+export { tokenize };

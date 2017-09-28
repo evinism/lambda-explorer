@@ -43,19 +43,21 @@ export default class Error extends React.Component {
   render(){
     const {ast} = this.props;
     return (
-      <div>
-        <div className="result-inner">
-          <span>{this.props.children}</span>
-          {ast && ( // implicitly selects runtime errors, kinda shitty
-            <div>
-              <span onClick={this.handleButtonClick} className='expand-collapse-button'>
-                {this.state.expanded ? '(-)' : '(+)'}
-              </span>
-            </div>
-          )}
+      <span className='error'>
+        <div>
+          <div className="result-inner">
+            <span>{this.props.children}</span>
+            {ast && ( // implicitly selects runtime errors, kinda shitty
+              <div>
+                <span onClick={this.handleButtonClick} className='expand-collapse-button'>
+                  {this.state.expanded ? '(-)' : '(+)'}
+                </span>
+              </div>
+            )}
+          </div>
+          {this.state.expanded && buildErrorMetadata(ast)}
         </div>
-        {this.state.expanded && buildErrorMetadata(ast)}
-      </div>
+      </span>
     );
   }
 }
