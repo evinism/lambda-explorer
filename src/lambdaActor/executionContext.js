@@ -6,7 +6,7 @@ import {
   toNormalForm,
 } from '../lib/lambda';
 
-import astToMetadata from './astToMetadata';
+import astToMetadata from '../util/astToMetadata';
 
 // There's a better way of doing this I swear.
 // Might want to make a whole "Execution" object
@@ -63,9 +63,6 @@ class ExecutionContext {
           text,
           lhs,
           ast,
-          // Might not want to put this in computation,
-          // does a computation make sense separate from it's executionContext?
-          executionContext: this,
         };
       } else {
         ast = this.resolveVariables(ast);
@@ -80,30 +77,23 @@ class ExecutionContext {
           type: 'computation',
           text,
           ast,
-          // Might not want to put this in computation,
-          // does a computation make sense separate from it's executionContext?
-          executionContext: this,
           ...metadata,
         };
       }
     } catch(error){
       // we pass AST, executionContext because in the case that we parsed
       // successfully, we still want to be able to use it in win conditions
+
+      // TODO: put in execution context stuff, ensure full functionality.
+      // TODO: Make sure max call stack doesn't really happen, or is handled
+      // This looks like: (λa.aa)(λa.aaa)
       return {
         type: 'error',
         error,
         text,
         ast,
-        executionContext: this
       };
     }
-  }
-
-  // This does the same thing as evaluate, except spawns off a webworker to do so, returning a promise
-  evaluateAsync(text){
-    return new Promise((resolve, reject) => {
-      resolve(this.evaluate(text));
-    });
   }
 
   // ast => ast

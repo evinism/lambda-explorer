@@ -146,6 +146,6 @@ export function parseTerm(str) {
 
 // This isn't understood by most helper functions, as it's an extension of the lambda calculus.
 // TODO: make this more well supported.
-export function parseExtendedSyntax(str){
+export function parseExtendedSyntax(str) {
   return parseStatement(tokenize(str));
 }

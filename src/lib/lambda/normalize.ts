@@ -2,7 +2,7 @@ import { bReducable, bReduce } from './operations';
 
 // Call by name eval strategy
 // Expression -> Expression (with a depth overflow)
-function toNormalForm(expression, depthOverflow = 1000) {
+function toNormalForm(expression, depthOverflow = 100000) {
   let count = 0;
   let current;
   let reduced = expression;

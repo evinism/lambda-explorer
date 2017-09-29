@@ -1,5 +1,5 @@
 import React from 'react';
-import astToMetadata from '../../game/astToMetadata';
+import astToMetadata from '../../util/astToMetadata';
 import {
   parseTerm,
   renderAsChurchNumeral,
