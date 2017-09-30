@@ -1,6 +1,6 @@
 // might be cool to do this within lib/lambda.
 import MetadataWorker from 'worker-loader!./worker.js';
-import TimeoutWrapper from './TimeoutWrapper';
+import TimeoutWatcher from './TimeoutWatcher';
 
 import {
   parseExtendedSyntax,
@@ -9,15 +9,13 @@ import {
   toNormalForm,
 } from '../lib/lambda';
 
-import astToMetadata from '../util/astToMetadata';
-
 // There's a better way of doing this I swear.
 // Might want to make a whole "Execution" object
 class ExecutionContext {
 
   constructor(){
     this.definedVariables = {};
-    this.metadataWrapper = new TimeoutWrapper(MetadataWorker);
+    this.metadataWrapper = new TimeoutWatcher(MetadataWorker);
     this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
   }
 
@@ -83,15 +81,14 @@ class ExecutionContext {
       // we pass AST, executionContext because in the case that we parsed
       // successfully, we still want to be able to use it in win conditions
 
-      // TODO: put in execution context stuff, ensure full functionality.
       // TODO: Make sure max call stack doesn't really happen, or is handled
       // This looks like: (λa.aa)(λa.aaa)
-      return {
+      this.postMessage({
         type: 'error',
         error,
         text,
         ast,
-      };
+      });
     }
   }
 

@@ -1,5 +1,5 @@
 // should be moved back probs.
-import astToMetadata from '../util/astToMetadata';
+import astToMetadata from './astToMetadata';
 
 onmessage = function(e) {
   const { ast, text, } = JSON.parse(e.data);

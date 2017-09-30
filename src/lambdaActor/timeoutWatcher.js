@@ -1,4 +1,4 @@
-export default class TimeoutWrapper {
+export default class TimeoutWatcher {
   constructor(WorkerClass, timeout = 5000){
     this.WorkerClass = WorkerClass;
     this.timeout = timeout;

@@ -1,5 +1,5 @@
 import React from 'react';
-import astToMetadata from '../../util/astToMetadata';
+import astToMetadata from '../../lambdaActor/astToMetadata';
 import {
   parseTerm,
   renderAsChurchNumeral,
