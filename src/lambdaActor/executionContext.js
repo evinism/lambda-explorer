@@ -1,4 +1,7 @@
 // might be cool to do this within lib/lambda.
+import MetadataWorker from 'worker-loader!./worker.js';
+import TimeoutWrapper from './TimeoutWrapper';
+
 import {
   parseExtendedSyntax,
   getFreeVars,
@@ -11,7 +14,12 @@ import astToMetadata from '../util/astToMetadata';
 // There's a better way of doing this I swear.
 // Might want to make a whole "Execution" object
 class ExecutionContext {
-  definedVariables = {};
+
+  constructor(){
+    this.definedVariables = {};
+    this.metadataWrapper = new TimeoutWrapper(MetadataWorker);
+    this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
+  }
 
   getResolvableVariables(ast){
     // holy fuck there is so much badness in here.
@@ -45,7 +53,7 @@ class ExecutionContext {
     this.definedVariables = {};
   }
 
-  // string => Promise<computationData>
+  // string => computationData
   // a computationData is loosely defined right now-- kind of a grab bag of an object.
   evaluate(text){
     let ast;
@@ -66,19 +74,10 @@ class ExecutionContext {
         };
       } else {
         ast = this.resolveVariables(ast);
-        const metadata = astToMetadata(ast);
-
-        // for generating expression suite (should be commented in most situations)
-        // window.expSuite = window.expSuite || [];
-        // window.expSuite.push({text, normalForm: metadata.normalForm});
-        // -- retrieved via copy(JSON.stringify(expSuite));
-
-        return {
-          type: 'computation',
-          text,
+        this.metadataWrapper.send({
           ast,
-          ...metadata,
-        };
+          text,
+        });
       }
     } catch(error){
       // we pass AST, executionContext because in the case that we parsed
@@ -94,6 +93,10 @@ class ExecutionContext {
         ast,
       };
     }
+  }
+
+  _handleMetadataMessage(msg){
+    this.postMessage(msg);
   }
 
   // ast => ast
@@ -112,6 +115,17 @@ class ExecutionContext {
     }
     return currentAst;
   }
+
+  // should be replaced with a subscribe handler.
+  receive = () => {};
+
+  send = (text) => {
+    this.evaluate(text);
+  };
+
+  postMessage = (msg) => {
+    this.receive(msg);
+  };
 }
 
 export default ExecutionContext;

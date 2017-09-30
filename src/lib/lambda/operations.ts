@@ -103,7 +103,6 @@ function replace(nameToReplace, replacer, expression) {
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-        //console.log('name conflict between ' + JSON.stringify(freeInReplacer) + ' and ' + expression.argument);
         let newName = generateNewName();
         alphaSafeExpression = {
           type: 'function',

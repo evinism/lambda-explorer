@@ -1,25 +1,20 @@
-import ExecutionContextWorker from 'worker-loader!./worker.js';
+import ExecutionContext from './executionContext';
 
 // a lite wrapper around the executionContext, with time limits hopefully imposed
 // termination should be necessary or something.
 export default class LambdaActor {
   constructor(){
-    this.executionContextWorker = new ExecutionContextWorker();
-    this.executionContextWorker.onmessage = this._postBack;
+    this.executionContext = new ExecutionContext();
+    this.executionContext.receive = this._postBack;
   }
 
   send = (text) => {
-    this.executionContextWorker.postMessage(text);
+    this.executionContext.send(text);
   }
 
-  _postBack = (e) => {
-    this.receive(JSON.parse(e.data));
+  _postBack = (msg) => {
+    this.receive(msg);
   };
-
-  definedVariables = () => {
-    // TODO: Make this better
-    return [];
-  }
 
   // to be overwritten
   receive = () => {};

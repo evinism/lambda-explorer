@@ -1,9 +1,23 @@
-import ExecutionContext from './executionContext';
-
-const executionContext = new ExecutionContext();
+// should be moved back probs.
+import astToMetadata from '../util/astToMetadata';
 
 onmessage = function(e) {
-  const text = e.data;
-  const computation = executionContext.evaluate(text);
-  postMessage(JSON.stringify(computation));
+  const { ast, text, } = JSON.parse(e.data);
+  let metadata;
+  try {
+    metadata = astToMetadata(ast);
+    postMessage(JSON.stringify({
+      type: 'computation',
+      text,
+      ast,
+      ...metadata
+    }));
+  } catch(err) {
+    postMessage(JSON.stringify({
+      type: 'error',
+      error: err,
+      text,
+      ast,
+    }))
+  }
 }
