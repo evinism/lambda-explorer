@@ -10,7 +10,7 @@ export default class LambdaActor {
 
   send = (text) => {
     this.executionContext.send(text);
-  }
+  };
 
   _postBack = (msg) => {
     this.receive(msg);

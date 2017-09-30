@@ -66,12 +66,12 @@ class ExecutionContext {
         ast = this.resolveVariables(ast);
         this.defineVariable(lhs, ast);
         // duped, but we can continue separating them.
-        return {
+        this.postMessage({
           type: 'assignment',
           text,
           lhs,
           ast,
-        };
+        });
       } else {
         ast = this.resolveVariables(ast);
         this.metadataWrapper.send({

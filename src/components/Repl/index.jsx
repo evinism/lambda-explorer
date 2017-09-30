@@ -85,7 +85,7 @@ class Repl extends React.Component {
   _receiveEvaluation = (evaluation) => {
     evaluation = {
       ...evaluation,
-      executionContext: this.lambdaActor, //this is a garbage hack to allow win conditions
+      executionContext: this.lambdaActor.executionContext, //this is a garbage hack to allow win conditions
     };
 
     const result = renderEvaluation(evaluation);
