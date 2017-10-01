@@ -1,4 +1,4 @@
-import { bReducable, bReduce } from './operations';
+import { bReducable, bReduce, eReducable, eReduce } from './operations';
 
 // Call by name eval strategy
 // Expression -> Expression (with a depth overflow)
@@ -21,6 +21,9 @@ function toNormalForm(expression, depthOverflow = 1000) {
 function leftmostOutermostRedex(expression){
   if(bReducable(expression)) {
     return bReduce(expression);
+  }
+  if (eReducable(expression)) {
+    eReduce(expression);
   }
   if (expression.type === 'function'){
     const res = leftmostOutermostRedex(expression.body);
