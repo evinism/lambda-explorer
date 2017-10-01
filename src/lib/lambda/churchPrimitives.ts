@@ -1,11 +1,12 @@
 import { equal } from './equality';
 import { parseTerm } from './parser';
 import { cannonize } from './cannonize';
+import { LambdaExpression as Expr, Maybe } from './types';
 
 // TODO: do the inverse of these -- generation of church primitives
 
 // expression => Maybe(number)
-export function renderAsChurchNumeral(uncannonized) {
+export function renderAsChurchNumeral(uncannonized : Expr) : Maybe<number> {
   const expression = cannonize(uncannonized);
   if (expression.type !== 'function') {
     return undefined;
@@ -47,7 +48,7 @@ const churchTrue = parseTerm('λab.a');
 const churchFalse = parseTerm('λab.b');
 
 // expression => Maybe(bool)
-export function renderAsChurchBoolean(expression){
+export function renderAsChurchBoolean(expression : Expr) : Maybe<boolean> {
   if (equal(expression, churchTrue)) {
     return true;
   }
