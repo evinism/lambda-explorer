@@ -1,5 +1,5 @@
 // might be cool to do this within lib/lambda.
-import MetadataWorker from 'worker-loader!./worker.js';
+import MetadataWorker from 'worker-loader?inline!./worker.js';
 import TimeoutWatcher from './TimeoutWatcher';
 
 import {

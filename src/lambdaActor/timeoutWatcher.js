@@ -14,7 +14,7 @@ export default class TimeoutWatcher {
       workerInst.terminate();
       this._postBack({
         type: 'error',
-        error: 'Runtime Error: Timeout exceeded',
+        error: { message: 'Runtime Error: Timeout exceeded' },
         text: msg.text,
         ast: msg.ast,
       });
