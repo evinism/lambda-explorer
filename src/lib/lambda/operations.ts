@@ -1,13 +1,14 @@
 import { getFreeVars } from './util';
+import { LambdaExpression as Expr, Name, Maybe } from './types';
 
 // Expression -> bool
-function bReducable(exp){
+function bReducable(exp : Expr) : boolean {
   return (exp.type === 'application' && exp.left.type === 'function');
 }
 
 // We don't know whether we CAN beta reduce the term
 // Expression => Maybe(Expression)
-function bReduce(expression) {
+function bReduce(expression) : Maybe<Expr> {
   if (!bReducable(expression)) {
     return undefined;
   }
@@ -19,7 +20,7 @@ function bReduce(expression) {
 }
 
 // Expression => bool
-function eReducable(expression){
+function eReducable(expression : Expr) : boolean {
   if (
     expression.type !== 'function' ||
     expression.body.type !== 'application' ||
@@ -39,7 +40,8 @@ function eReducable(expression){
   return true;
 }
 
-function eReduce(expression){
+// Expr -> Maybe(Expr)
+function eReduce(expression) : Maybe<Expr> {
   if (!eReducable(expression)) {
     return undefined;
   }
@@ -84,9 +86,8 @@ export function resetEpsilonCounter(){
 // and that expression binds a variable of that same name in the closure,
 // the source expression must rename the variable internally to one that isn't being used.
 
-// name => Expression => Expression => Expression
 // Replaces everything named name in expression with replacer
-function replace(nameToReplace, replacer, expression) {
+function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Expr {
   switch(expression.type) {
     case 'application':
       return {

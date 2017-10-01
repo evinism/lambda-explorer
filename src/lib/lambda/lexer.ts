@@ -1,30 +1,7 @@
-/*
-  type LambdaToken oneOf:
-  {
-    type: 'lambda',
-  },
-  {
-    type: 'dot',
-  },
-  {
-    type: 'identifier',
-    value: 'someString'
-  },
-  {
-    type: 'openParen',
-  },
-  {
-    type: 'closeParen',
-  },
-  {
-    type: 'assignment',
-  }
-*/
+import { LambdaToken } from './types';
 
-
-// str => [LambdaToken, LambdaToken, ...]
-function tokenize(str: string){
-  let tokenStream = [];
+function tokenize(str: string) : LambdaToken[] {
+  let tokenStream : LambdaToken[] = [];
   for(let pos = 0; pos < str.length; pos++){
     const nextChar = str.slice(pos, pos + 1);
     if (/\s/.test(nextChar)){ // skip whitespace.

@@ -1,7 +1,7 @@
 import { cannonize } from './cannonize';
 
 // Equality up to alpha conversion.
-function rEqual(a, b){
+function rEqual(a, b) : boolean {
   if(a.type !== b.type) {
     return false;
   }
@@ -21,7 +21,7 @@ function rEqual(a, b){
 
 
 // ast1, ast2 => bool
-export function equal(a, b){
+export function equal(a, b) : boolean {
   const cA = cannonize(a);
   const cB = cannonize(b);
   return rEqual(cA, cB);
