@@ -13,6 +13,10 @@ onmessage = function(e) {
       ...metadata
     }));
   } catch(err) {
+    if (err instanceof Error) {
+      // json serialized errors are fun.
+      err = { message: err.toString() };
+    }
     postMessage(JSON.stringify({
       type: 'error',
       error: err,

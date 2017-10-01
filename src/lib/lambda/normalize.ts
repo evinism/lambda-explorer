@@ -2,7 +2,7 @@ import { bReducable, bReduce } from './operations';
 
 // Call by name eval strategy
 // Expression -> Expression (with a depth overflow)
-function toNormalForm(expression, depthOverflow = 100000) {
+function toNormalForm(expression, depthOverflow = 5000) {
   let count = 0;
   let current;
   let reduced = expression;
@@ -11,7 +11,7 @@ function toNormalForm(expression, depthOverflow = 100000) {
     reduced = leftmostOutermostRedex(current);
     count++;
     if (count >= depthOverflow) {
-      throw 'Runtime error: normal form execution exceeded';
+      throw { message: 'Runtime error: normal form execution exceeded' };
     }
   } while (reduced !== undefined);
   return current;

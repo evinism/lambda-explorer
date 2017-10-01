@@ -8,7 +8,6 @@ export default class TimeoutWatcher {
     this.receive(msg);
   }
 
-  receive = () => {};
   send = (msg) => {
     const workerInst = new this.WorkerClass();
     const watchdog = setTimeout(() => {
@@ -27,4 +26,6 @@ export default class TimeoutWatcher {
       workerInst.terminate();
     }
   };
+
+  receive = () => {};
 }

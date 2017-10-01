@@ -34,7 +34,7 @@ const renderEvaluation = (evaluation) => {
     }
     case 'error': {
       const { error, ast } = evaluation;
-      return ( <Error ast={ast}>{error.toString()}</Error> );
+      return ( <Error ast={ast}>{error.message}</Error> );
     }
   }
 };

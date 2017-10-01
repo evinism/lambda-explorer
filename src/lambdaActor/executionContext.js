@@ -42,7 +42,7 @@ class ExecutionContext {
   defineVariable(name, ast){
     if(this.getUnresolvableVariables(ast).length > 0){
       const unresolvables = this.getUnresolvableVariables(ast).join(', ');
-      throw 'Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.'
+      throw({ message: 'Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.' });
     }
     this.definedVariables[name] = ast;
   }
@@ -64,7 +64,7 @@ class ExecutionContext {
         ast = this.resolveVariables(ast);
         this.defineVariable(lhs, ast);
         // duped, but we can continue separating them.
-        this.postMessage({
+        this._postBack({
           type: 'assignment',
           text,
           lhs,
@@ -83,7 +83,7 @@ class ExecutionContext {
 
       // TODO: Make sure max call stack doesn't really happen, or is handled
       // This looks like: (λa.aa)(λa.aaa)
-      this.postMessage({
+      this._postBack({
         type: 'error',
         error,
         text,
@@ -93,7 +93,7 @@ class ExecutionContext {
   }
 
   _handleMetadataMessage(msg){
-    this.postMessage(msg);
+    this._postBack(msg);
   }
 
   // ast => ast
@@ -120,7 +120,7 @@ class ExecutionContext {
     this.evaluate(text);
   };
 
-  postMessage = (msg) => {
+  _postBack = (msg) => {
     this.receive(msg);
   };
 }

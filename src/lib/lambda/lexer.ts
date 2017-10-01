@@ -59,7 +59,7 @@ function tokenize(str: string){
     } else if(nextChar === ':'){
       pos++;
       if (str[pos] !== '=') {
-        throw 'Lexing Error: \'=\' expected after :';
+        throw { message: 'Lexing Error: \'=\' expected after :' };
       }
       tokenStream.push({
         type: 'assignment',
@@ -70,7 +70,7 @@ function tokenize(str: string){
       const lower = Math.max(pos - excerptPadding, 0);
       const upper = Math.min(pos + excerptPadding, str.length);
       const excerpt = str.slice(lower, upper);
-      throw `Lexing Error: unexpected character at ${pos}: ${excerpt}`;
+      throw { message: `Lexing Error: unexpected character at ${pos}: ${excerpt}` };
     }
   }
   return tokenStream;
