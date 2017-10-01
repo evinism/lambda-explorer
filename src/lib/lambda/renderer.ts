@@ -1,4 +1,6 @@
-function renderExpression(expression) {
+import { LambdaExpression as Expr } from './types';
+
+function renderExpression(expression : Expr) : string {
   switch(expression.type) {
     case 'application':
       let leftSide;

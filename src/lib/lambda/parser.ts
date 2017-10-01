@@ -1,41 +1,13 @@
+import {
+  LambdaExpression as Expr,
+  LambdaStatement as Statement,
+  LambdaToken as Token,
+} from './types';
 import { tokenize } from './lexer';
 
-
-/*
-  types:
-
-  [name] a character followed by a bunch of subscripts
-
-  [expression] one of:
-    {
-      type: 'application',
-      left: [expression],
-      right: [expression]
-    },
-    {
-      type: 'function'
-      argument: [name],
-      body: [expression],
-    },
-    {
-      type: 'variable',
-      name: [name],
-    }
-
-  [statement] one of:
-    [expression],
-    {
-      type: 'assignment'
-      lhs: [name],
-      rhs: [expression],
-    }
-
-*/
-
-let item;
-
 // this one'll be a better entry point
-export function parseStatement(tokenStream){
+// LambdaToken[] -> Statement (because the typechecker is missing vast swathes of things.)
+export function parseStatement(tokenStream) : Statement {
   // could handle errors better-- this one just will say unexpected token
   // when it reaches a nonstandard assignment token.
   if (
@@ -50,7 +22,7 @@ export function parseStatement(tokenStream){
   return parseExpression(tokenStream);
 }
 
-export function parseExpression(tokenStream){
+export function parseExpression(tokenStream : Token[]) : Expr {
   if(tokenStream.length === 0){
     throw('Syntax Error: Empty Expression');
   }
@@ -70,7 +42,8 @@ export function parseExpression(tokenStream){
   // And reduce to produce the application
 }
 
-function popExpression(tokenStream){
+// tokenArray
+function popExpression(tokenStream) : [Expr, Token[]] {
   // 3 cases. 1:
   const nextToken = tokenStream[0];
   //debugger;
@@ -95,7 +68,7 @@ function popExpression(tokenStream){
           throw('Syntax Error: Unexpected end of lambda');
         }
       }
-      // right now I'm not handling multiple arguments, but in the future I will!
+
       const args = tokenStream.slice(1, dotPosition);
       if(args.length === 0){
         throw('Syntax Error: Bad number of arguments');

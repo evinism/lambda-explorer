@@ -1,11 +1,12 @@
 import { replace } from './operations';
 import { cacheOnAst } from './util';
+import { LambdaExpression as Expr } from './types';
 
 // Deterministically renames all variables in an expression
 // such that if there exists an alpha conversion between two ASTs,
 // the cannonized asts are identical
 // Expression => Expression
-function cannonizeUnmemoized(ast){
+function cannonizeUnmemoized(ast : Expr) : Expr {
   let count = 0;
   return rCannonize(ast);
 

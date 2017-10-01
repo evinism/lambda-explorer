@@ -540,8 +540,7 @@ export default [
     title: "Challenges",
     prompt: (
       <div>
-        <p>You made it through! <a href="https://www.procore.com/jobs/openings.php" target="blank">We're hiring, you know.</a></p>
-        <p></p>
+        <p>You made it through! Not bad at all!</p>
         <p><b>Miscellaneous Challenges:</b></p>
         <p>(full disclosure: I haven't attempted these)</p>
         <p>1: Write the Subtract 1 function. (there are a number of tutorials you can find on this on the internet)</p>
