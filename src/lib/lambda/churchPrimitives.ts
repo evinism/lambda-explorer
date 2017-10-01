@@ -1,6 +1,7 @@
 import { equal } from './equality';
 import { parseTerm } from './parser';
 import { cannonize } from './cannonize';
+import { id } from './wellKnownFunctions';
 
 // TODO: do the inverse of these -- generation of church primitives
 
@@ -9,6 +10,10 @@ export function renderAsChurchNumeral(uncannonized) {
   const expression = cannonize(uncannonized);
   if (expression.type !== 'function') {
     return undefined;
+  }
+  // exception: identity fn under beta-eta reduction is church 1
+  if (equal(expression, id)) {
+    return 1;
   }
   const outerName = expression.argument;
   const inner = expression.body;
