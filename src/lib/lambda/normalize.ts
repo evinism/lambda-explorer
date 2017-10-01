@@ -1,12 +1,11 @@
-import { LambdaExpression as Expr } from './types';
+import { LambdaExpression as Expr, Maybe } from './types';
 import { bReducable, bReduce } from './operations';
 
 // Call by name eval strategy
-// Expression -> Expression (with a depth overflow)
 function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
   let count = 0;
   let current;
-  let reduced = expression;
+  let reduced : Maybe<Expr> = expression;
   do {
     current = reduced;
     reduced = leftmostOutermostRedex(current);
@@ -18,7 +17,7 @@ function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
   return current;
 }
 
-function leftmostOutermostRedex(expression: Expr): Expr {
+function leftmostOutermostRedex(expression: Expr) : Maybe<Expr> {
   if(bReducable(expression)) {
     return bReduce(expression);
   }

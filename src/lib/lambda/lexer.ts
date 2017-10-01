@@ -1,6 +1,7 @@
-// str => [LambdaToken, LambdaToken, ...]
-function tokenize(str: string) {
-  let tokenStream = [];
+import { LambdaToken } from './types';
+
+function tokenize(str: string) : LambdaToken[] {
+  let tokenStream : LambdaToken[] = [];
   for(let pos = 0; pos < str.length; pos++){
     const nextChar = str.slice(pos, pos + 1);
     if (/\s/.test(nextChar)){ // skip whitespace.
