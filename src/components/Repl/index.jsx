@@ -10,14 +10,15 @@ import LambdaActor from '../../lambdaActor/actor.js';
 import Assignment from './Assignment';
 import Computation from './Computation';
 import Error from './Error'
+import Info from './Info';
 
 import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
 
 const initialOutput = (
-  <div className='initial-prompt'>
+  <Info>
     lambda runtime v0.1<br />
     shift-L to type λ, [0-9] to type subscripts, := for assignment
-  </div>
+  </Info>
 );
 
 const renderEvaluation = (evaluation) => {
@@ -35,6 +36,10 @@ const renderEvaluation = (evaluation) => {
     case 'error': {
       const { error, ast } = evaluation;
       return ( <Error ast={ast}>{error.message}</Error> );
+    }
+    case 'info': {
+      const { message } = evaluation;
+      return ( <Info>{message} </Info> );
     }
   }
 };
