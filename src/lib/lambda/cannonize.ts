@@ -1,10 +1,11 @@
 import { replace } from './operations';
+import { LambdaExpression as Expr } from './types';
 
 // Deterministically renames all variables in an expression
 // such that if there exists an alpha conversion between two ASTs,
 // the cannonized asts are identical
 // Expression => Expression
-export function cannonize(ast){
+export function cannonize(ast : Expr) : Expr{
   let count = 0;
   return rCannonize(ast);
 

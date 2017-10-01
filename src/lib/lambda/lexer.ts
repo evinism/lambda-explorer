@@ -1,29 +1,5 @@
-/*
-  type LambdaToken oneOf:
-  {
-    type: 'lambda',
-  },
-  {
-    type: 'dot',
-  },
-  {
-    type: 'identifier',
-    value: 'someString'
-  },
-  {
-    type: 'openParen',
-  },
-  {
-    type: 'closeParen',
-  },
-  {
-    type: 'assignment',
-  }
-*/
-
-
 // str => [LambdaToken, LambdaToken, ...]
-function tokenize(str: string){
+function tokenize(str: string) {
   let tokenStream = [];
   for(let pos = 0; pos < str.length; pos++){
     const nextChar = str.slice(pos, pos + 1);

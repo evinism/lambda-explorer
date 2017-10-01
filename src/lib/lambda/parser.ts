@@ -1,41 +1,13 @@
+import {
+  LambdaExpression as Expr,
+  LambdaStatement as Statement,
+} from './types';
 import { tokenize } from './lexer';
-
-
-/*
-  types:
-
-  [name] a character followed by a bunch of subscripts
-
-  [expression] one of:
-    {
-      type: 'application',
-      left: [expression],
-      right: [expression]
-    },
-    {
-      type: 'function'
-      argument: [name],
-      body: [expression],
-    },
-    {
-      type: 'variable',
-      name: [name],
-    }
-
-  [statement] one of:
-    [expression],
-    {
-      type: 'assignment'
-      lhs: [name],
-      rhs: [expression],
-    }
-
-*/
 
 let item;
 
 // this one'll be a better entry point
-export function parseStatement(tokenStream){
+export function parseStatement(tokenStream) : Statement {
   // could handle errors better-- this one just will say unexpected token
   // when it reaches a nonstandard assignment token.
   if (
@@ -50,7 +22,7 @@ export function parseStatement(tokenStream){
   return parseExpression(tokenStream);
 }
 
-export function parseExpression(tokenStream){
+export function parseExpression(tokenStream) : Expr {
   if(tokenStream.length === 0){
     throw('Syntax Error: Empty Expression');
   }
