@@ -265,7 +265,7 @@ export default [
     ),
     winCondition: ({error}) => (
       // TODO: make it so errors aren't compared by user string, that's dumb
-      error && error === 'Runtime error: normal form execution exceeded'
+      error && error.message === 'Runtime error: normal form execution exceeded'
     )
   },
   {
