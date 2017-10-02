@@ -82,7 +82,7 @@ export default [
     title: 'Identity',
     prompt: (
       <div>
-        <p>Nice! Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [arg] . [body]</Code> where [arg] is the input, and [body] is the output.</p>
+        <p>Nice! Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where [head] is the input, and [body] is the output.</p>
         <p>Let's write the identity function; a function which takes its argument, does nothing to it, and spits it back out. In the lambda calculus, that looks something like <Code>λa.a</Code></p>
         <p>(as a reminder, you can type capital L for λ)</p>
       </div>
@@ -95,7 +95,7 @@ export default [
     title: "Parentheses",
     prompt: (
       <div>
-        <p>Schweet! This takes one argument a and outputs that same argument! Now go ahead and wrap the whole thing in parentheses</p>
+        <p>Schweet! This takes one argument <Code>a</Code> and outputs that same argument! Now go ahead and wrap the whole thing in parentheses</p>
       </div>
     ),
     winCondition: ({text, ast}) => {
@@ -438,7 +438,7 @@ export default [
     title: "The Successor Function(cot'd)",
     prompt: (
       <div>
-        <p>So here's what we just did: Let's say we were adding 1 to <Code>λfn.f(f(f(f(n))))</Code>. We just wrote a function that replaced all the f's with f's again, and then replaced the n with a f(n), thus creating a stack one higher than we had before! Magic!</p>
+        <p>So here's what we just did: Let's say we were adding 1 to <Code>λfn.f(f(f(f(n))))</Code>. We just wrote a function that replaced all the <Code>f</Code>'s with <Code>f</Code>'s again, and then replaced the <Code>n</Code> with a <Code>f(n)</Code>, thus creating a stack one higher than we had before! Magic!</p>
         <p>Assign the successor function to <Code>S</Code>, we'll need it later</p>
       </div>
     ),

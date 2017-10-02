@@ -33,7 +33,7 @@ export function parseExpression(tokenStream : Token[]) : Expr {
     [expression, rest] = popExpression(rest);
     applications.push(expression);
   }
-  // For right-associativity.
+  // For left-associativity.
   return applications.reduce((prev, cur) => ({
     type: 'application',
     left: prev,
