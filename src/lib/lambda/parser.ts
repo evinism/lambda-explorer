@@ -7,17 +7,16 @@ import { tokenize } from './lexer';
 
 // this one'll be a better entry point
 // LambdaToken[] -> Statement (because the typechecker is missing vast swathes of things.)
-export function parseStatement(tokenStream) : Statement {
+export function parseStatement(tokenStream : Token[] ) : Statement {
   // could handle errors better-- this one just will say unexpected token
   // when it reaches a nonstandard assignment token.
-  if (
-    tokenStream.length >= 2
-    && tokenStream[0].type === 'identifier'
-    && tokenStream[1].type === 'assignment'
-  ) {
-    let lhs = tokenStream[0].value;
-    let rhs = parseExpression(tokenStream.splice(2));
-    return { type: 'assignment', lhs, rhs };
+  if (tokenStream.length >= 2) {
+    const first = tokenStream[0]; //to satisfy the typechecker
+    if (first.type === 'identifier' && tokenStream[1].type === 'assignment') {
+      let lhs = first.value;
+      let rhs = parseExpression(tokenStream.splice(2));
+      return { type: 'assignment', lhs, rhs };
+    }
   }
   return parseExpression(tokenStream);
 }

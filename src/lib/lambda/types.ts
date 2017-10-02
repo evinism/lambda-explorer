@@ -54,9 +54,6 @@
 
 interface SimpleToken {
   type: "lambda" | "dot" | "openParen" | "closeParen" | "assignment"
-  // Typechecker fails to discriminate between simpletoken and valuedtoken in some cases
-  // i hate life
-  value?: 'this should never happen',
 }
 
 interface ValuedToken {
