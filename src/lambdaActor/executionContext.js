@@ -1,6 +1,8 @@
 // might be cool to do this within lib/lambda.
-import MetadataWorker from 'worker-loader?inline!./worker.js';
-import TimeoutWatcher from './TimeoutWatcher';
+// import MetadataWorker from 'worker-loader?inline!./worker.js';
+// import TimeoutWatcher from './TimeoutWatcher';
+// stick these in on move to async interface.
+import astToMetadata from './astToMetadata';
 
 import {
   parseExtendedSyntax,
@@ -15,8 +17,8 @@ class ExecutionContext {
 
   constructor(){
     this.definedVariables = {};
-    this.metadataWrapper = new TimeoutWatcher(MetadataWorker);
-    this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
+    // this.metadataWrapper = new TimeoutWatcher(MetadataWorker);
+    // this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
   }
 
   getResolvableVariables(ast){
@@ -72,9 +74,12 @@ class ExecutionContext {
         });
       } else {
         ast = this.resolveVariables(ast);
-        this.metadataWrapper.send({
-          ast,
+        const metadata = astToMetadata(ast);
+        this._postBack({
+          type: 'computation',
           text,
+          ast,
+          ...metadata
         });
       }
     } catch(error){
