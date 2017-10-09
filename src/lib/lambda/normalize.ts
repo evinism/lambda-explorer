@@ -1,7 +1,6 @@
 import { LambdaExpression as Expr, Maybe } from './types';
 import { bReducable, bReduce } from './operations';
 
-// Call by name eval strategy
 function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
   let count = 0;
   let current;
@@ -11,7 +10,7 @@ function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
     reduced = leftmostOutermostRedex(current);
     count++;
     if (count >= depthOverflow) {
-      throw 'Runtime error: normal form execution exceeded';
+      throw { message: 'Runtime error: normal form execution exceeded' };
     }
   } while (reduced !== undefined);
   return current;

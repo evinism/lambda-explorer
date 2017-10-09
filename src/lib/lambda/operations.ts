@@ -71,6 +71,7 @@ const replaceAll = str => str.split('').map(
 
 
 // TODO: remove this statefulness from the program. This is god awful and should be removed.
+// This might cause bugs as-is because we have two independent states, one in the worker, one in the main thread
 let nextName = 0;
 function generateNewName(){
   nextName++;
@@ -104,7 +105,6 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-        //console.log('name conflict between ' + JSON.stringify(freeInReplacer) + ' and ' + expression.argument);
         let newName = generateNewName();
         alphaSafeExpression = {
           type: 'function',

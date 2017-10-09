@@ -76,7 +76,7 @@ aside {
   border-left: 1px solid lightgray;
 }
 
-.initial-prompt {
+.repl .info {
   color: #bbbbbb;
   padding-top: 7px;
 }

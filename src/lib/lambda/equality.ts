@@ -15,7 +15,7 @@ function rEqual(a, b) : boolean {
     case 'function':
       return rEqual(a.body, b.body)
     default:
-      throw `what kind of ast node is ${a.type} you nerd?`;
+      throw { message: `what kind of ast node is ${a.type} you nerd?` };
   }
 }
 

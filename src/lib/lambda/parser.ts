@@ -23,7 +23,7 @@ export function parseStatement(tokenStream : Token[] ) : Statement {
 
 export function parseExpression(tokenStream : Token[]) : Expr {
   if(tokenStream.length === 0){
-    throw('Syntax Error: Empty Expression');
+    throw({ message: 'Syntax Error: Empty Expression'});
   }
   let expression, rest;
   [expression, rest] = popExpression(tokenStream);
@@ -55,22 +55,22 @@ function popExpression(tokenStream) : [Expr, Token[]] {
     case 'lambda':
       // scan forward to find the dot, add in arguments
       if(tokenStream.length < 2) {
-        throw('Syntax Error: Unexpected end of lambda');
+        throw({ message: 'Syntax Error: Unexpected end of lambda' });
       }
       let dotPosition = 1;
       while(tokenStream[dotPosition].type !== 'dot') {
         if(tokenStream[dotPosition].type !== 'identifier'){
-          throw('Syntax Error: non-identifier in argument stream');
+          throw({ message: 'Syntax Error: non-identifier in argument stream'});
         }
         dotPosition++;
         if (dotPosition >= tokenStream.length){
-          throw('Syntax Error: Unexpected end of lambda');
+          throw({ message: 'Syntax Error: Unexpected end of lambda'});
         }
       }
 
       const args = tokenStream.slice(1, dotPosition);
       if(args.length === 0){
-        throw('Syntax Error: Bad number of arguments');
+        throw({ message: 'Syntax Error: Bad number of arguments'});
       }
       const childExp = parseExpression(tokenStream.slice(dotPosition + 1));
       const exp = args.reduceRight((acc, cur) => ({
@@ -106,7 +106,7 @@ function popExpression(tokenStream) : [Expr, Token[]] {
         tokenStream.slice(splitPoint)
       ]
     default:
-      throw('Syntax Error: Unexpected Token');
+      throw({ message: 'Syntax Error: Unexpected Token'});
   }
 }
 
@@ -118,6 +118,6 @@ export function parseTerm(str) {
 
 // This isn't understood by most helper functions, as it's an extension of the lambda calculus.
 // TODO: make this more well supported.
-export function parseExtendedSyntax(str){
+export function parseExtendedSyntax(str) {
   return parseStatement(tokenize(str));
 }
