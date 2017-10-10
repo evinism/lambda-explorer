@@ -99,7 +99,7 @@ function popExpression(tokenStream) : [Expr, Token[]] {
         }
       }
       if (splitPoint < 0) {
-        throw 'Syntax Error: Unmatched Paren';
+        throw({ message: 'Syntax Error: Unmatched Paren' });
       }
       return [
         parseExpression(tokenStream.slice(1, splitPoint - 1)),
