@@ -390,7 +390,7 @@ export default [
         <p>Define NAND and NOR, and assign them to <Code>NAND</Code> and <Code>NOR</Code>.</p>
         <p>Answers:</p>
         <p><span className='secret'>NOR := λab. NOT (OR a b)</span></p>
-        <p><span className='secret'>NOR := λab. NOT (AND a b)</span></p>
+        <p><span className='secret'>NAND := λab. NOT (AND a b)</span></p>
       </div>
     ),
     winCondition: ({executionContext}) => {
@@ -426,7 +426,7 @@ export default [
         <p>For reference, the XOR operation is true iff one parameter or the other is true, but not both. So <Code>XOR(true, false)</Code> would be true, but <Code>XOR(true, true)</Code> would be false.</p>
         <p>Let's see if you can translate that into a composition of the functions you've defined so far. Assign your answer to <Code>XOR</Code></p>
         <p>(There is, of course, a simpler way of defining <Code>XOR</Code> without composing functions, and that will work here too)</p>
-        <p>Answer: <span className="secret">XOR := λmn. NOR (AND m n) (NAND m n)</span></p>
+        <p>Answer: <span className="secret">XOR := λmn. AND (OR m n) (NAND m n)</span></p>
       </div>
     ),
     winCondition: ({ast, lhs}) => (
