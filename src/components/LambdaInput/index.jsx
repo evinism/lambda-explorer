@@ -12,7 +12,7 @@ const replacementMapping = {
   7: '₇',
   8: '₈',
   9: '₉',
-  'L': 'λ',
+  '\\': 'λ',
 };
 
 const replaceAll = str => str.split('').map(
