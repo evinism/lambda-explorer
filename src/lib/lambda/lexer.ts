@@ -22,9 +22,23 @@ function tokenize(str: string) : LambdaToken[] {
       tokenStream.push({
         type: 'closeParen',
       });
-    } else if(/[a-zA-Z]/.test(nextChar)){
+    } else if(/[a-z]/.test(nextChar)){
       // scan ahead to read the whole identifier
       let name = nextChar;
+      while(/[₀-₉]/.test(str[pos + 1])){
+        pos++;
+        name += str[pos];
+      }
+      tokenStream.push({
+        type: 'identifier',
+        value: name,
+      });
+    } else if(/[A-Z]/.test(nextChar)) {
+      let name = nextChar;
+      while(/[A-Z]/.test(str[pos + 1])) {
+        pos++;
+        name += str[pos];
+      }
       while(/[₀-₉]/.test(str[pos + 1])){
         pos++;
         name += str[pos];

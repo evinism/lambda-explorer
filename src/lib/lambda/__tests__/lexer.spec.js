@@ -18,4 +18,22 @@ describe('Lexer', function(){
     assert.deepEqual(tokenized, expected);
     done();
   })
+
+  it('should lex capital letters as a single token', function(done){
+    const source = 'FUNC := λABc.dEFg';
+    const expected = [
+      {type: 'identifier', value: 'FUNC'},
+      {type: 'assignment'},
+      {type: 'lambda'},
+      {type: 'identifier', value: 'AB'},
+      {type: 'identifier', value: 'c'},
+      {type: 'dot'},
+      {type: 'identifier', value: 'd'},
+      {type: 'identifier', value: 'EF'},
+      {type: 'identifier', value: 'g'},
+    ];
+    const tokenized = tokenize(source);
+    assert.deepEqual(tokenized, expected);
+    done();
+  });
 })

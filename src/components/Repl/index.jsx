@@ -17,7 +17,7 @@ import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
 const initialOutput = (
   <Info>
     lambda runtime v0.1<br />
-    shift-L to type λ, [0-9] to type subscripts, := for assignment
+    \ to type λ, [0-9] to type subscripts, := for assignment, upper-case for multi-letter variables
   </Info>
 );
 
