@@ -55,7 +55,7 @@ const Code = props => (<span className="code">{props.children}</span>)
 
 export default [
   {
-    title: 'Simple Identifier',
+    title: 'Simple Variable',
     prompt: (
       <div>
         <p>Let's get acquainted with some basic syntax. First, type <Code>a₁</Code>. Letters followed optionally by numbers represent variables in this REPL.</p>
@@ -79,12 +79,12 @@ export default [
     },
   },
   {
-    title: 'Upper Case Identifiers',
+    title: 'Upper Case Variables',
     prompt: (
       <div>
-        <p>Since lots of variables in the Lambda Calculus are single letters, but not always, there's a semantic ambiguity often when it's written down. (if I type in <Code>aa</Code>, do I mean one variable <Code>aa</Code>, or the variable <Code>a</Code> applied to itself?) </p>
-        <p>In this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter varaibles, and lower case letters are interpreted as single-letter variables.</p>
-        <p>Try typing <Code>MULT</Code>, and observe that it's parsed as one variable.</p>
+        <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>aa</Code>, do I mean one variable <Code>aa</Code>, or the variable <Code>a</Code> applied to itself?</p>
+        <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter varaibles, and lower case letters are interpreted as single-letter variables.</p>
+        <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('MULT')),
@@ -197,7 +197,7 @@ export default [
     title: "Assigning variables",
     prompt: (
       <div>
-        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to assign variables anyways.</p>
+        <p>In the lambda calculus, there's no formal notion of assigning variables, but many texts assign variables.</p>
         <p>In this repl, we've added a basic syntax around assign variables. (Note: You can't assign an expression with free variables.)</p>
         <p>This kind of environment around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
         <p>Try assigning I to your identity function by typing <Code>ID := λa.a</Code></p>
@@ -393,7 +393,30 @@ export default [
         <p><span className='secret'>NOR := λab. NOT (AND a b)</span></p>
       </div>
     ),
-    winCondition: () => true,
+    winCondition: ({executionContext}) => {
+      const nor = executionContext.definedVariables.NOR;
+      const nand = executionContext.definedVariables.NAND;
+      if (!nor || !nand) {
+        return false;
+      }
+      return satisfiesTruthTable(
+        nor,
+        [
+          [t, t, f],
+          [t, f, f],
+          [f, t, f],
+          [f, f, t],
+        ]
+      ) && satisfiesTruthTable(
+        nand,
+        [
+          [t, t, f],
+          [t, f, t],
+          [f, t, t],
+          [f, f, t],
+        ]
+      );
+    },
   },
   {
     title: 'Composing them all together',
