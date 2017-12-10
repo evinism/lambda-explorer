@@ -29,12 +29,15 @@ class App extends React.Component {
   state = defaultState;
 
   _handleOnCompute = (computation) => {
-    let pNum = this.state.currentProblem;
-    if (problems[pNum].winCondition(computation)) {
-      if (pNum < problems.length - 1){
+    let {
+      currentProblem,
+      shownProblem,
+    } = this.state;
+    if (problems[shownProblem].winCondition(computation)) {
+      if (shownProblem < problems.length - 1){
         this.setState({
-          currentProblem: pNum + 1,
-          shownProblem: pNum + 1,
+          currentProblem: Math.max(shownProblem + 1, currentProblem),
+          shownProblem: shownProblem + 1,
         });
       } else {
         this.setState({gameStarted: false});

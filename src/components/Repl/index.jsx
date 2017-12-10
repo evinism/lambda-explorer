@@ -5,18 +5,20 @@ import cx from 'classnames';
 import persistComponent from '../../util/persist';
 
 import LambdaInput from '../LambdaInput';
-import ExecutionContext from '../../game/executionContext';
+import LambdaActor from '../../lambdaActor/actor.js';
+
 import Assignment from './Assignment';
 import Computation from './Computation';
 import Error from './Error'
+import Info from './Info';
 
 import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
 
 const initialOutput = (
-  <div className='initial-prompt'>
+  <Info>
     lambda runtime v0.1<br />
-    shift-L to type λ, [0-9] to type subscripts, := for assignment
-  </div>
+    \ to type λ, [0-9] to type subscripts, := for assignment, upper-case for multi-letter variables
+  </Info>
 );
 
 const renderEvaluation = (evaluation) => {
@@ -33,7 +35,11 @@ const renderEvaluation = (evaluation) => {
     }
     case 'error': {
       const { error, ast } = evaluation;
-      return ( <Error ast={ast}>{error.toString()}</Error> );
+      return ( <Error ast={ast}>{error.message}</Error> );
+    }
+    case 'info': {
+      const { message } = evaluation;
+      return ( <Info>{message} </Info> );
     }
   }
 };
@@ -81,20 +87,14 @@ class Repl extends React.Component {
     }
   }
 
-  _submit = () => {
-    const text = this.state.mutableHistory[this.state.currentPos];
-    if (text === '') {
-      this.setState({
-        output: [
-          ...this.state.output,
-          (<span className='command'><span className='caret'>> </span></span>)
-        ],
-      });
-      return;
-    }
+  _receiveEvaluation = (evaluation) => {
+    evaluation = {
+      ...evaluation,
+      executionContext: this.lambdaActor.executionContext, //this is a garbage hack to allow win conditions
+    };
 
-    const evaluation = this.executionContext.evaluate(text);
     const result = renderEvaluation(evaluation);
+    const text = evaluation.text;
 
     let nextOutput = [
       ...this.state.output,
@@ -113,6 +113,21 @@ class Repl extends React.Component {
       currentPos: nextHistory.length,
       output: nextOutput,
     });
+  }
+
+  _submit = async () => {
+    const text = this.state.mutableHistory[this.state.currentPos];
+    if (text === '') {
+      this.setState({
+        output: [
+          ...this.state.output,
+          (<span className='command'><span className='caret'>> </span></span>)
+        ],
+      });
+      return;
+    }
+
+    this.lambdaActor.send(text);
   }
 
   _nextInHistory = () => {
@@ -162,7 +177,8 @@ class Repl extends React.Component {
   }
 
   componentWillMount(){
-    this.executionContext = new ExecutionContext();
+    this.lambdaActor = new LambdaActor();
+    this.lambdaActor.receive = this._receiveEvaluation;
   }
 
   render(){

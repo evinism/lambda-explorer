@@ -39,7 +39,7 @@ function cannonizeUnmemoized(ast : Expr) : Expr {
           )
         };
       default:
-        throw `what kind of ast node is ${a.type} you nerd?`;
+        throw { message: `what kind of ast node is ${a.type} you nerd?` };
     }
   }
 }

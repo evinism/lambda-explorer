@@ -7,24 +7,23 @@ import { tokenize } from './lexer';
 
 // this one'll be a better entry point
 // LambdaToken[] -> Statement (because the typechecker is missing vast swathes of things.)
-export function parseStatement(tokenStream) : Statement {
+export function parseStatement(tokenStream : Token[] ) : Statement {
   // could handle errors better-- this one just will say unexpected token
   // when it reaches a nonstandard assignment token.
-  if (
-    tokenStream.length >= 2
-    && tokenStream[0].type === 'identifier'
-    && tokenStream[1].type === 'assignment'
-  ) {
-    let lhs = tokenStream[0].value;
-    let rhs = parseExpression(tokenStream.splice(2));
-    return { type: 'assignment', lhs, rhs };
+  if (tokenStream.length >= 2) {
+    const first = tokenStream[0]; //to satisfy the typechecker
+    if (first.type === 'identifier' && tokenStream[1].type === 'assignment') {
+      let lhs = first.value;
+      let rhs = parseExpression(tokenStream.splice(2));
+      return { type: 'assignment', lhs, rhs };
+    }
   }
   return parseExpression(tokenStream);
 }
 
 export function parseExpression(tokenStream : Token[]) : Expr {
   if(tokenStream.length === 0){
-    throw('Syntax Error: Empty Expression');
+    throw({ message: 'Syntax Error: Empty Expression'});
   }
   let expression, rest;
   [expression, rest] = popExpression(tokenStream);
@@ -33,7 +32,7 @@ export function parseExpression(tokenStream : Token[]) : Expr {
     [expression, rest] = popExpression(rest);
     applications.push(expression);
   }
-  // For right-associativity.
+  // For left-associativity.
   return applications.reduce((prev, cur) => ({
     type: 'application',
     left: prev,
@@ -56,22 +55,22 @@ function popExpression(tokenStream) : [Expr, Token[]] {
     case 'lambda':
       // scan forward to find the dot, add in arguments
       if(tokenStream.length < 2) {
-        throw('Syntax Error: Unexpected end of lambda');
+        throw({ message: 'Syntax Error: Unexpected end of lambda' });
       }
       let dotPosition = 1;
       while(tokenStream[dotPosition].type !== 'dot') {
         if(tokenStream[dotPosition].type !== 'identifier'){
-          throw('Syntax Error: non-identifier in argument stream');
+          throw({ message: 'Syntax Error: non-identifier in argument stream'});
         }
         dotPosition++;
         if (dotPosition >= tokenStream.length){
-          throw('Syntax Error: Unexpected end of lambda');
+          throw({ message: 'Syntax Error: Unexpected end of lambda'});
         }
       }
 
       const args = tokenStream.slice(1, dotPosition);
       if(args.length === 0){
-        throw('Syntax Error: Bad number of arguments');
+        throw({ message: 'Syntax Error: Bad number of arguments'});
       }
       const childExp = parseExpression(tokenStream.slice(dotPosition + 1));
       const exp = args.reduceRight((acc, cur) => ({
@@ -100,14 +99,14 @@ function popExpression(tokenStream) : [Expr, Token[]] {
         }
       }
       if (splitPoint < 0) {
-        throw 'Syntax Error: Unmatched Paren';
+        throw({ message: 'Syntax Error: Unmatched Paren' });
       }
       return [
         parseExpression(tokenStream.slice(1, splitPoint - 1)),
         tokenStream.slice(splitPoint)
       ]
     default:
-      throw('Syntax Error: Unexpected Token');
+      throw({ message: 'Syntax Error: Unexpected Token'});
   }
 }
 
@@ -119,6 +118,6 @@ export function parseTerm(str) {
 
 // This isn't understood by most helper functions, as it's an extension of the lambda calculus.
 // TODO: make this more well supported.
-export function parseExtendedSyntax(str){
+export function parseExtendedSyntax(str) {
   return parseStatement(tokenize(str));
 }

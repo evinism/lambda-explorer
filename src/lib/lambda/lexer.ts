@@ -22,9 +22,23 @@ function tokenize(str: string) : LambdaToken[] {
       tokenStream.push({
         type: 'closeParen',
       });
-    } else if(/[a-zA-Z]/.test(nextChar)){
+    } else if(/[a-z]/.test(nextChar)){
       // scan ahead to read the whole identifier
       let name = nextChar;
+      while(/[₀-₉]/.test(str[pos + 1])){
+        pos++;
+        name += str[pos];
+      }
+      tokenStream.push({
+        type: 'identifier',
+        value: name,
+      });
+    } else if(/[A-Z]/.test(nextChar)) {
+      let name = nextChar;
+      while(/[A-Z]/.test(str[pos + 1])) {
+        pos++;
+        name += str[pos];
+      }
       while(/[₀-₉]/.test(str[pos + 1])){
         pos++;
         name += str[pos];
@@ -36,7 +50,7 @@ function tokenize(str: string) : LambdaToken[] {
     } else if(nextChar === ':'){
       pos++;
       if (str[pos] !== '=') {
-        throw 'Lexing Error: \'=\' expected after :';
+        throw { message: 'Lexing Error: \'=\' expected after :' };
       }
       tokenStream.push({
         type: 'assignment',
@@ -47,7 +61,7 @@ function tokenize(str: string) : LambdaToken[] {
       const lower = Math.max(pos - excerptPadding, 0);
       const upper = Math.min(pos + excerptPadding, str.length);
       const excerpt = str.slice(lower, upper);
-      throw `Lexing Error: unexpected character at ${pos}: ${excerpt}`;
+      throw { message: `Lexing Error: unexpected character at ${pos}: ${excerpt}` };
     }
   }
   return tokenStream;

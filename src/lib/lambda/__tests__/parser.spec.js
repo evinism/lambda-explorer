@@ -32,7 +32,7 @@ describe('Parser', function(){
     assert.deepEqual(parseStatement(tokenStream), expected);
   });
 
-  it('is right associative under application', function(done){
+  it('is left associative under application', function(done){
     const tokenStream = [
       {type: "identifier", value: "a"},
       {type: "identifier", value: "b"},

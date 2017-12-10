@@ -27,7 +27,8 @@
     "ts-node": "^3.0.4",
     "typescript": "^2.2.2",
     "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "^2.4.2",
+    "worker-loader": "^1.0.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.7.4",

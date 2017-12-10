@@ -1,4 +1,9 @@
 // might be cool to do this within lib/lambda.
+// import MetadataWorker from 'worker-loader?inline!./worker.js';
+// import TimeoutWatcher from './TimeoutWatcher';
+// stick these in on move to async interface.
+import astToMetadata from './astToMetadata';
+
 import {
   parseExtendedSyntax,
   getFreeVars,
@@ -6,12 +11,15 @@ import {
   toNormalForm,
 } from '../lib/lambda';
 
-import astToMetadata from './astToMetadata';
-
 // There's a better way of doing this I swear.
 // Might want to make a whole "Execution" object
 class ExecutionContext {
-  definedVariables = {};
+
+  constructor(){
+    this.definedVariables = {};
+    // this.metadataWrapper = new TimeoutWatcher(MetadataWorker);
+    // this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
+  }
 
   getResolvableVariables(ast){
     // holy fuck there is so much badness in here.
@@ -36,7 +44,7 @@ class ExecutionContext {
   defineVariable(name, ast){
     if(this.getUnresolvableVariables(ast).length > 0){
       const unresolvables = this.getUnresolvableVariables(ast).join(', ');
-      throw 'Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.'
+      throw({ message: 'Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.' });
     }
     this.definedVariables[name] = ast;
   }
@@ -58,50 +66,39 @@ class ExecutionContext {
         ast = this.resolveVariables(ast);
         this.defineVariable(lhs, ast);
         // duped, but we can continue separating them.
-        return {
+        this._postBack({
           type: 'assignment',
           text,
           lhs,
           ast,
-          // Might not want to put this in computation,
-          // does a computation make sense separate from it's executionContext?
-          executionContext: this,
-        };
+        });
       } else {
         ast = this.resolveVariables(ast);
         const metadata = astToMetadata(ast);
-
-        // for generating expression suite (should be commented in most situations)
-        // window.expSuite = window.expSuite || [];
-        // window.expSuite.push({text, normalForm: metadata.normalForm});
-        // -- retrieved via copy(JSON.stringify(expSuite));
-
-        return {
+        this._postBack({
           type: 'computation',
           text,
           ast,
-          // Might not want to put this in computation,
-          // does a computation make sense separate from it's executionContext?
-          executionContext: this,
-          ...metadata,
-        };
+          ...metadata
+        });
       }
     } catch(error){
       // we pass AST, executionContext because in the case that we parsed
       // successfully, we still want to be able to use it in win conditions
-      return {
+
+      // TODO: Make sure max call stack doesn't really happen, or is handled
+      // This looks like: (λa.aa)(λa.aaa)
+      this._postBack({
         type: 'error',
         error,
         text,
         ast,
-        executionContext: this
-      };
+      });
     }
   }
 
-  // This does the same thing as evaluate, except spawns off a webworker to do so, returning a promise
-  evaluateAsync(){
-    // stub...
+  _handleMetadataMessage(msg){
+    this._postBack(msg);
   }
 
   // ast => ast
@@ -120,6 +117,17 @@ class ExecutionContext {
     }
     return currentAst;
   }
+
+  // should be replaced with a subscribe handler.
+  receive = () => {};
+
+  send = (text) => {
+    this.evaluate(text);
+  };
+
+  _postBack = (msg) => {
+    this.receive(msg);
+  };
 }
 
 export default ExecutionContext;

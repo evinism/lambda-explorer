@@ -55,7 +55,7 @@ const Code = props => (<span className="code">{props.children}</span>)
 
 export default [
   {
-    title: 'Simple Identifier',
+    title: 'Simple Variable',
     prompt: (
       <div>
         <p>Let's get acquainted with some basic syntax. First, type <Code>a₁</Code>. Letters followed optionally by numbers represent variables in this REPL.</p>
@@ -79,12 +79,23 @@ export default [
     },
   },
   {
+    title: 'Upper Case Variables',
+    prompt: (
+      <div>
+        <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>aa</Code>, do I mean one variable <Code>aa</Code>, or the variable <Code>a</Code> applied to itself?</p>
+        <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter varaibles, and lower case letters are interpreted as single-letter variables.</p>
+        <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('MULT')),
+  },
+  {
     title: 'Identity',
     prompt: (
       <div>
-        <p>Nice! Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [arg] . [body]</Code> where [arg] is the input, and [body] is the output.</p>
+        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where [head] is the input, and [body] is the output.</p>
         <p>Let's write the identity function; a function which takes its argument, does nothing to it, and spits it back out. In the lambda calculus, that looks something like <Code>λa.a</Code></p>
-        <p>(as a reminder, you can type capital L for λ)</p>
+        <p>as a reminder, you can type backslash (<Code>\</Code>) for λ</p>
       </div>
     ),
     winCondition: ({ast}) => {
@@ -95,7 +106,7 @@ export default [
     title: "Parentheses",
     prompt: (
       <div>
-        <p>Schweet! This takes one argument a and outputs that same argument! Now go ahead and wrap the whole thing in parentheses</p>
+        <p>Schweet! This takes one argument <Code>a</Code> and outputs that same argument! Now go ahead and wrap the whole thing in parentheses</p>
       </div>
     ),
     winCondition: ({text, ast}) => {
@@ -186,17 +197,17 @@ export default [
     title: "Assigning variables",
     prompt: (
       <div>
-        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's still very convenient to assign variables anyways.</p>
+        <p>In the lambda calculus, there's no formal notion of assigning variables, but many texts assign variables.</p>
         <p>In this repl, we've added a basic syntax around assign variables. (Note: You can't assign an expression with free variables.)</p>
         <p>This kind of environment around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
-        <p>Try assigning I to your identity function by typing <Code>I := λa.a</Code></p>
+        <p>Try assigning I to your identity function by typing <Code>ID := λa.a</Code></p>
       </div>
     ),
     winCondition: ({ast, lhs}) => {
       return (
         // could probably be simplified by including execution context in winCondition.
         ast &&
-        lhs === 'I' &&
+        lhs === 'ID' &&
         safeEqual(ast, parse('λa.a'))
       );
     }
@@ -265,7 +276,7 @@ export default [
     ),
     winCondition: ({error}) => (
       // TODO: make it so errors aren't compared by user string, that's dumb
-      error && error === 'Runtime error: normal form execution exceeded'
+      error && error.message === 'Runtime error: normal form execution exceeded'
     )
   },
   {
@@ -288,12 +299,12 @@ export default [
         <p>true: <Code>λab.a</Code></p>
         <p>false: <Code>λab.b</Code></p>
         <p>You'll notice that these values themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a certain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
-        <p>It'll be helpful to assign them to <Code>t</Code> and <Code>f</Code> respectively. Do that.</p>
+        <p>It'll be helpful to assign them to <Code>TRUE</Code> and <Code>FALSE</Code> respectively. Do that.</p>
       </div>
     ),
     winCondition: ({executionContext}) => {
-      const t = executionContext.definedVariables.t;
-      const f = executionContext.definedVariables.f;
+      const t = executionContext.definedVariables.TRUE;
+      const f = executionContext.definedVariables.FALSE;
       if (!t || !f) {
         return false;
       }
@@ -307,14 +318,14 @@ export default [
         <p>We're gonna work our way to defining the XOR (exclusive or) function on booleans.</p>
         <p>Our first step along the way is to define the NOT function. To do this, let's look at the structure of what a boolean looks like.</p>
         <p>True is just a two argument function that selects the first, whereas false is just a two argument function that selects the second argument. We can therefore call a potential true or false value like a function to select either the first or second parameter!</p>
-        <p>If you're familiar with the ternary operator in many programming languages, working with booleans in the lambda calculus ends up being about the same.</p>
-        <p>Try writing the NOT function, and assign that to <Code>N</Code>.</p>
-        <p>Answer: <span className="secret">N := λm.mft</span></p>
+        <p>For example, take the application <Code>mxy</Code>. If <Code>m</Code> is Church Boolean true, then <Code>mxy</Code> beta reduces to <Code>x</Code>. However, if <Code>m</Code> is Church Boolean false, <Code>mxy</Code> beta reduces to <Code>y</Code></p>
+        <p>Try writing the NOT function, and assign that to <Code>NOT</Code>.</p>
+        <p>Answer: <span className="secret">NOT := λm.m FALSE TRUE</span></p>
       </div>
     ),
     winCondition: ({ast, lhs}) => (
       // should probably be a broader condition-- test for true and false respectively using N.
-      lhs === 'N' && ast && satisfiesTruthTable(
+      lhs === 'NOT' && ast && satisfiesTruthTable(
         ast,
         [
           [t, f],
@@ -329,13 +340,13 @@ export default [
       <div>
         <p>Nice! We've now done the heavy mental lifting of how to use the structure of the value to our advantage.</p>
         <p>You should be well equipped enough to come up with the OR function, a function which takes two booleans and outputs true if either of parameters are true, otherwise false.</p>
-        <p>Give it a shot, and assign it to <Code>O</Code></p>
-        <p>Answer: <span className="secret">O := λmn.mtn</span></p>
+        <p>Give it a shot, and assign it to <Code>OR</Code></p>
+        <p>Answer: <span className="secret">OR := λmn.m TRUE n</span></p>
       </div>
     ),
     winCondition: ({ast, lhs}) => (
       // same here
-      lhs === 'O' && ast && satisfiesTruthTable(
+      lhs === 'OR' && ast && satisfiesTruthTable(
         ast,
         [
           [t, t, t],
@@ -353,13 +364,13 @@ export default [
       <div>
         <p>Closer and closer.</p>
         <p>This one's very similar to the previous one. See if you can define the AND function, a function which takes two booleans and outputs true if both parameters are true, otherwise false.</p>
-        <p>Assign your answer to <Code>A</Code></p>
-        <p>Answer: <span className="secret">A := λmn.mnf</span></p>
+        <p>Assign your answer to <Code>AND</Code></p>
+        <p>Answer: <span className="secret">AND := λmn.m n FALSE</span></p>
       </div>
     ),
     winCondition: ({ast, lhs}) => (
       // same here
-      lhs === 'A' && ast && satisfiesTruthTable(
+      lhs === 'AND' && ast && satisfiesTruthTable(
         ast,
         [
           [t, t, t],
@@ -371,18 +382,56 @@ export default [
     ),
   },
   {
+    title: 'NAND and NOR',
+    prompt: (
+      <div>
+        <p>The NOR and NAND functions are the opposite of OR and AND. For example, if AND returns true, NAND returns false, and vice versa. The same follows for OR and NOR</p>
+        <p>Since we've already defined the <Code>NOT</Code>, <Code>AND</Code>, and <Code>OR</Code> functions, we can just compose those together to get <Code>NAND</Code> and <Code>NOR</Code></p>
+        <p>Define NAND and NOR, and assign them to <Code>NAND</Code> and <Code>NOR</Code>.</p>
+        <p>Answers:</p>
+        <p><span className='secret'>NOR := λab. NOT (OR a b)</span></p>
+        <p><span className='secret'>NAND := λab. NOT (AND a b)</span></p>
+      </div>
+    ),
+    winCondition: ({executionContext}) => {
+      const nor = executionContext.definedVariables.NOR;
+      const nand = executionContext.definedVariables.NAND;
+      if (!nor || !nand) {
+        return false;
+      }
+      return satisfiesTruthTable(
+        nor,
+        [
+          [t, t, f],
+          [t, f, f],
+          [f, t, f],
+          [f, f, t],
+        ]
+      ) && satisfiesTruthTable(
+        nand,
+        [
+          [t, t, f],
+          [t, f, t],
+          [f, t, t],
+          [f, f, t],
+        ]
+      );
+    },
+  },
+  {
     title: 'Composing them all together',
     prompt: (
       <div>
         <p>One last step!</p>
         <p>For reference, the XOR operation is true iff one parameter or the other is true, but not both. So <Code>XOR(true, false)</Code> would be true, but <Code>XOR(true, true)</Code> would be false.</p>
-        <p>Let's see if you can translate that into a composition of the functions you've defined so far. Assign your answer to <Code>X</Code></p>
-        <p>Answer: <span className="secret">X := λmn.O (A(Nm)n)(Am(Nn))</span></p>
+        <p>Let's see if you can translate that into a composition of the functions you've defined so far. Assign your answer to <Code>XOR</Code></p>
+        <p>(There is, of course, a simpler way of defining <Code>XOR</Code> without composing functions, and that will work here too)</p>
+        <p>Answer: <span className="secret">XOR := λmn. AND (OR m n) (NAND m n)</span></p>
       </div>
     ),
     winCondition: ({ast, lhs}) => (
       // The likelihood that they got this exact one is pretty small... we really need to define truth tables.
-      lhs === 'X' && ast && satisfiesTruthTable(
+      lhs === 'XOR' && ast && satisfiesTruthTable(
         ast,
         [
           [t, t, f],
@@ -438,13 +487,13 @@ export default [
     title: "The Successor Function(cot'd)",
     prompt: (
       <div>
-        <p>So here's what we just did: Let's say we were adding 1 to <Code>λfn.f(f(f(f(n))))</Code>. We just wrote a function that replaced all the f's with f's again, and then replaced the n with a f(n), thus creating a stack one higher than we had before! Magic!</p>
-        <p>Assign the successor function to <Code>S</Code>, we'll need it later</p>
+        <p>So here's what we just did: Let's say we were adding 1 to <Code>λfn.f(f(f(f(n))))</Code>. We just wrote a function that replaced all the <Code>f</Code>'s with <Code>f</Code>'s again, and then replaced the <Code>n</Code> with a <Code>f(n)</Code>, thus creating a stack one higher than we had before! Magic!</p>
+        <p>Assign the successor function to <Code>SUCC</Code>, we'll need it later</p>
       </div>
     ),
     winCondition: ({executionContext}) => (
-      executionContext.definedVariables.S && satisfiesTruthTable(
-        executionContext.definedVariables.S,
+      executionContext.definedVariables.SUCC && satisfiesTruthTable(
+        executionContext.definedVariables.SUCC,
         [
           [parse('λfn.n'), parse('λfn.fn')],
           [parse('λfn.fn'), parse('λfn.f(f(n))')],
@@ -479,12 +528,12 @@ export default [
       <div>
         <p>What's convenient about this is in order to add the numbers <Code>a</Code> and <Code>b</Code>, we just create the <Code>(add a)</Code> function and apply it to <Code>b</Code></p>
         <p>You can take this structure and abstract it out a little, turning it into a function.</p>
-        <p>Go ahead and redefine A to be your newly crafted addition function.</p>
-        <p>Answer: <span className="secret">A := λab.aSb</span></p>
+        <p>Go ahead and define <Code>ADD</Code> to be your newly crafted addition function.</p>
+        <p>Answer: <span className="secret">ADD := λab.a SUCC b</span></p>
       </div>
     ),
     winCondition: ({lhs, ast}) => (
-      lhs === 'A' && ast && satisfiesTruthTable(
+      lhs === 'ADD' && ast && satisfiesTruthTable(
         ast,
         [
           [parse('λfn.n'), parse('λfn.n'), parse('λfn.n')],
@@ -499,12 +548,12 @@ export default [
     prompt: (
       <div>
         <p>Let's go ahead write the Multiply function by composing adds together. One possible way to think about a multiply function that takes <Code>x</Code> and <Code>y</Code> "Compose the <Code>Add x</Code> function <Code>y</Code> times, and evaluate that at zero".</p>
-        <p>Go ahead and assign that to <Code>M</Code></p>
-        <p>Answer: <span className="secret">M := λab.b(Aa)λfn.n</span></p>
+        <p>Go ahead and assign that to <Code>MULT</Code></p>
+        <p>Answer: <span className="secret">MULT := λab.b(ADD a)λfn.n</span></p>
       </div>
     ),
     winCondition: ({lhs, ast}) => (
-      lhs === 'M' && ast && satisfiesTruthTable(
+      lhs === 'MULT' && ast && satisfiesTruthTable(
         ast,
         [
           [parse('λfn.n'), parse('λfn.n'), parse('λfn.n')],
@@ -519,13 +568,13 @@ export default [
     prompt: (
       <div>
         <p>This shouldn't be too difficult, as it's very similar to the previous problem.</p>
-        <p>Compose together a bunch of multiplications, for some starting position to get the exponentiation function. What's cool is that constructing the exponentiation this way means the function behaves correctly for the number 0 straight out of the box!</p>
-        <p>Assign your exponentiation function to E to win, and complete the tutorial.</p>
-        <p>Answer is: <span className="secret">E := λab.b(Ma)λfn.fn</span></p>
+        <p>Compose together a bunch of multiplications, for some starting position to get the exponentiation function. What's cool is that constructing the exponentiation this way means the function behaves correctly for the number 0 straight out of the box, without eta-reduction</p>
+        <p>Assign your exponentiation function to EXP to win, and complete the tutorial.</p>
+        <p>Answer is: <span className="secret">EXP := λab.b (MULT a) λfn.fn</span></p>
       </div>
     ),
     winCondition: ({lhs, ast}) => (
-      lhs === 'E' && ast && satisfiesTruthTable(
+      lhs === 'EXP' && ast && satisfiesTruthTable(
         ast,
         [
           [parse('λfn.n'), parse('λfn.fn'), parse('λfn.n')],
