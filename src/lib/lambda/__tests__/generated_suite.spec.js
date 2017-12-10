@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import { resetEpsilonCounter } from '../operations';
 import { toNormalForm } from '../normalize';
 import { parseTerm } from '../parser';
+import { purgeAstCache } from '../util';
 import suiteData from './generated_suite.data.js';
 
 /*
@@ -23,7 +24,10 @@ describe('Generated Expression Suite', function(){
   it('is unchanged from previous versions', function(done){
     resetEpsilonCounter();
     suiteData.forEach(datum => {
-      assert.deepEqual(toNormalForm(parseTerm(datum.text), 1000), datum.normalForm);
+      assert.deepEqual(
+        purgeAstCache(toNormalForm(parseTerm(datum.text), 1000)),
+        datum.normalForm
+      );
     });
     done();
   });
