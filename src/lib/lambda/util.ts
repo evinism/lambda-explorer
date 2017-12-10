@@ -1,4 +1,4 @@
-import { uniqBy } from 'ramda';
+import { uniqBy, pickBy, map } from 'ramda';
 
 function cacheOnAst(fn){
   const cacheSymbol = `__cache__${fn.name}_${Math.random().toString().slice(2)}`;
@@ -16,6 +16,20 @@ function cacheOnAst(fn){
       return result;
     }
   }
+}
+
+// returns a new AST without the caches
+function purgeAstCache(ast){
+  const shallowWithoutCache = pickBy(
+    (value, key) =>
+      key.slice(0, 9) != '__cache__',
+    ast
+  );
+  return map(
+    value =>
+      (value instanceof Object) ? purgeAstCache(value) : value,
+    shallowWithoutCache
+  );
 }
 
 // TODO: Should for consistensy change to [name]
@@ -41,4 +55,5 @@ const getFreeVars = cacheOnAst(function getFreeVarsUnmemoized(expression){
 export {
   getFreeVars,
   cacheOnAst,
+  purgeAstCache,
 };
