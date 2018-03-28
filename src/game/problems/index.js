@@ -193,25 +193,6 @@ export default [
         tokenStream[2].type === 'identifier';
     },
   },
-  {
-    title: "Assigning variables",
-    prompt: (
-      <div>
-        <p>In the lambda calculus, there's no formal notion of assigning variables, but many texts assign variables.</p>
-        <p>In this repl, we've added a basic syntax around assign variables. (Note: You can't assign an expression with free variables.)</p>
-        <p>This kind of environment around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
-        <p>Try assigning I to your identity function by typing <Code>ID := λa.a</Code></p>
-      </div>
-    ),
-    winCondition: ({ast, lhs}) => {
-      return (
-        // could probably be simplified by including execution context in winCondition.
-        ast &&
-        lhs === 'ID' &&
-        safeEqual(ast, parse('λa.a'))
-      );
-    }
-  },
   // --- Computation ---
   {
     title: 'β reductions + α conversions',
@@ -289,6 +270,42 @@ export default [
       </div>
     ),
     winCondition: ({ast}) => equal(ast, parse('λg.(λx.g(xx))(λx.g(xx))')),
+  },
+  {
+    title: "Assigning variables",
+    prompt: (
+      <div>
+        <p>In the lambda calculus, there's no formal notion of assigning variables, but it's far easier for us to refer to functions by name than just copy/paste the expression every time we want to use it.</p>
+        <p>In this REPL, we've added a basic syntax around assign variables. (Note: You can't assign an expression with free variables.)</p>
+        <p>This kind of <i>lexical environment</i> around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
+        <p>Try assigning <Code>ID</Code> to your identity function by typing <Code>ID := λa.a</Code></p>
+      </div>
+    ),
+    winCondition: ({ast, lhs}) => {
+      return (
+        // could probably be simplified by including execution context in winCondition.
+        ast &&
+        lhs === 'ID' &&
+        safeEqual(ast, parse('λa.a'))
+      );
+    }
+  },
+  {
+    title: 'Using assigned variables',
+    prompt: (
+      <div>
+        <p>Now that <Code>ID</Code> is defined in the <i>lexical environment</i>, we can use it as if it's a previously bound variable</p>
+        <p>Try writing <Code>ID b</Code> in order to apply your newly defined identity function to <Code>b</Code>, with predictable results.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => (
+      // we don't really have a good way of testing whether or not
+      // a certain variable was used, because execution context does var replacement,
+      // which is kinda bad. whatever. just check if left is identical to ID.
+      ast &&
+        ast.type === 'application' &&
+        safeEqual(ast.left, parse('λa.a'))
+    ),
   },
   {
     title: "Church Booleans",
