@@ -34,7 +34,6 @@
     "babel-polyfill": "^6.7.4",
     "classnames": "^2.2.5",
     "http-server": "^0.10.0",
-    "jquery": "^2.2.3",
     "ramda": "^0.21.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1"
