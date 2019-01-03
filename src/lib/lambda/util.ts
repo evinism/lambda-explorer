@@ -52,7 +52,10 @@ const getFreeVars = cacheOnAst(function getFreeVarsUnmemoized(expression){
   }
 });
 
+const emptyContext = {};
+
 export {
+  emptyContext,
   getFreeVars,
   cacheOnAst,
   purgeAstCache,

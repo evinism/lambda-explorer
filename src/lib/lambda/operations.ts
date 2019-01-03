@@ -1,5 +1,5 @@
 import { getFreeVars } from './util';
-import { LambdaExpression as Expr, Name, Maybe } from './types';
+import { LambdaExpression as Expr, Name, Maybe, Closure } from './types';
 
 // Expression -> bool
 function bReducable(exp : Expr) : boolean {
@@ -69,17 +69,27 @@ const replaceAll = str => str.split('').map(
 ).join('');
 
 
-
-// TODO: remove this statefulness from the program. This is god awful and should be removed.
-// This might cause bugs as-is because we have two independent states, one in the worker, one in the main thread
-let nextName = 0;
-function generateNewName(){
-  nextName++;
-  return replaceAll('ε' + nextName);
+// --- Stateful Junk --- 
+let etaClosure : Closure = {};
+function generateNewNameHelper() : string {
+  const nextName = generateNewName(etaClosure);
+  etaClosure[nextName] = nextName;
+  return nextName;
 }
 
-export function resetEpsilonCounter(){
-  nextName = 0;
+export function resetEpsilonCounter() {
+  etaClosure = {};
+}
+// --- End Stateful Junk ---
+
+function generateNewName(closure : Closure) : string {
+  let counter = 0;
+  let nextName : string;
+  do {
+    counter++;
+    nextName = replaceAll('ε' + counter);
+  } while(closure[nextName]);
+  return nextName;
 }
 
 // When you're doing a replace of an expression that has a free variable,
@@ -105,7 +115,7 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-        let newName = generateNewName();
+        let newName = generateNewNameHelper();
         alphaSafeExpression = {
           type: 'function',
           argument: newName,
