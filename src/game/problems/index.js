@@ -83,7 +83,7 @@ export default [
     prompt: (
       <div>
         <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>aa</Code>, do I mean one variable <Code>aa</Code>, or the variable <Code>a</Code> applied to itself?</p>
-        <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter varaibles, and lower case letters are interpreted as single-letter variables.</p>
+        <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter variables, and lower case letters are interpreted as single-letter variables.</p>
         <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable.</p>
       </div>
     ),
