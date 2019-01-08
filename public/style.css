@@ -1,7 +1,6 @@
 body {
   margin: 0px;
   font-family: Roboto;
-
 }
 
 .app-wrapper {
@@ -219,4 +218,81 @@ aside button {
 .repl::-webkit-scrollbar {
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
+}
+
+/* Dark Mode */
+
+.dark-mode.app-wrapper {
+  color: #eeeeee;
+  background-color: #12141c;
+}
+
+.dark-mode header {
+  background-color: #333344;
+}
+
+.dark-mode .code {
+  background: #333333;
+}
+
+.dark-mode .lambda-input {
+  color: whitesmoke;
+}
+
+/* Dark mode REPL stuff */
+.dark-mode .repl .info {
+  color: whitesmoke;
+}
+
+.dark-mode .repl .result {
+  color: whitesmoke;
+}
+
+.dark-mode .repl .command {
+  color: #999999;
+}
+
+.dark-mode .repl .error {
+  color: #ff3333;
+}
+
+.dark-mode .repl .caret {
+  color: #676767;
+}
+
+.dark-mode .repl .prompt-caret {
+  color: #eeeeee;
+}
+
+.dark-mode .result i {
+  color: #aaaadd;
+}
+
+.dark-mode .repl {
+  border-left: 1px solid #33333a;
+}
+
+.dark-mode aside {
+  border-left: 3px dashed #33333a;
+}
+
+.dark-mode footer {
+  background-color: #333344;
+  color: #eeeeee;
+}
+
+.dark-mode .metadata {
+  color: whitesmoke;
+  border-left: 5px solid #33333a;
+}
+
+
+.dark-mode .secret.secret {
+  background: whitesmoke;
+  color: transparent;
+}
+
+.dark-mode .secret.secret:hover {
+  color: whitesmoke;
+  background-color: #333333;
 }
