@@ -23,6 +23,7 @@ const defaultState = {
   currentProblem: 0,
   gameStarted: false,
   shownProblem: 0,
+  darkMode: false,
 };
 
 class App extends React.Component {
@@ -79,14 +80,22 @@ class App extends React.Component {
     );
   }
 
+  _toggleDarkLight = () => {
+    this.setState({
+      darkMode: !this.state.darkMode,
+    });
+  }
+
   render() {
     const {
       gameStarted,
       shownProblem,
       currentProblem,
+      darkMode,
     } = this.state;
+
     return (
-      <div className="app-wrapper">
+      <div className={'app-wrapper' + (darkMode ? ' dark-mode' : '')}>
         <header>
           <h1>Lambda Explorer</h1>
         </header>
@@ -122,6 +131,9 @@ class App extends React.Component {
           <a href="https://github.com/evinism/lambda-explorer">Github</a>
           <a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus Wiki</a>
           <a href="https://github.com/evinism/lambda-explorer/issues">Something not right?</a>
+          <a href="javascript:;" onClick={this._toggleDarkLight}>
+            {darkMode ? 'Light Theme' : 'Dark Theme'}
+          </a>
         </footer>
       </div>
     );
