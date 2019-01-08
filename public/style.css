@@ -296,3 +296,7 @@ aside button {
   color: whitesmoke;
   background-color: #333333;
 }
+
+.dark-mode h1 {
+  font-weight: 300;
+}
