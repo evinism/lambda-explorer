@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import generateGoldens from './util/generateGoldens';
+
+window.generateGoldens = generateGoldens;
 
 import App from './components/App';
 

@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --watch",
-    "dev": "webpack-dev-server --port 8082",
-    "start": "webpack && http-server -p $PORT",
+    "dev": "webpack-dev-server --port 8082 --content-base public",
+    "webpack": "webpack",
     "test": "mocha -r ts-node/register -r babel-core/register src/util/testhelper.js"
   },
   "author": "evin",
