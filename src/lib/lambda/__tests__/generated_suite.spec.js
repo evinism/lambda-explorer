@@ -22,7 +22,6 @@ import suiteData from './generated_suite.data.js';
 
 describe('Generated Expression Suite', function(){
   it('is unchanged from previous versions', function(done){
-    resetEpsilonCounter();
     suiteData.forEach(datum => {
       assert.deepEqual(
         purgeAstCache(toNormalForm(parseTerm(datum.text), 1000)),

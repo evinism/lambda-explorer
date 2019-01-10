@@ -8,14 +8,15 @@ function bReducable(exp : Expr) : boolean {
 
 // We don't know whether we CAN beta reduce the term
 // Expression => Maybe(Expression)
-function bReduce(expression) : Maybe<Expr> {
+function bReduce(expression, closure = {}) : Maybe<Expr> {
   if (!bReducable(expression)) {
     return undefined;
   }
   return replace(
     expression.left.argument,
     expression.right,
-    expression.left.body
+    expression.left.body,
+    closure
   );
 }
 
@@ -68,20 +69,6 @@ const replaceAll = str => str.split('').map(
   letter => (replacementMapping[letter] || letter)
 ).join('');
 
-
-// --- Stateful Junk --- 
-let etaClosure : Closure = {};
-function generateNewNameHelper() : string {
-  const nextName = generateNewName(etaClosure);
-  etaClosure[nextName] = nextName;
-  return nextName;
-}
-
-export function resetEpsilonCounter() {
-  etaClosure = {};
-}
-// --- End Stateful Junk ---
-
 function generateNewName(closure : Closure) : string {
   let counter = 0;
   let nextName : string;
@@ -92,18 +79,23 @@ function generateNewName(closure : Closure) : string {
   return nextName;
 }
 
+function addToClosure(closure : Closure, name : Name) : Closure {
+  // I wonder if this makes things abhorrently slow
+  return { ...closure, name: name };
+}
+
 // When you're doing a replace of an expression that has a free variable,
 // and that expression binds a variable of that same name in the closure,
 // the source expression must rename the variable internally to one that isn't being used.
 
 // Replaces everything named name in expression with replacer
-function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Expr {
+function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closure : Closure) : Expr {
   switch(expression.type) {
     case 'application':
       return {
         type: 'application',
-        left: replace(nameToReplace, replacer, expression.left),
-        right: replace(nameToReplace, replacer, expression.right)
+        left: replace(nameToReplace, replacer, expression.left, closure),
+        right: replace(nameToReplace, replacer, expression.right, closure)
       };
     case 'function':
       if (nameToReplace === expression.argument) {
@@ -115,21 +107,27 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-        let newName = generateNewNameHelper();
+        let newName = generateNewName(closure);
         alphaSafeExpression = {
           type: 'function',
           argument: newName,
           body: replace(
             expression.argument,
             { type: 'variable', name: newName },
-            expression.body
+            expression.body,
+            addToClosure(closure, newName)
           ),
         };
       }
       return {
         type: 'function',
         argument: alphaSafeExpression.argument,
-        body: replace(nameToReplace, replacer, alphaSafeExpression.body)
+        body: replace(
+          nameToReplace,
+          replacer,
+          alphaSafeExpression.body,
+          addToClosure(closure, alphaSafeExpression.argument)
+        )
       };
     case 'variable':
       return expression.name === nameToReplace ? replacer : expression;
