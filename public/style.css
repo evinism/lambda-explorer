@@ -184,7 +184,7 @@ aside button {
 
 .secret.secret:hover {
   background-color: aliceblue;
-  color: black;
+  color: red;
 }
 
 .code, .secret {
@@ -224,11 +224,11 @@ aside button {
 
 .dark-mode.app-wrapper {
   color: #eeeeee;
-  background-color: #12141c;
+  background-color: brown;
 }
 
 .dark-mode header {
-  background-color: #333344;
+  background-color: yellow;
 }
 
 .dark-mode .code {
@@ -241,48 +241,48 @@ aside button {
 
 /* Dark mode REPL stuff */
 .dark-mode .repl .info {
-  color: whitesmoke;
+  color: purple;
 }
 
 .dark-mode .repl .result {
-  color: whitesmoke;
+  color: orange;
 }
 
 .dark-mode .repl .command {
-  color: #999999;
+  color: green;
 }
 
 .dark-mode .repl .error {
-  color: #ff3333;
+  color: aqua;
 }
 
 .dark-mode .repl .caret {
-  color: #676767;
+  color: purple;
 }
 
 .dark-mode .repl .prompt-caret {
-  color: #eeeeee;
+  color: green;
 }
 
 .dark-mode .result i {
-  color: #aaaadd;
+  color: tomato;
 }
 
 .dark-mode .repl {
-  border-left: 1px solid #33333a;
+  border-left: 1px solid red;
 }
 
 .dark-mode aside {
-  border-left: 3px dashed #33333a;
+  border-left: 3px dashed magenta;
 }
 
 .dark-mode footer {
-  background-color: #333344;
+  background-color: magenta;
   color: #eeeeee;
 }
 
 .dark-mode .metadata {
-  color: whitesmoke;
+  color: darkblue;
   border-left: 5px solid #33333a;
 }
 
@@ -294,7 +294,7 @@ aside button {
 
 .dark-mode .secret.secret:hover {
   color: whitesmoke;
-  background-color: #333333;
+  background-color: saddlebrown;
 }
 
 .dark-mode h1 {
