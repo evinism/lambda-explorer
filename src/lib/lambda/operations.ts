@@ -1,5 +1,6 @@
 import { getFreeVars } from './util';
 import { LambdaExpression as Expr, Name, Maybe, Closure } from './types';
+import { addToClosure, addManyToClosure } from './closure';
 
 // Expression -> bool
 function bReducable(exp : Expr) : boolean {
@@ -8,7 +9,7 @@ function bReducable(exp : Expr) : boolean {
 
 // We don't know whether we CAN beta reduce the term
 // Expression => Maybe(Expression)
-function bReduce(expression, closure = {}) : Maybe<Expr> {
+function bReduce(expression, closure : Closure = {}) : Maybe<Expr> {
   if (!bReducable(expression)) {
     return undefined;
   }
@@ -79,11 +80,6 @@ function generateNewName(closure : Closure) : string {
   return nextName;
 }
 
-function addToClosure(closure : Closure, name : Name) : Closure {
-  // I wonder if this makes things abhorrently slow
-  return { ...closure, name: name };
-}
-
 // When you're doing a replace of an expression that has a free variable,
 // and that expression binds a variable of that same name in the closure,
 // the source expression must rename the variable internally to one that isn't being used.
@@ -98,16 +94,21 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closu
         right: replace(nameToReplace, replacer, expression.right, closure)
       };
     case 'function':
+      // replaced var is shadowed
       if (nameToReplace === expression.argument) {
-        // We ignore overwritten vars for right now.
         return expression;
       }
-      // aahah
+
       // for alpha conversion
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-        let newName = generateNewName(closure);
+
+        // Then we pick a new name that both isn't in the closure
+        // AND isn't a free var in the replacer.
+        let newName = generateNewName(addManyToClosure(closure, freeInReplacer));
+
+        // And make that the new function name
         alphaSafeExpression = {
           type: 'function',
           argument: newName,

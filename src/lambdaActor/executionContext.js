@@ -21,6 +21,17 @@ class ExecutionContext {
     // this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
   }
 
+  getClosure(){
+    // Right now, closure is shit because it's of form
+    // {[name]: name}
+    // So we throw it into that format because I haven't refactored it yet.
+    const closure = {}
+    for(key of Object.keys(this.definedVariables)){
+      closure[key] = key;
+    }
+    return closure;
+  }
+
   getResolvableVariables(ast){
     // holy fuck there is so much badness in here.
     return getFreeVars(ast).map(token => token.name).filter(
@@ -74,7 +85,7 @@ class ExecutionContext {
         });
       } else {
         ast = this.resolveVariables(ast);
-        const metadata = astToMetadata(ast);
+        const metadata = astToMetadata(ast, this.getClosure());
         this._postBack({
           type: 'computation',
           text,

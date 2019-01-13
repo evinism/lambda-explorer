@@ -2,10 +2,10 @@
 import astToMetadata from './astToMetadata';
 
 onmessage = function(e) {
-  const { ast, text, } = JSON.parse(e.data);
+  const { ast, text, closure } = JSON.parse(e.data);
   let metadata;
   try {
-    metadata = astToMetadata(ast);
+    metadata = astToMetadata(ast, closure);
     postMessage(JSON.stringify({
       type: 'computation',
       text,

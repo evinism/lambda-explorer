@@ -1,13 +1,18 @@
-import { LambdaExpression as Expr, Maybe } from './types';
+import { LambdaExpression as Expr, Maybe, Closure } from './types';
 import { bReducable, bReduce } from './operations';
+import { addToClosure } from './closure';
 
-function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
+function toNormalForm(
+    expression : Expr,
+    depthOverflow : Number = 1000,
+    closure : Closure = {}
+  ) : Expr {
   let count = 0;
   let current;
   let reduced : Maybe<Expr> = expression;
   do {
     current = reduced;
-    reduced = leftmostOutermostRedex(current);
+    reduced = leftmostOutermostRedex(current, closure);
     count++;
     if (count >= depthOverflow) {
       throw { message: 'Runtime error: normal form execution exceeded' };
@@ -16,12 +21,15 @@ function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
   return current;
 }
 
-function leftmostOutermostRedex(expression: Expr) : Maybe<Expr> {
+function leftmostOutermostRedex(expression: Expr, closure : Closure) : Maybe<Expr> {
   if(bReducable(expression)) {
-    return bReduce(expression);
+    return bReduce(expression, closure);
   }
   if (expression.type === 'function'){
-    const res = leftmostOutermostRedex(expression.body);
+    const res = leftmostOutermostRedex(
+      expression.body,
+      addToClosure(closure, expression.argument)
+    );
     if (res === undefined) {
       return undefined;
     } else {
@@ -36,7 +44,10 @@ function leftmostOutermostRedex(expression: Expr) : Maybe<Expr> {
     return undefined;
   }
   if (expression.type === 'application'){
-    const leftReduced = leftmostOutermostRedex(expression.left);
+    const leftReduced = leftmostOutermostRedex(
+      expression.left,
+      closure
+    );
     if (leftReduced !== undefined) {
       return {
         type: 'application',
@@ -44,7 +55,10 @@ function leftmostOutermostRedex(expression: Expr) : Maybe<Expr> {
         right: expression.right
       };
     }
-    const rightReduced = leftmostOutermostRedex(expression.right);
+    const rightReduced = leftmostOutermostRedex(
+      expression.right,
+      closure
+    );
     if (rightReduced !== undefined) {
       return {
         type: 'application',

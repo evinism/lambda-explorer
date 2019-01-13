@@ -10,7 +10,7 @@ import {
   tokenize,
 } from '../lib/lambda';
 
-function astToMetadata(ast){
+function astToMetadata(ast, closure){
   const freeVars = getFreeVars(ast);
   const renderedFromAst = renderExpression(ast);
   const betaReduced = bReduce(ast);
