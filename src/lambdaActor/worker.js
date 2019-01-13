@@ -2,6 +2,7 @@
 import astToMetadata from './astToMetadata';
 
 onmessage = function(e) {
+  debugger;
   const { ast, text, closure } = JSON.parse(e.data);
   let metadata;
   try {

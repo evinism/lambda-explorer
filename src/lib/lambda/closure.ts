@@ -1,4 +1,4 @@
-import {Closure, Name} from './types';
+import { Closure, Name } from './types';
 
 export function addToClosure(closure : Closure, name : Name) : Closure {
     // I wonder if this makes things abhorrently slow

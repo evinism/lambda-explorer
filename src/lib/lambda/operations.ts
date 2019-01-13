@@ -108,7 +108,10 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closu
         //  1: isn't in the closure,
         //  2: isn't free in the replacer,
         //  3: isn't free in the expression
+
         // TODO: Look this up to ensure this is valid
+        // (do we even need the closure if we're checking 
+        // free vars in both replacer and expression?)
         const freeInExpression = getFreeVars(expression).map(node => node.name);
         let newName = generateNewName(
           addManyToClosure(

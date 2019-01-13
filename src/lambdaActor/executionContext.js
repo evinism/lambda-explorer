@@ -26,7 +26,7 @@ class ExecutionContext {
     // {[name]: name}
     // So we throw it into that format because I haven't refactored it yet.
     const closure = {}
-    for(key of Object.keys(this.definedVariables)){
+    for(const key of Object.keys(this.definedVariables)){
       closure[key] = key;
     }
     return closure;

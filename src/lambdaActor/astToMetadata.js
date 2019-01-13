@@ -13,11 +13,11 @@ import {
 function astToMetadata(ast, closure){
   const freeVars = getFreeVars(ast);
   const renderedFromAst = renderExpression(ast);
-  const betaReduced = bReduce(ast);
+  const betaReduced = bReduce(ast, closure);
   const etaReduced = eReduce(ast);
   const asNumeral = renderAsChurchNumeral(ast);
   const asBoolean = renderAsChurchBoolean(ast);
-  const normalForm = toNormalForm(ast);
+  const normalForm = toNormalForm(ast, closure);
   const normAsNumeral = renderAsChurchNumeral(normalForm);
   const normAsBoolean = renderAsChurchBoolean(normalForm);
 
