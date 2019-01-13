@@ -104,11 +104,20 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closu
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
 
-        // Then we pick a new name that both isn't in the closure
-        // AND isn't a free var in the replacer.
-        let newName = generateNewName(addManyToClosure(closure, freeInReplacer));
+        // Then we pick a new name that
+        //  1: isn't in the closure,
+        //  2: isn't free in the replacer,
+        //  3: isn't free in the expression
+        // TODO: Look this up to ensure this is valid
+        const freeInExpression = getFreeVars(expression).map(node => node.name);
+        let newName = generateNewName(
+          addManyToClosure(
+            closure,
+            freeInReplacer.concat(freeInExpression)
+          )
+        );
 
-        // And make that the new function name
+        // And make that the new function arg name
         alphaSafeExpression = {
           type: 'function',
           argument: newName,
