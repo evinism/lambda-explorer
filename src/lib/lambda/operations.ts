@@ -1,6 +1,5 @@
 import { getFreeVars } from './util';
 import { LambdaExpression as Expr, Name, Maybe, Closure } from './types';
-import { addToClosure, addManyToClosure } from './closure';
 
 // Expression -> bool
 function bReducable(exp : Expr) : boolean {
@@ -9,15 +8,14 @@ function bReducable(exp : Expr) : boolean {
 
 // We don't know whether we CAN beta reduce the term
 // Expression => Maybe(Expression)
-function bReduce(expression, closure : Closure = {}) : Maybe<Expr> {
+function bReduce(expression) : Maybe<Expr> {
   if (!bReducable(expression)) {
     return undefined;
   }
   return replace(
     expression.left.argument,
     expression.right,
-    expression.left.body,
-    closure
+    expression.left.body
   );
 }
 
@@ -70,55 +68,43 @@ const replaceAll = str => str.split('').map(
   letter => (replacementMapping[letter] || letter)
 ).join('');
 
-function generateNewName(closure : Closure) : string {
+// For some reason typescript doesn't think arrays have includes on them
+function generateNewName(freeVars) : string {
   let counter = 0;
   let nextName : string;
   do {
     counter++;
     nextName = replaceAll('ε' + counter);
-  } while(closure[nextName]);
+  } while(freeVars.includes(nextName));
   return nextName;
 }
 
-// When you're doing a replace of an expression that has a free variable,
-// and that expression binds a variable of that same name in the closure,
-// the source expression must rename the variable internally to one that isn't being used.
-
 // Replaces everything named name in expression with replacer
-function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closure : Closure) : Expr {
+// Follows the rules for capture-avoiding substitutions
+function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Expr {
   switch(expression.type) {
     case 'application':
       return {
         type: 'application',
-        left: replace(nameToReplace, replacer, expression.left, closure),
-        right: replace(nameToReplace, replacer, expression.right, closure)
+        left: replace(nameToReplace, replacer, expression.left),
+        right: replace(nameToReplace, replacer, expression.right)
       };
     case 'function':
-      // replaced var is shadowed
+      // shadowing
       if (nameToReplace === expression.argument) {
         return expression;
       }
 
-      // for alpha conversion
+      // capture avoidance 
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
 
         // Then we pick a new name that
-        //  1: isn't in the closure,
-        //  2: isn't free in the replacer,
-        //  3: isn't free in the expression
-
-        // TODO: Look this up to ensure this is valid
-        // (do we even need the closure if we're checking 
-        // free vars in both replacer and expression?)
+        //  1: isn't free in the replacer
+        //  2: isn't free in the expression
         const freeInExpression = getFreeVars(expression).map(node => node.name);
-        let newName = generateNewName(
-          addManyToClosure(
-            closure,
-            freeInReplacer.concat(freeInExpression)
-          )
-        );
+        let newName = generateNewName(freeInReplacer.concat(freeInExpression));
 
         // And make that the new function arg name
         alphaSafeExpression = {
@@ -128,7 +114,6 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closu
             expression.argument,
             { type: 'variable', name: newName },
             expression.body,
-            addToClosure(closure, newName)
           ),
         };
       }
@@ -139,7 +124,6 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr, closu
           nameToReplace,
           replacer,
           alphaSafeExpression.body,
-          addToClosure(closure, alphaSafeExpression.argument)
         )
       };
     case 'variable':

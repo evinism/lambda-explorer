@@ -3,10 +3,10 @@ import astToMetadata from './astToMetadata';
 
 onmessage = function(e) {
   debugger;
-  const { ast, text, closure } = JSON.parse(e.data);
+  const { ast, text } = JSON.parse(e.data);
   let metadata;
   try {
-    metadata = astToMetadata(ast, closure);
+    metadata = astToMetadata(ast);
     postMessage(JSON.stringify({
       type: 'computation',
       text,

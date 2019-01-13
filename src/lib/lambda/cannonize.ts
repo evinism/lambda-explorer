@@ -35,7 +35,6 @@ function cannonizeUnmemoized(ast : Expr) : Expr {
               a.argument,
               { type: 'variable', name: newName },
               a.body,
-              {},
             )
           )
         };

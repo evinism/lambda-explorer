@@ -10,14 +10,14 @@ import {
   tokenize,
 } from '../lib/lambda';
 
-function astToMetadata(ast, closure){
+function astToMetadata(ast){
   const freeVars = getFreeVars(ast);
   const renderedFromAst = renderExpression(ast);
-  const betaReduced = bReduce(ast, closure);
+  const betaReduced = bReduce(ast);
   const etaReduced = eReduce(ast);
   const asNumeral = renderAsChurchNumeral(ast);
   const asBoolean = renderAsChurchBoolean(ast);
-  const normalForm = toNormalForm(ast, closure);
+  const normalForm = toNormalForm(ast);
   const normAsNumeral = renderAsChurchNumeral(normalForm);
   const normAsBoolean = renderAsChurchBoolean(normalForm);
 
