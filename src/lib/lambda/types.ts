@@ -96,5 +96,3 @@ export type LambdaStatement = AssignmentExpression | LambdaExpression;
 
 // util type:
 export type Maybe<T> = T | undefined;
-
-export type Closure = { [s: string]: string };

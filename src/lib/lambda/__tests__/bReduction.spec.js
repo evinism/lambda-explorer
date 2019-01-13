@@ -18,7 +18,7 @@ describe('Beta Reductions', function(){
     );
   });
 
-  it('Avoids name conflicts when first chosen name conflicts with free var in expression', () => {
+  it('Avoids name conflicts when first chosen name is shadowed in an inner scope', () => {
     const ast = {
       "type": "application",
       "left": {

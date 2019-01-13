@@ -1,4 +1,4 @@
-import { LambdaExpression as Expr, Maybe, Closure } from './types';
+import { LambdaExpression as Expr, Maybe } from './types';
 import { bReducable, bReduce } from './operations';
 
 function toNormalForm(

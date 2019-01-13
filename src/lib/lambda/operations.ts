@@ -1,5 +1,5 @@
 import { getFreeVars } from './util';
-import { LambdaExpression as Expr, Name, Maybe, Closure } from './types';
+import { LambdaExpression as Expr, Name, Maybe } from './types';
 
 // Expression -> bool
 function bReducable(exp : Expr) : boolean {
@@ -102,9 +102,9 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
 
         // Then we pick a new name that
         //  1: isn't free in the replacer
-        //  2: isn't free in the expression
-        const freeInExpression = getFreeVars(expression).map(node => node.name);
-        let newName = generateNewName(freeInReplacer.concat(freeInExpression));
+        //  2: isn't free in the expression body
+        const freeInExpressionBody = getFreeVars(expression.body).map(node => node.name);
+        let newName = generateNewName(freeInReplacer.concat(freeInExpressionBody));
 
         // And make that the new function arg name
         alphaSafeExpression = {
@@ -113,7 +113,7 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
           body: replace(
             expression.argument,
             { type: 'variable', name: newName },
-            expression.body,
+            expression.body
           ),
         };
       }
