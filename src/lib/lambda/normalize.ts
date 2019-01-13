@@ -1,7 +1,10 @@
 import { LambdaExpression as Expr, Maybe } from './types';
 import { bReducable, bReduce } from './operations';
 
-function toNormalForm(expression : Expr, depthOverflow = 1000) : Expr {
+function toNormalForm(
+    expression : Expr,
+    depthOverflow : Number = 1000,
+  ) : Expr {
   let count = 0;
   let current;
   let reduced : Maybe<Expr> = expression;
