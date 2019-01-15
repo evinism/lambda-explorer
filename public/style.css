@@ -300,3 +300,7 @@ aside button {
 .dark-mode h1 {
   font-weight: 300;
 }
+
+.dark-mode aside a {
+  color: whitesmoke;
+}
