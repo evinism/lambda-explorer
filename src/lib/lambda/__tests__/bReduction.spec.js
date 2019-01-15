@@ -10,9 +10,179 @@ describe('Beta Reductions', function(){
 
   it('Avoids name conflicts when executing beta reductions', function(){
     // TODO: make this more robust with canonization, so it's not tied to specific implementation.
-    resetEpsilonCounter();
     const ast = {"type":"application","left":{"type":"function","argument":"a","body":{"type":"function","argument":"b","body":{"type":"application","left":{"type":"variable","name":"a"},"right":{"type":"variable","name":"b"}}}},"right":{"type":"variable","name":"b"}};
     const expected = {"type":"function","argument":"ε₁","body":{"type":"application","left":{"type":"variable","name":"b"},"right":{"type":"variable","name":"ε₁"}}};
+    assert.deepEqual(
+      purgeAstCache(bReduce(ast)),
+      expected
+    );
+  });
+
+  it('Avoids name conflicts when first chosen name is shadowed in an inner scope', () => {
+    const ast = {
+      "type": "application",
+      "left": {
+        "type": "function",
+        "argument":"a",
+        "body": {
+          "type": "function",
+          "argument":"ε₁",
+          "body": {
+            "type": "application",
+            "left": {
+              "type": "variable",
+              "name":"a"
+            },
+            "right": {
+              "type":"variable",
+              "name":"ε₁"
+            }
+          }
+        }
+      },
+      "right": {
+        "type": "variable",
+        "name": "ε₁"
+      }
+    };
+    const expected = {
+      "type": "function",
+      "argument": "ε₂",
+      "body": {
+        "type": "application",
+        "left": {
+          "type": "variable",
+          "name":"ε₁"
+        },
+        "right": {
+          "type": "variable", "name": "ε₂"
+        }
+      }
+    };
+    assert.deepEqual(
+      purgeAstCache(bReduce(ast)),
+      expected
+    );
+  });
+
+  it('Avoids name conflicts when first chosen name conflicts with free var in replacer', () => {
+    const ast = {
+      "type": "application",
+      "left": {
+        "type": "function",
+        "argument":"a",
+        "body": {
+          "type": "function",
+          "argument":"b",
+          "body": {
+            "type": "application",
+            "left": {
+              "type": "variable",
+              "name":"a"
+            },
+            "right": {
+              "type":"variable",
+              "name":"b"
+            }
+          }
+        }
+      },
+      "right": {
+        "type": "application",
+        "left": {
+          "type": "variable",
+          "name":"b"
+        },
+        "right": {
+          "type": "variable",
+          "name": "ε₁"
+        }
+      }
+    };
+    const expected = {
+      "type": "function",
+      "argument": "ε₂",
+      "body": {
+        "type": "application",
+        "left": {
+          "type": "application",
+          "left": {
+            "type": "variable",
+            "name": "b"
+          },
+          "right": {
+            "type": "variable",
+            "name": "ε₁"
+          }
+        },
+        "right": {
+          "type": "variable",
+          "name": "ε₂"
+        }
+      }
+    };
+    assert.deepEqual(
+      purgeAstCache(bReduce(ast)),
+      expected
+    );
+  });
+
+  it('Avoids name conflicts when there are conflicting free vars in both', () => {
+    const ast = {
+      "type": "application",
+      "left": {
+        "type": "function",
+        "argument": "a",
+        "body": {
+          "type": "function",
+          "argument": "ε₁",
+          "body": {
+            "type": "application",
+            "left": {
+              "type": "application",
+              "left": {
+                "type": "variable",
+                "name": "a"
+              },
+              "right": {
+                "type": "variable",
+                "name": "ε₁"
+              }
+            },
+            "right": {
+              "type": "variable",
+              "name": "ε₂"
+            }
+          }
+        }
+      },
+      "right": {
+        "type": "variable",
+        "name": "ε₁"
+      }
+    };
+    const expected = {
+      "type": "function",
+      "argument": "ε₃",
+      "body": {
+        "type": "application",
+        "left": {
+          "type": "application",
+          "left": {
+            "type": "variable",
+            "name": "ε₁"
+          },
+          "right": {
+            "type": "variable",
+            "name": "ε₃"
+          }
+        },
+        "right": {
+          "type": "variable",
+          "name": "ε₂"
+        }
+      }
+    }
     assert.deepEqual(
       purgeAstCache(bReduce(ast)),
       expected

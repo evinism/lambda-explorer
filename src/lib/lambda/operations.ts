@@ -68,25 +68,19 @@ const replaceAll = str => str.split('').map(
   letter => (replacementMapping[letter] || letter)
 ).join('');
 
-
-
-// TODO: remove this statefulness from the program. This is god awful and should be removed.
-// This might cause bugs as-is because we have two independent states, one in the worker, one in the main thread
-let nextName = 0;
-function generateNewName(){
-  nextName++;
-  return replaceAll('ε' + nextName);
+// For some reason typescript doesn't think arrays have includes on them
+function generateNewName(freeVars) : string {
+  let counter = 0;
+  let nextName : string;
+  do {
+    counter++;
+    nextName = replaceAll('ε' + counter);
+  } while(freeVars.includes(nextName));
+  return nextName;
 }
-
-export function resetEpsilonCounter(){
-  nextName = 0;
-}
-
-// When you're doing a replace of an expression that has a free variable,
-// and that expression binds a variable of that same name in the closure,
-// the source expression must rename the variable internally to one that isn't being used.
 
 // Replaces everything named name in expression with replacer
+// Follows the rules for capture-avoiding substitutions
 function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Expr {
   switch(expression.type) {
     case 'application':
@@ -96,16 +90,23 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
         right: replace(nameToReplace, replacer, expression.right)
       };
     case 'function':
+      // shadowing
       if (nameToReplace === expression.argument) {
-        // We ignore overwritten vars for right now.
         return expression;
       }
-      // aahah
-      // for alpha conversion
+
+      // capture avoidance 
       const freeInReplacer = getFreeVars(replacer).map(node => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-        let newName = generateNewName();
+
+        // Then we pick a new name that
+        //  1: isn't free in the replacer
+        //  2: isn't free in the expression body
+        const freeInExpressionBody = getFreeVars(expression.body).map(node => node.name);
+        let newName = generateNewName(freeInReplacer.concat(freeInExpressionBody));
+
+        // And make that the new function arg name
         alphaSafeExpression = {
           type: 'function',
           argument: newName,
@@ -119,7 +120,11 @@ function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Exp
       return {
         type: 'function',
         argument: alphaSafeExpression.argument,
-        body: replace(nameToReplace, replacer, alphaSafeExpression.body)
+        body: replace(
+          nameToReplace,
+          replacer,
+          alphaSafeExpression.body,
+        )
       };
     case 'variable':
       return expression.name === nameToReplace ? replacer : expression;
