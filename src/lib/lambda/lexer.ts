@@ -1,5 +1,9 @@
 import { LambdaToken } from './types';
 
+// idk i'm just guessing here. If you want something, just add it and i'll probs approve it
+const validSingleChars = /[a-zα-κμ-ω+\!\-\|\&]/;
+const validMultiChars = /[A-Z_]/;
+
 function tokenize(str: string) : LambdaToken[] {
   let tokenStream : LambdaToken[] = [];
   for(let pos = 0; pos < str.length; pos++){
@@ -22,7 +26,7 @@ function tokenize(str: string) : LambdaToken[] {
       tokenStream.push({
         type: 'closeParen',
       });
-    } else if(/[a-zε]/.test(nextChar)){
+    } else if(validSingleChars.test(nextChar)){
       // scan ahead to read the whole identifier
       let name = nextChar;
       while(/[₀-₉]/.test(str[pos + 1])){
@@ -33,9 +37,9 @@ function tokenize(str: string) : LambdaToken[] {
         type: 'identifier',
         value: name,
       });
-    } else if(/[A-Z]/.test(nextChar)) {
+    } else if(validMultiChars.test(nextChar)) {
       let name = nextChar;
-      while(/[A-Z]/.test(str[pos + 1])) {
+      while(validMultiChars.test(str[pos + 1])) {
         pos++;
         name += str[pos];
       }
