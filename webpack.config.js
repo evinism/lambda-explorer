@@ -1,7 +1,7 @@
 module.exports = {
   context: __dirname + "/src",
   entry: [
-    'babel-polyfill',
+    '@babel/polyfill',
     './index',
   ],
   output: {
@@ -10,7 +10,7 @@ module.exports = {
     publicPath: "/build"
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
@@ -18,7 +18,7 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
+        loader: 'ts-loader',
         exclude: /node_modules/,
       }
     ],
