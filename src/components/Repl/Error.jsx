@@ -45,6 +45,7 @@ export default class Error extends React.Component {
     const {ast, error} = this.props;
     
     let buildErrorMetadata;
+    // would prefer instanceof, but i think babel has a bug
     if (error.name === 'LambdaExecutionTimeoutError') {
       buildErrorMetadata = showFirstNSteps;
     }
