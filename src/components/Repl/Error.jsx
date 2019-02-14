@@ -52,7 +52,7 @@ export default class Error extends React.Component {
     return (
       <div className='error'>
         <div className="result-inner">
-          <span>{this.props.children}</span>
+          <span title={this.props.children}>{this.props.children}</span>
           {buildErrorMetadata && ( // implicitly selects runtime errors, kinda shitty
             <div>
               <span onClick={this.handleButtonClick} className='expand-collapse-button'>
@@ -61,7 +61,7 @@ export default class Error extends React.Component {
             </div>
           )}
         </div>
-        {this.state.expanded && buildErrorMetadata(ast)}
+        {this.state.expanded && buildErrorMetadata && buildErrorMetadata(ast)}
       </div>
     );
   }
