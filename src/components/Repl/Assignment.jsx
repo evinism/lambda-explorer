@@ -14,14 +14,12 @@ export default class Error extends React.Component {
   render(){
     const {ast} = this.props;
     return (
-      <span className='result'>
-        <div>
-          <div className="result-inner">
-            <span>{this.props.children}</span>
-            <div><i>{` <assignment>`}</i></div>
-          </div>
+      <div className='result'>
+        <div className="result-inner">
+          <span>{this.props.children}</span>
+          <div><i>{` <assignment>`}</i></div>
         </div>
-      </span>
+      </div>
     );
   }
 }

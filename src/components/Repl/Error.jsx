@@ -4,8 +4,6 @@ import {
   renderExpression,
 } from '../../lib/lambda';
 
-// Quick and dirty expansion of errors, because i forgot to go through
-// everything before submitting this somewhere
 
 const shownSteps = 25;
 
@@ -52,21 +50,19 @@ export default class Error extends React.Component {
     }
 
     return (
-      <span className='error'>
-        <div>
-          <div className="result-inner">
-            <span>{this.props.children}</span>
-            {buildErrorMetadata && ( // implicitly selects runtime errors, kinda shitty
-              <div>
-                <span onClick={this.handleButtonClick} className='expand-collapse-button'>
-                  {this.state.expanded ? '(-)' : '(+)'}
-                </span>
-              </div>
-            )}
-          </div>
-          {this.state.expanded && buildErrorMetadata(ast)}
+      <div className='error'>
+        <div className="result-inner">
+          <span>{this.props.children}</span>
+          {buildErrorMetadata && ( // implicitly selects runtime errors, kinda shitty
+            <div>
+              <span onClick={this.handleButtonClick} className='expand-collapse-button'>
+                {this.state.expanded ? '(-)' : '(+)'}
+              </span>
+            </div>
+          )}
         </div>
-      </span>
+        {this.state.expanded && buildErrorMetadata(ast)}
+      </div>
     );
   }
 }
