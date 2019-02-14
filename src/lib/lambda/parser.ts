@@ -4,6 +4,8 @@ import {
   LambdaToken as Token,
 } from './types';
 import { tokenize } from './lexer';
+import { LambdaSyntaxError } from './errors';
+
 
 // this one'll be a better entry point
 // LambdaToken[] -> Statement (because the typechecker is missing vast swathes of things.)
@@ -23,7 +25,7 @@ export function parseStatement(tokenStream : Token[] ) : Statement {
 
 export function parseExpression(tokenStream : Token[]) : Expr {
   if(tokenStream.length === 0){
-    throw({ message: 'Syntax Error: Empty Expression'});
+    throw new LambdaSyntaxError('Empty Expression');
   }
   let expression, rest;
   [expression, rest] = popExpression(tokenStream);
@@ -55,22 +57,22 @@ function popExpression(tokenStream) : [Expr, Token[]] {
     case 'lambda':
       // scan forward to find the dot, add in arguments
       if(tokenStream.length < 2) {
-        throw({ message: 'Syntax Error: Unexpected end of lambda' });
+        throw new LambdaSyntaxError('Unexpected end of lambda');
       }
       let dotPosition = 1;
       while(tokenStream[dotPosition].type !== 'dot') {
         if(tokenStream[dotPosition].type !== 'identifier'){
-          throw({ message: 'Syntax Error: non-identifier in argument stream'});
+          throw new LambdaSyntaxError('Non-identifier in argument stream');
         }
         dotPosition++;
         if (dotPosition >= tokenStream.length){
-          throw({ message: 'Syntax Error: Unexpected end of lambda'});
+          throw new LambdaSyntaxError('Unexpected end of lambda');
         }
       }
 
       const args = tokenStream.slice(1, dotPosition);
       if(args.length === 0){
-        throw({ message: 'Syntax Error: Bad number of arguments'});
+        throw new LambdaSyntaxError('Bad number of arguments');
       }
       const childExp = parseExpression(tokenStream.slice(dotPosition + 1));
       const exp = args.reduceRight((acc, cur) => ({
@@ -99,14 +101,14 @@ function popExpression(tokenStream) : [Expr, Token[]] {
         }
       }
       if (splitPoint < 0) {
-        throw({ message: 'Syntax Error: Unmatched Paren' });
+        throw new LambdaSyntaxError('Unmatched Paren');
       }
       return [
         parseExpression(tokenStream.slice(1, splitPoint - 1)),
         tokenStream.slice(splitPoint)
       ]
     default:
-      throw({ message: 'Syntax Error: Unexpected Token'});
+      throw new LambdaSyntaxError('Syntax Error: Unexpected Token');
   }
 }
 

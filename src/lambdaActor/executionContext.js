@@ -3,6 +3,7 @@
 // import TimeoutWatcher from './TimeoutWatcher';
 // stick these in on move to async interface.
 import astToMetadata from './astToMetadata';
+import { FreeVarInDefinitionError } from './errors';
 
 import {
   parseExtendedSyntax,
@@ -44,7 +45,7 @@ class ExecutionContext {
   defineVariable(name, ast){
     if(this.getUnresolvableVariables(ast).length > 0){
       const unresolvables = this.getUnresolvableVariables(ast).join(', ');
-      throw({ message: 'Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.' });
+      throw new FreeVarInDefinitionError('Name Error: Expression contains free variables ' + unresolvables + '. Assigned values cannot have free variables in this REPL.');
     }
     this.definedVariables[name] = ast;
   }

@@ -1,12 +1,15 @@
 import React from 'react';
-import { leftmostOutermostRedex, renderExpression } from '../../lib/lambda';
+import {
+  leftmostOutermostRedex,
+  renderExpression,
+} from '../../lib/lambda';
 
 // Quick and dirty expansion of errors, because i forgot to go through
 // everything before submitting this somewhere
 
 const shownSteps = 25;
 
-function buildErrorMetadata(ast){
+function showFirstNSteps(ast){
   const firstSteps = [ ast ];
   for (let i = 0; i < shownSteps; i++){
     firstSteps.push(ast && leftmostOutermostRedex(firstSteps[firstSteps.length - 1]));
@@ -41,13 +44,19 @@ export default class Error extends React.Component {
   }
 
   render(){
-    const {ast} = this.props;
+    const {ast, error} = this.props;
+    
+    let buildErrorMetadata;
+    if (error.name === 'LambdaExecutionTimeoutError') {
+      buildErrorMetadata = showFirstNSteps;
+    }
+
     return (
       <span className='error'>
         <div>
           <div className="result-inner">
             <span>{this.props.children}</span>
-            {ast && ( // implicitly selects runtime errors, kinda shitty
+            {buildErrorMetadata && ( // implicitly selects runtime errors, kinda shitty
               <div>
                 <span onClick={this.handleButtonClick} className='expand-collapse-button'>
                   {this.state.expanded ? '(-)' : '(+)'}
