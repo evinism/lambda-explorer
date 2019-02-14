@@ -28,20 +28,18 @@ export default class Computation extends React.Component {
     const renderedAddlInfo = addlInfoString && ` <${addlInfoString}>`;
 
     return (
-      <span className='result'>
-        <div>
-          <div className="result-inner">
-            <span>{this.props.children}</span>
-            <div>
-              <i>{renderedAddlInfo}</i>
-              <span onClick={this.handleButtonClick} className='expand-collapse-button'>
-                {this.state.expanded ? '(-)' : '(+)'}
-              </span>
-            </div>
+      <div className='result'>
+        <div className="result-inner">
+          <span>{this.props.children}</span>
+          <div>
+            <i>{renderedAddlInfo}</i>
+            <span onClick={this.handleButtonClick} className='expand-collapse-button'>
+              {this.state.expanded ? '(-)' : '(+)'}
+            </span>
           </div>
-          {this.state.expanded && <Metadata ast={this.props.computation.ast} />}
         </div>
-      </span>
+        {this.state.expanded && <Metadata ast={this.props.computation.ast} />}
+      </div>
     );
   }
 }
