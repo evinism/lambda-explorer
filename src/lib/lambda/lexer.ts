@@ -66,7 +66,7 @@ function tokenize(str: string) : LambdaToken[] {
       const lower = Math.max(pos - excerptPadding, 0);
       const upper = Math.min(pos + excerptPadding, str.length);
       const excerpt = str.slice(lower, upper);
-      throw new LambdaLexingError(`Lexing Error: unexpected character at ${pos}: ${excerpt}`);
+      throw new LambdaLexingError(`Unexpected character at ${pos}: ${excerpt}`);
     }
   }
   return tokenStream;
