@@ -1,5 +1,6 @@
 import { LambdaExpression as Expr, Maybe } from './types';
 import { bReducable, bReduce } from './operations';
+import { LambdaExecutionTimeoutError } from './errors';
 
 function toNormalForm(
     expression : Expr,
@@ -13,7 +14,7 @@ function toNormalForm(
     reduced = leftmostOutermostRedex(current);
     count++;
     if (count >= depthOverflow) {
-      throw { message: 'Runtime error: normal form execution exceeded' };
+      throw new LambdaExecutionTimeoutError('Runtime error: normal form execution exceeded');
     }
   } while (reduced !== undefined);
   return current;

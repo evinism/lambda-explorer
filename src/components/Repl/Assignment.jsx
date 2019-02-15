@@ -16,7 +16,7 @@ export default class Error extends React.Component {
     return (
       <div className='result'>
         <div className="result-inner">
-          <span>{this.props.children}</span>
+          <span title={this.props.children}>{this.props.children}</span>
           <div><i>{` <assignment>`}</i></div>
         </div>
       </div>

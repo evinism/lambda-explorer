@@ -30,7 +30,7 @@ export default class Computation extends React.Component {
     return (
       <div className='result'>
         <div className="result-inner">
-          <span>{this.props.children}</span>
+          <span title={this.props.children}>{this.props.children}</span>
           <div>
             <i>{renderedAddlInfo}</i>
             <span onClick={this.handleButtonClick} className='expand-collapse-button'>

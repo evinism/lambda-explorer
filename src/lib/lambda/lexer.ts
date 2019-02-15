@@ -1,4 +1,5 @@
 import { LambdaToken } from './types';
+import { LambdaLexingError } from './errors';
 
 // idk i'm just guessing here. If you want something, just add it and i'll probs approve it
 const validSingleChars = /[a-zα-κμ-ω+\!\-\|\&]/;
@@ -54,7 +55,7 @@ function tokenize(str: string) : LambdaToken[] {
     } else if(nextChar === ':'){
       pos++;
       if (str[pos] !== '=') {
-        throw { message: 'Lexing Error: \'=\' expected after :' };
+        throw new LambdaLexingError('\'=\' expected after :');
       }
       tokenStream.push({
         type: 'assignment',
@@ -65,7 +66,7 @@ function tokenize(str: string) : LambdaToken[] {
       const lower = Math.max(pos - excerptPadding, 0);
       const upper = Math.min(pos + excerptPadding, str.length);
       const excerpt = str.slice(lower, upper);
-      throw { message: `Lexing Error: unexpected character at ${pos}: ${excerpt}` };
+      throw new LambdaLexingError(`Unexpected character at ${pos}: ${excerpt}`);
     }
   }
   return tokenStream;
