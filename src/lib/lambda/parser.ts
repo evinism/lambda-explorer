@@ -108,7 +108,7 @@ function popExpression(tokenStream) : [Expr, Token[]] {
         tokenStream.slice(splitPoint)
       ]
     default:
-      throw new LambdaSyntaxError('Syntax Error: Unexpected Token');
+      throw new LambdaSyntaxError('Unexpected Token');
   }
 }
 
