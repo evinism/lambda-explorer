@@ -603,6 +603,123 @@ export default [
     )
   },
   {
+    title: "Mixing Booleans and Numbers",
+    prompt: (
+      <div>
+        <p>lol define the ISZERO function by composing const false with itself n times, starting at true.</p>
+        <p>Answer is: <span className="secret">λf.f(λt.FALSE)TRUE</span></p>
+      </div>
+    ),
+    winCondition: ({ast}) => ast && satisfiesTruthTable([
+      [parse('λfn.n'), parse('λab.b')]
+    ]),
+  },
+  {
+    title: "Defining pairs",
+    prompt: (
+      <div>
+        <p>lol we can define pairs</p>
+        <p>What's a pair? a way to put 2 things in and a way to pull one of 2 things out?</p>
+        <p>It's gonna be a function that takes 2 arguments and puts it like </p>
+        <p>We define it <span class="code">PAIR := λabf.f ab</span></p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Using pairs",
+    prompt: (
+      <div>
+        <p>We can use this function to define pairs, as such!</p>
+        <p>We can see that executing
+          <span class="code">PAIR x y</span>
+          will result in
+          <span class="code">λf.fxy</span>
+        </p>
+        <p>Define the pair (FALSE, TRUE), and assign it to MYPAIR</p>
+        <p>(The astute of you will notice that this will result in something that's identical to the NOT function we wrote earlier!)</p>
+      </div>
+    ),
+  },
+  {
+    title: "Extraction from pairs",
+    prompt: (
+      <div>
+        <p>Let's see if we can define the First and Second functions, FST and SND, e.g. <span class="code">FST (PAIR x y) == x</span> and <span class="code">FST (PAIR x y) == y</span></p>
+        <p>Like all other 'values' in the Lambda Calculus, we lean on the structure of the data type when we want to do operations. As we noted earlier, this is very similar to the NOT function we made earlier, so see if you can use that fact to help you towards a solution here.</p>
+        <p>Answer: <span class="secret">FST := λx.x TRUE</span></p>
+        <p>Answer: <span class="secret">SND := λx.x FALSE</span></p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "A somewhat nasty transition function",
+    prompt: (
+      <div>
+        <p>Now we're going to go down a slightly unexpected path -- We'll start by defining a pretty tricky function</p>
+        <p>Make a function that takes a pair of numbers, moves the right number to the left slot, and moves the left number to the right slot and adds one.</p>
+        <p>So your transition function can be summarized as TRANSITION: (a, b) -> (b, a + 1). Don't worry if this takes a long time.</p>
+        <p>Here are some sample pairs to check your understanding:</p>
+        <ul>
+          <li>(0, 0) -> (0, 1)</li>
+          <li>(4, 3) -> (3, 5)</li>
+          <li>(1, 3) -> (3, 2)</li>
+        </ul>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Transition on naught-naught",
+    prompt: (
+      <div>
+        <p>Now try running it on the pair (0, 0)</p>
+        <p>If you really want, you can just write the resulting pair yourself. I don't mind.</p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Naught-naught, multiple times",
+    prompt: (
+      <div>
+        <p>This isn't going to make much sense, but try to compose that function N times, starting at (0, 0)</p>
+        <p>We can imagine the sequence after n iterations, Define the function TRANSFORM_N that transforms (0, 0) n times.</p>
+        <p>A sample sequence is shown below.</p>
+        <ul>
+          <li>0: (0, 0)</li>
+          <li>1: (0, 1)</li>
+          <li>2: (1, 2)</li>
+          <li>3: (2, 3)</li>
+          <li>4: (3, 4)</li>
+        </ul>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "Let's get this PRED",
+    prompt: (
+      <div>
+        <p>Now, the magic: Take the first item of that resulting pair.</p>
+        <p>By the way we've constructed this transition function, it turns out that n yields n - 1! This is your predecessor function.</p>
+        <p>Assign this function to PRED</p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
+    title: "To subtraction!",
+    prompt: (
+      <div>
+        <p>Sweetness. We can compose this together n times to get subtraction, in the exact same way we did addition before.</p>
+        <p>This should be easy enough. Write SUB, the subtraction function</p>
+      </div>
+    ),
+    winCondition: () => true,
+  },
+  {
     title: "Challenges",
     prompt: (
       <div>
