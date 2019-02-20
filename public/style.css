@@ -3,6 +3,10 @@ body {
   font-family: Roboto;
 }
 
+html, body, #react-mount {
+  height: 100%;
+}
+
 .app-wrapper {
   display: flex;
   flex-direction: column;
@@ -86,6 +90,10 @@ aside {
 
 .repl .command {
   color: #777777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .repl .error {
@@ -98,6 +106,7 @@ aside {
 
 .repl .prompt-caret {
   color: #777777;
+  padding: 2px 4px 2px 0;
 }
 
 .repl .prompt.error .prompt-caret {
@@ -106,6 +115,7 @@ aside {
 
 .prompt {
   padding-bottom: 7px;
+  display: flex;
 }
 
 .output > div {
@@ -113,7 +123,7 @@ aside {
 }
 
 .lambda-input {
-  width: 90%;
+  flex-grow: 1;
   border: 0px;
   font-family: inherit;
   font-size: inherit;
@@ -132,6 +142,8 @@ aside {
   line-height: 24px;
   cursor: pointer;
   margin-left: 5px;
+  width: 7px;
+  display: inline-block;
 }
 
 .result:hover .expand-collapse-button, .error:hover .expand-collapse-button {
@@ -216,8 +228,8 @@ aside button {
 }
 
 .repl::-webkit-scrollbar {
-    width: 0px;  /* remove scrollbar space */
-    background: transparent;  /* optional: just make scrollbar invisible */
+  width: 0px;  /* remove scrollbar space */
+  background: transparent;  /* optional: just make scrollbar invisible */
 }
 
 /* Dark Mode */

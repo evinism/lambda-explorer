@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDom from 'react-dom';
 import cx from 'classnames';
 
 import persistComponent from '../../util/persist';
@@ -98,7 +97,12 @@ class Repl extends React.Component {
 
     let nextOutput = [
       ...this.state.output,
-      (<span className='command'><span className='caret'>> </span>{text}</span>),
+      (
+        <div className='command' title={text}>
+          <span className='caret'>> </span>
+          {text}
+        </div>
+      ),
       result,
     ];
 
