@@ -102,6 +102,7 @@ aside {
 
 .repl .prompt-caret {
   color: #777777;
+  padding: 2px 4px 2px 0;
 }
 
 .repl .prompt.error .prompt-caret {
@@ -110,6 +111,7 @@ aside {
 
 .prompt {
   padding-bottom: 7px;
+  display: flex;
 }
 
 .output > div {
@@ -117,7 +119,7 @@ aside {
 }
 
 .lambda-input {
-  width: 90%;
+  flex-grow: 1;
   border: 0px;
   font-family: inherit;
   font-size: inherit;
