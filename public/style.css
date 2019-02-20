@@ -3,6 +3,10 @@ body {
   font-family: Roboto;
 }
 
+html, body, #react-mount {
+  height: 100%;
+}
+
 .app-wrapper {
   display: flex;
   flex-direction: column;
