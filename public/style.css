@@ -138,6 +138,8 @@ aside {
   line-height: 24px;
   cursor: pointer;
   margin-left: 5px;
+  width: 7px;
+  display: inline-block;
 }
 
 .result:hover .expand-collapse-button, .error:hover .expand-collapse-button {
