@@ -11,6 +11,7 @@ import Assignment from './Assignment';
 import Computation from './Computation';
 import Error from './Error'
 import Info from './Info';
+import MetaMenu from '../MetaMenu';
 
 import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
 
@@ -189,6 +190,7 @@ class Repl extends React.Component {
     ));
     return (
       <div className='repl' ref='repl' onClick={this._handleClick}>
+        <MetaMenu lambdaActor={this.lambdaActor} />
         <div className='output'>
           {this.state.output.map((elem, idx) => (
             <div key={idx}>
