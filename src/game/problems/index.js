@@ -525,7 +525,7 @@ export default [
     prompt: (
       <div>
         <p>The nice thing about Church numerals as we've defined them is they encode "compose this function n times", so in order to compose a function 3 times, just apply the target function to the Church numeral 3.</p>
-        <p>For example, let's say we had the function <Code>APPLY_C := λa.a c</Code> that applied free variable <Code>c</Code> to whatever function was passed in. If we wanted to write a function that applied <Code>c</Code> 3 times, we would write <Code>f := (λfn.f(f(fn))) APPLY_C</Code></p>
+        <p>For example, let's say we had the function <Code>APPLY_C := λa.a c</Code> that applied free variable <Code>c</Code> to whatever function was passed in. If we wanted to write a function that applied c 3 times, we would write <Code>(λfn.f(f(fn))) APPLY_C</Code></p>
         <p>Write the "add 4" function by composing the successor function 4 times.</p>
       </div>
     ),
