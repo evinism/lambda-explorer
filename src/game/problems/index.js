@@ -138,6 +138,30 @@ export default [
     winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)λb.b')),
   },
   {
+    title: 'A primer on parsing',
+    prompt: (
+      <div>
+        <p>We've just introduced the main elements of the syntax of the lambda calculus:</p>
+        <ul>
+          <li>Variables: <Code>a₁</Code></li>
+          <li>Applying one variable to another: <Code>a₁b₁</Code></li>
+          <li>A lambda expression: <Code>λx.x</Code></li>
+          <li>Applying one lambda expression to a variable: <Code>(λx.x)b₁</Code></li>
+          <li>Applying one lambda expression to a variable: <Code>(λx.x)b₁</Code></li>
+        </ul>
+      </div>
+    )
+  },
+  {
+    title: 'More complicated parsing',
+    prompt: (
+      <div>
+        <p>So why did we have to put the parentheses around </p>
+      </div>
+    )
+
+  }, 
+  {
     title: 'Bound and Free Variables',
     prompt: (
       <div>
