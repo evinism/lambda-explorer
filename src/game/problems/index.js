@@ -69,8 +69,9 @@ export default [
     title: 'Application',
     prompt: (
       <div>
-        <p>You just wrote a lambda expression which contains only the variable <Code>a₁</Code>, which is not currently bound to anything. In the lambda calculus, variables can be bound to functions, and variables can be applied to one another.</p>
-        <p>To apply the variable <Code>b₁</Code> to the variable <Code>a₁</Code>, type in <Code>a₁b₁</Code>. This is akin to saying that we're calling the function <Code>a₁</Code> with <Code>b₁</Code> as an argument.</p>
+        <p>You just wrote a lambda expression which contains only the variable <Code>a₁</Code>, which is just a symbol, and not currently bound to anything. In the lambda calculus, variables can be bound to functions, and variables can be applied to one another.</p>
+        <p>To apply the variable <Code>a₁</Code> to the variable <Code>b₁</Code>, type in <Code>a₁b₁</Code>. This represents calling the function <Code>a₁</Code> with <Code>b₁</Code> as an argument.</p>
+        <p>Remember, the variable or function you're applying always goes <i>first</i></p>
         <p>Try applying one variable to another.</p>
       </div>
     ),
@@ -82,9 +83,9 @@ export default [
     title: 'Upper Case Variables',
     prompt: (
       <div>
-        <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>aa</Code>, do I mean one variable <Code>aa</Code>, or the variable <Code>a</Code> applied to itself?</p>
+        <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>hi</Code>, do I mean one variable <Code>hi</Code>, or the variable <Code>h</Code> applied to variable <Code>i</Code>?</p>
         <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter variables, and lower case letters are interpreted as single-letter variables.</p>
-        <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable.</p>
+        <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable, and NOT an application.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('MULT')),
@@ -121,7 +122,7 @@ export default [
     prompt: (
       <div>
         <p>Perfect! In the lambda calculus, you can always wrap expressions in parentheses.</p>
-        <p>Now in the same way that we can apply variables to other variables, we can apply variables to functions. Try applying <Code>b</Code> to your identity function, by writing <Code>(λa.a)b</Code>.</p>
+        <p>Now in the same way that we can apply variables to other variables, we can apply lambda expressions to variables. Try applying your identity function to the variable <Code>b</Code>, by writing <Code>(λa.a)b</Code>.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)b')),
@@ -549,6 +550,7 @@ export default [
     prompt: (
       <div>
         <p>The nice thing about Church numerals as we've defined them is they encode "compose this function n times", so in order to compose a function 3 times, just apply the target function to the Church numeral 3.</p>
+        <p>For example, let's say we had the function <Code>APPLY_C := λa.a c</Code> that applied free variable <Code>c</Code> to whatever function was passed in. If we wanted to write a function that applied c 3 times, we would write <Code>(λfn.f(f(fn))) APPLY_C</Code></p>
         <p>Write the "add 4" function by composing the successor function 4 times.</p>
       </div>
     ),
