@@ -142,33 +142,102 @@ export default [
     title: 'A primer on parsing',
     prompt: (
       <div>
-        <p>We've just introduced the main elements of the syntax of the lambda calculus:</p>
-        <ul>
-          <li>Variables: <Code>a₁</Code></li>
-          <li>Applying one variable to another: <Code>a₁b₁</Code></li>
-          <li>A lambda expression: <Code>λx.x</Code></li>
-          <li>Applying one lambda expression to a variable: <Code>(λx.x)b₁</Code></li>
-          <li>Applying one lambda expression to a variable: <Code>(λx.x)b₁</Code></li>
-        </ul>
+        <p>So we can perform beta reductions with other functions as the argument! Neat</p>
+        <p>With that, we've just introduced the main elements of the syntax of the lambda calculus:</p>
+        <table><tbody>
+          <tr><td>Variables</td><td><Code>a₁</Code></td></tr>
+          <tr><td>Applying one variable to another</td><td><Code>a₁b₁</Code></td></tr>
+          <tr><td>A lambda expression</td><td><Code>λx.y</Code></td></tr>
+          <tr><td>Parentheses</td><td><Code>(λx.y)</Code></td></tr>
+        </tbody></table>
+        <p>We've also introduced a few ways in which these can be combined.</p>
+        <table><tbody>
+          <tr><td>Applying one lambda expression to a variable</td><td><Code>(λx.x)b₁</Code></td></tr>
+          <tr><td>Applying one lambda expression to another</td><td><Code>(λa.a)λb.b</Code></td></tr>
+        </tbody></table>
+        <p>It's time to solidify our understanding of how these combine syntactically. Write any expression to continue.</p>
       </div>
-    )
+    ),
+    winCondition: () => true,
   },
   {
-    title: 'More complicated parsing',
+    title: 'Left-associativity',
     prompt: (
       <div>
-        <p>So why did we have to put the parentheses around </p>
+        <p>Repeated applications in the lambda calculus are what is called <i>left-associative</i>.</p>
+        <p>This means that if we were to write out the parentheses explicity for <Code>abcd</Code>, we'd end up with <Code>((ab)c)d</Code>. That is, in the expression <Code>abcd</Code>, <Code>a</Code> will first be applied to <Code>b</Code>, then the result of <Code>ab</Code> will be applied to <Code>c</Code>, so on and so forth.</p>
+        <p>Write out the parentheses explicitly for <Code>ijkmn</Code></p>
       </div>
-    )
-
-  }, 
+    ),
+    winCondition: ({text}) => {
+      // Any of these are valid interpretations and we should be permissive rather
+      // than enforcing dumb bullshit.
+      return [
+        '(((ij)k)m)n',
+        '((((ij)k)m)n)',
+        '((((i)j)k)m)n',
+        '(((((i)j)k)m)n)',
+      ].includes(text.replace(/\s/g, ''));
+    },
+  },
+  {
+    title: 'Tightly Binding Lambdas',
+    prompt: (
+      <div>
+        <p>Lambda abstractions have higher prescedence than applications.</p>
+        <p>This means that if we write <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> instead of <Code>(λx.y)z</Code></p>
+        <p>As a good rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell them not to.</p>
+        <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
+      </div>
+    ),
+    winCondition: () => {
+      return [
+        'λw.((xy)z)',
+        '(λw.((xy)z))',
+        'λw.(((x)y)z)',
+        '(λw.(((x)y)z))',
+      ].includes(text.replace(/\s/g, ''));
+    },
+  },
+  {
+    title: 'Applying Lambdas to Variables',
+    prompt: (
+      <div>
+        <p>So what if we DID want to apply a lambda abstraction to a variable? We'd have to write it out a little more explicity, like we did in an earlier problem.</p>
+        <p>For example, if we wanted to apply <Code>λx.y</Code> to variable <Code>z</Code>, we'd write it out as <Code>(λx.y)z</Code></p>
+        <p>Write an expression that applies the function <Code>λa.bc</Code> to the variable <Code>d</Code></p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('(λa.bc)d')),
+  },
+  {
+    title: 'Applying Variables to Lambdas',
+    prompt: (
+      <div>
+        <p>Fortunately, the other direction is a little easier. If we wanted to apply variable to a lambda abstraction instead of the other way around, we'd just write an application like normal.</p>
+        <p>So, applying <Code>a</Code> to <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
+        <p>Try applying <Code>w</Code> to <Code>λx.yz</Code>!</p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('wλx.yz')),
+  },
+  {
+    title: 'One final challenge',
+    prompt: (
+      <div>
+        <p>We've just gone through a whirlwind of syntax in the Lambda Calculus, but fortuantely, it's almost everything you need to know.</p>
+        <p>As a final challenge, try writing out the expression that applies the expression <Code>aλb.c</Code> to variable <Code>d</Code></p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('(aλb.c)d')),
+  },
   {
     title: 'Bound and Free Variables',
     prompt: (
       <div>
-        <p>So we can perform beta reductions with other functions as the argument! We've probably driven the point home hard enough.</p>
+        <p>Now that we've got a better handle on the syntax, we can start making some real progress.</p> 
         <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that argument.</p>
-        <p>For quick example, if you've got the expression <Code>λx.(xy)</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
+        <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
       </div>
     ),
