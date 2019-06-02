@@ -142,12 +142,12 @@ export default [
     title: 'A primer on parsing',
     prompt: (
       <div>
-        <p>So we can perform beta reductions with other functions as the argument! Neat</p>
+        <p>So we can perform beta reductions with other functions as the argument!</p>
         <p>With that, we've just introduced the main elements of the syntax of the lambda calculus:</p>
         <table><tbody>
           <tr><td>Variables</td><td><Code>a₁</Code></td></tr>
           <tr><td>Applying one variable to another</td><td><Code>a₁b₁</Code></td></tr>
-          <tr><td>A lambda expression</td><td><Code>λx.y</Code></td></tr>
+          <tr><td>A lambda abstraction</td><td><Code>λx.y</Code></td></tr>
           <tr><td>Parentheses</td><td><Code>(λx.y)</Code></td></tr>
         </tbody></table>
         <p>We've also introduced a few ways in which these can be combined.</p>
@@ -188,9 +188,10 @@ export default [
         <p>This means that if we write <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> instead of <Code>(λx.y)z</Code></p>
         <p>As a good rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell them not to.</p>
         <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
+        <p>Solution: <span className='secret'>λw.((xy)z)</span></p>
       </div>
     ),
-    winCondition: () => {
+    winCondition: ({text}) => {
       return [
         'λw.((xy)z)',
         '(λw.((xy)z))',
@@ -222,11 +223,11 @@ export default [
     winCondition: ({ast}) => safeEqual(ast, parse('wλx.yz')),
   },
   {
-    title: 'One final challenge',
+    title: 'Summing up Syntax',
     prompt: (
       <div>
         <p>We've just gone through a whirlwind of syntax in the Lambda Calculus, but fortuantely, it's almost everything you need to know.</p>
-        <p>As a final challenge, try writing out the expression that applies the expression <Code>aλb.c</Code> to variable <Code>d</Code></p>
+        <p>As a final challenge for this section on syntax, try writing out the expression that applies the expression <Code>aλb.c</Code> to variable <Code>d</Code></p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('(aλb.c)d')),
