@@ -336,7 +336,7 @@ export default [
       <div>
         <p>If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact exactly what this REPL does when you enter an expression.</p>
         <p>In this REPL you can see the steps it took to get to normal form by pressing the (+) button beside the evaluated expression.</p>
-        <p>Otherwise, I can't think of a win condition for this, so just type in anything to continue.</p>
+        <p>Type in any expression to continue.</p>
       </div>
     ),
     winCondition: () => true,
