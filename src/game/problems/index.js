@@ -123,6 +123,7 @@ export default [
       <div>
         <p>Perfect! In the lambda calculus, you can always wrap expressions in parentheses.</p>
         <p>Now in the same way that we can apply variables to other variables, we can apply lambda expressions to variables. Try applying your identity function to the variable <Code>b</Code>, by writing <Code>(λa.a)b</Code>.</p>
+        <p>Don't worry if this doesn't make sense yet, we'll go a bit more in depth in the future.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)b')),
@@ -186,7 +187,7 @@ export default [
       <div>
         <p>Lambda abstractions have higher prescedence than applications.</p>
         <p>This means that if we write <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> instead of <Code>(λx.y)z</Code></p>
-        <p>As a good rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell them not to.</p>
+        <p>As a rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
         <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
         <p>Solution: <span className='secret'>λw.((xy)z)</span></p>
       </div>
@@ -233,10 +234,113 @@ export default [
     winCondition: ({ast}) => safeEqual(ast, parse('(aλb.c)d')),
   },
   {
+    title: 'β-reducibility revisited',
+    prompt: (
+      <div>
+        <p>Moving on. Let's take a deeper look at Beta Reductions.</p>
+        <p>When an expression is a lambda abstraction applied to anything else, we say that the expression is <i>beta reducible</i>.</p>
+        <p>Here are a few examples of beta reducible expressions:</p>
+        <table>
+            <thead>
+              <tr>
+                  <th scope="col">Expression</th>
+                  <th scope="col">Explanation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><Code>(λx.y)z</Code></td><td>Lambda abstraction <Code>λx.y</Code> applied to <Code>z</Code></td></tr>
+              <tr><td><Code>(λa.b)λc.d</Code></td><td>Lambda abstraction <Code>λa.b</Code> applied to <Code>λc.d</Code></td></tr>
+              <tr><td><Code>(λz.λz.top)λy.ee</Code></td><td>Lambda abstraction <Code>λz.λz.top</Code> applied to <Code>λy.ee</Code></td></tr>
+            </tbody>
+          </table>
+        <p>And here are a few examples of expressions that are NOT beta reducible:</p>
+        <table>
+            <thead>
+              <tr>
+                  <th scope="col">Expression</th>
+                  <th scope="col">Explanation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><Code>zλx.y</Code></td><td>Variable <Code>z</Code> applied to <Code>λx.y</Code></td></tr>
+              <tr><td><Code>λa.bcd</Code></td><td>Lambda abstraction <Code>λa.bcd</Code>, but not applied to anything</td></tr>
+              <tr><td><Code>bee</Code></td><td>Application <Code>be</Code> applied to <Code>e</Code></td></tr>
+              <tr><td><Code>f(λg.h)i</Code></td><td>(This one's tricky) Application <Code>f(λg.h)</Code> applied to <Code>i</Code></td></tr>
+            </tbody>
+          </table>
+        <p>Write any beta reducible expression that does not appear on the list above.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      const rejectList = [
+        '(λx.y)z',
+        '(λa.b)λc.d',
+        '(λz.λz.top)λy.ee',
+      ];
+      const isInList = !!rejectList.find(
+        rejectItem => safeEqual(ast, parse(rejectItem)));
+      return !isInList && ast && bReduce(ast);
+    }
+  },
+  {
+    title: 'A more precise look at β-reductions',
+    prompt: (
+      <div>
+        <p>As you might guess, if something is beta reducible, that means we can perform an operation called <i>beta reduction</i> on the expression.</p>
+        <p>Beta reduction works as follows:</p>
+        <table>
+          <thead>
+            <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Expression</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Start with a beta reducible expression.</td><td><Code>(λa.aba)c</Code></td></tr>
+            <tr><td>Replace the parameter of the first lambda expression with the argument.</td><td><Code>(λa.cbc)c</Code></td></tr>
+            <tr><td>Erase the argument.</td><td><Code>λa.cbc</Code></td></tr>
+            <tr><td>Erase the head of the lambda expression.</td><td><Code>cbc</Code></td></tr>
+          </tbody>
+        </table>
+        <p>That's all there is to it!</p>
+        <p>Write any expression that beta reduces to <Code>pp</Code>.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      return ast && safeEqual(bReduce(ast), parse('pp'));
+    },
+  },
+  {
+    title: 'β-reduction function 2',
+    prompt: (
+      <div>
+        <p>As we showed in the beginning, this works on functions as well!</p>
+        <p>Let's work through an example for a function:</p>
+        <table>
+          <thead>
+            <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Expression</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Start with a beta reducible expression.</td><td><Code>(λx.yx)λa.a</Code></td></tr>
+            <tr><td>Replace the parameter of the first lambda expression with the argument.</td><td><Code>(λx.y(λa.a))λa.a</Code></td></tr>
+            <tr><td>Erase the argument.</td><td><Code>λx.y(λa.a)</Code></td></tr>
+            <tr><td>Erase the head of the lambda expression.</td><td><Code>y(λa.a)</Code></td></tr>
+          </tbody>
+        </table>
+        <p>Write any expression that beta reduces to <Code>i(λj.k)</Code>.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      return ast && safeEqual(bReduce(ast), parse('i(λj.k)'));
+    },
+  },
+  {
     title: 'Bound and Free Variables',
     prompt: (
       <div>
-        <p>Now that we've got a better handle on the syntax, we can start making some real progress.</p> 
         <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that argument.</p>
         <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
@@ -321,7 +425,6 @@ export default [
     title: "Leftmost Outermost Redex",
     prompt: (
       <div>
-        <p>That probably makes sense.</p>
         <p>"But wait," I hear you shout. "What if I have more than one reducible subexpression in my expression? Which do I evaluate first?"</p>
         <p>Let's traverse the expression, left to right, outer scope to inner scope, find the <i>leftmost outermost redex</i>, and evaluate that one. This is called the <i>normal order</i>.</p>
         <p>Try typing and expanding <Code>((λb.b)c)((λd.d)e)</Code> to see what I mean.</p>
