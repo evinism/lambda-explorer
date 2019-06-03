@@ -147,7 +147,7 @@ export default [
         <p>With that, we've just introduced the main elements of the syntax of the lambda calculus:</p>
         <table><tbody>
           <tr><td>Variables</td><td><Code>a₁</Code></td></tr>
-          <tr><td>Applying one variable to another</td><td><Code>a₁b₁</Code></td></tr>
+          <tr><td>Applying one expression to another</td><td><Code>a₁b₁</Code></td></tr>
           <tr><td>A lambda abstraction</td><td><Code>λx.y</Code></td></tr>
           <tr><td>Parentheses</td><td><Code>(λx.y)</Code></td></tr>
         </tbody></table>
