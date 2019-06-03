@@ -238,7 +238,7 @@ export default [
     prompt: (
       <div>
         <p>Moving on. Let's take a deeper look at Beta Reductions.</p>
-        <p>When an expression is a lambda abstraction applied to anything else, we say that the expression is <i>beta reducible</i>.</p>
+        <p>When an expression is a lambda abstraction applied to literally anything else, we say that the expression is <i>beta reducible</i>.</p>
         <p>Here are a few examples of beta reducible expressions:</p>
         <table>
             <thead>
@@ -265,10 +265,10 @@ export default [
               <tr><td><Code>zλx.y</Code></td><td>Variable <Code>z</Code> applied to <Code>λx.y</Code></td></tr>
               <tr><td><Code>λa.bcd</Code></td><td>Lambda abstraction <Code>λa.bcd</Code>, but not applied to anything</td></tr>
               <tr><td><Code>bee</Code></td><td>Application <Code>be</Code> applied to <Code>e</Code></td></tr>
-              <tr><td><Code>f(λg.h)i</Code></td><td>(This one's tricky) Application <Code>f(λg.h)</Code> applied to <Code>i</Code></td></tr>
+              <tr><td><Code>f(λg.h)i</Code></td><td>Application <Code>f(λg.h)</Code> applied to <Code>i</Code> (This one's tricky! Remember that applications are left-associative).</td></tr>
             </tbody>
           </table>
-        <p>Write any beta reducible expression that does not appear on the list above.</p>
+        <p>Write any beta reducible expression that does not appear in the above table.</p>
       </div>
     ),
     winCondition: ({ast}) => {
@@ -291,15 +291,15 @@ export default [
         <table>
           <thead>
             <tr>
-                <th scope="col">Step</th>
-                <th scope="col">Expression</th>
+              <th scope="col">Expression</th>
+              <th scope="col">Step</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Start with a beta reducible expression.</td><td><Code>(λa.aba)c</Code></td></tr>
-            <tr><td>Replace the parameter of the first lambda expression with the argument.</td><td><Code>(λa.cbc)c</Code></td></tr>
-            <tr><td>Erase the argument.</td><td><Code>λa.cbc</Code></td></tr>
-            <tr><td>Erase the head of the lambda expression.</td><td><Code>cbc</Code></td></tr>
+            <tr><td><Code>(λa.aba)c</Code></td><td>Start with a beta reducible expression.</td></tr>
+            <tr><td><Code>(λa.cbc)c</Code></td><td>Replace the parameter of the first lambda expression with the argument.</td></tr>
+            <tr><td><Code>λa.cbc</Code></td><td>Erase the argument.</td></tr>
+            <tr><td><Code>cbc</Code></td><td>Erase the head of the lambda expression.</td></tr>
           </tbody>
         </table>
         <p>That's all there is to it!</p>
@@ -311,7 +311,7 @@ export default [
     },
   },
   {
-    title: 'β-reduction function 2',
+    title: 'β-reduction function reprise',
     prompt: (
       <div>
         <p>As we showed in the beginning, this works on functions as well!</p>
@@ -319,15 +319,15 @@ export default [
         <table>
           <thead>
             <tr>
-                <th scope="col">Step</th>
                 <th scope="col">Expression</th>
+                <th scope="col">Step</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Start with a beta reducible expression.</td><td><Code>(λx.yx)λa.a</Code></td></tr>
-            <tr><td>Replace the parameter of the first lambda expression with the argument.</td><td><Code>(λx.y(λa.a))λa.a</Code></td></tr>
-            <tr><td>Erase the argument.</td><td><Code>λx.y(λa.a)</Code></td></tr>
-            <tr><td>Erase the head of the lambda expression.</td><td><Code>y(λa.a)</Code></td></tr>
+            <tr><td><Code>(λx.yx)λa.a</Code></td><td>Start with a beta reducible expression.</td></tr>
+            <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>Replace the parameter of the first lambda expression with the argument.</td></tr>
+            <tr><td><Code>λx.y(λa.a)</Code></td><td>Erase the argument.</td></tr>
+            <tr><td><Code>y(λa.a)</Code></td><td>Erase the head of the lambda expression.</td></tr>
           </tbody>
         </table>
         <p>Write any expression that beta reduces to <Code>i(λj.k)</Code>.</p>
