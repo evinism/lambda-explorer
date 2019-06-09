@@ -216,8 +216,8 @@ export default [
     title: 'Applying Variables to Lambdas',
     prompt: (
       <div>
-        <p>Fortunately, the other direction requires fewer parentheses. If we wanted to apply variable to a lambda abstraction instead of the other way around, we'd just write them right next to each other, like any other application.</p>
-        <p>So concretely, applying <Code>a</Code> to lambda abstraction <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
+        <p>Fortunately, the other direction requires fewer parentheses. If we wanted to apply a variable to a lambda abstraction instead of the other way around, we'd just write them right next to each other, like any other application.</p>
+        <p>Concretely, applying <Code>a</Code> to lambda abstraction <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
         <p>Try applying <Code>w</Code> to <Code>λx.yz</Code>!</p>
       </div>
     ),
