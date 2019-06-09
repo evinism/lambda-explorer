@@ -14,7 +14,7 @@ function toNormalForm(
     reduced = leftmostOutermostRedex(current);
     count++;
     if (count >= depthOverflow) {
-      throw new LambdaExecutionTimeoutError('Runtime error: normal form execution exceeded');
+      throw new LambdaExecutionTimeoutError('Normal form execution exceeded. This expression may not have a normal form.');
     }
   } while (reduced !== undefined);
   return current;
