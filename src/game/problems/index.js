@@ -258,14 +258,14 @@ export default [
     ),
     winCondition: ({error}) => (
       // TODO: make it so errors aren't compared by user string, that's dumb
-      error && error.message === 'Runtime error: normal form execution exceeded'
+      error && error.message === 'Normal form execution exceeded. This expression may not have a normal form.'
     )
   },
   {
     title: 'The Y-Combinator',
     prompt: (
       <div>
-        <p>You can expand that runtime error to see the first few iterations. If you went with <Code>(λa.aa)λa.aa</Code>, you can see that performing a beta reduction gives you the exact same expression back!</p>
+        <p>You can expand that error that pops up to see the first few iterations. If you went with <Code>(λa.aa)λa.aa</Code>, you can see that performing a beta reduction gives you the exact same expression back!</p>
         <p>The famed Y-Combinator is one of these expressions without a normal form. Try inputting the Y-Combinator, and see what happens:</p>
         <p>Y: <Code>λg.(λx.g(xx))(λx.g(xx))</Code></p>
       </div>
