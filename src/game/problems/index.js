@@ -84,7 +84,7 @@ export default [
     prompt: (
       <div>
         <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>hi</Code>, do I mean one variable <Code>hi</Code>, or the variable <Code>h</Code> applied to variable <Code>i</Code>?</p>
-        <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter variables, and lower case letters are interpreted as single-letter variables.</p>
+        <p>For ease of use in this REPL, we'll make a small comprimise: upper case letters are interpreted as multi-letter variables, and lower case letters are interpreted as single-letter variables.</p>
         <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable, and NOT an application.</p>
       </div>
     ),
@@ -94,7 +94,7 @@ export default [
     title: 'Identity',
     prompt: (
       <div>
-        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where <Code>[head]</Code> is the argument to the function, and <Code>[body]</Code> is what the function resolves to.</p>
+        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where <Code>[head]</Code> is the parameter of the function, and <Code>[body]</Code> is what the function resolves to.</p>
         <p>Let's write the identity function; a function which takes its argument, does nothing to it, and spits it back out. In the lambda calculus, that looks something like <Code>λa.a</Code></p>
         <p>as a reminder, you can type backslash (<Code>\</Code>) for λ</p>
       </div>
@@ -224,6 +224,49 @@ export default [
     winCondition: ({ast}) => safeEqual(ast, parse('wλx.yz')),
   },
   {
+    title: 'Curry',
+    prompt: (
+      <div>
+        <p>As you may have noticed before, functions can only take one argument, which is kind of annoying.</p>
+        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when evaluated subsequently gives you the result. Make sense?</p>
+        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write any 'multi-argument' function!</p>
+      </div>
+    ),
+    winCondition: ({ast}) => (
+      ast &&
+      ast.type === 'function' &&
+      ast.body.type === 'function'
+    ),
+  },
+  {
+    title: 'And a Dash of Sugar',
+    prompt: (
+      <div>
+        <p>Getting the hang of it!</p>
+        <p>Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write <Code>λab. [some expression]</Code> as shorthand for <Code>λa.λb. [some expression]</Code>. Try writing a function using that syntax!</p>
+      </div>
+    ),
+    winCondition: ({text, ast}) => {
+      // wow this is a garbage win condition
+      const isMultiargumentFn = ast &&
+        ast.type === 'function' &&
+        ast.body.type === 'function';
+      if (!isMultiargumentFn) {
+        return false;
+      }
+      // has special syntax.. better way than pulling the lexer??
+      // this shouldn't throw because by here we're guaranteed ast exists.
+      const tokenStream = tokenize(text).filter(
+        // only try to match '(((Lab' and don't care about the rest of the string.
+        token => token.type !== 'openParen'
+      );
+      return tokenStream.length >= 3 &&
+        tokenStream[0].type === 'lambda' &&
+        tokenStream[1].type === 'identifier' &&
+        tokenStream[2].type === 'identifier';
+    },
+  },
+  {
     title: 'Summing up Syntax',
     prompt: (
       <div>
@@ -250,7 +293,7 @@ export default [
             <tbody>
               <tr><td><Code>(λx.y)z</Code></td><td>Lambda abstraction <Code>λx.y</Code> applied to <Code>z</Code></td></tr>
               <tr><td><Code>(λa.b)λc.d</Code></td><td>Lambda abstraction <Code>λa.b</Code> applied to <Code>λc.d</Code></td></tr>
-              <tr><td><Code>(λz.λz.top)λy.ee</Code></td><td>Lambda abstraction <Code>λz.λz.top</Code> applied to <Code>λy.ee</Code></td></tr>
+              <tr><td><Code>(λzz.top)λy.ee</Code></td><td>Lambda abstraction <Code>λz.λz.top</Code> applied to <Code>λy.ee</Code></td></tr>
             </tbody>
           </table>
         <p>And here are a few examples of expressions that are NOT beta reducible:</p>
@@ -341,7 +384,7 @@ export default [
     title: 'Bound and Free Variables',
     prompt: (
       <div>
-        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that argument.</p>
+        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that parameter.</p>
         <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
       </div>
@@ -349,57 +392,28 @@ export default [
     winCondition: ({ast}) => ast && getFreeVars(ast).map(item => item.name).includes('c'),
   },
   {
-    title: 'Curry',
+    title: 'α conversions',
     prompt: (
       <div>
         <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
-        <p>As you may have noticed before, functions can only take one argument, which is kind of annoying.</p>
-        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
-        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write any 'multi-argument' function!</p>
+
+        <p>It might be obvious that there are multiple ways to write a single lambda abstraction. For example, let's take that identity function we wrote all the way in the beginning, <Code>λa.a</Code>. We could have just as easily used <Code>x</Code> as the parameter, yielding <Code>λx.x</Code>.</p>
+        <p>The lambda calculus's word for "renaming a parameter" is <i>alpha-conversion.</i></p>
+        <p>Manually perform an alpha conversion for the expression <Code>λz.yz</Code>, by replacing <Code>z</Code> with <Code>t</Code></p>
       </div>
     ),
-    winCondition: ({ast}) => (
-      ast &&
-      ast.type === 'function' &&
-      ast.body.type === 'function'
-    ),
-  },
-  {
-    title: 'And a Dash of Sugar',
-    prompt: (
-      <div>
-        <p>Getting the hang of it!</p>
-        <p>Representing functions with multiple arguments like this is so convenient, we're going to introduce a special syntax. We'll write <Code>λab. [some expression]</Code> as shorthand for <Code>λa.λb. [some expression]</Code>. Try writing a function using that syntax!</p>
-      </div>
-    ),
-    winCondition: ({text, ast}) => {
-      // wow this is a garbage win condition
-      const isMultiargumentFn = ast &&
-        ast.type === 'function' &&
-        ast.body.type === 'function';
-      if (!isMultiargumentFn) {
-        return false;
-      }
-      // has special syntax.. better way than pulling the lexer??
-      // this shouldn't throw because by here we're guaranteed ast exists.
-      const tokenStream = tokenize(text).filter(
-        // only try to match '(((Lab' and don't care about the rest of the string.
-        token => token.type !== 'openParen'
-      );
-      return tokenStream.length >= 3 &&
-        tokenStream[0].type === 'lambda' &&
-        tokenStream[1].type === 'identifier' &&
-        tokenStream[2].type === 'identifier';
+    winCondition: ({ast}) => {
+      return ast && safeEqual(ast, parse('λt.yt'));
     },
-  },
+  }, 
   // --- Computation ---
   {
     title: 'β reductions + α conversions',
     prompt: (
       <div>
-        <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a variable that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming, we'd get <Code>λb.bb</Code>, which is  not quite what we intended. We likely wanted <Code>b</Code> to remain a free variable.</p>
-        <p>Instead, we have to do an alpha-conversion (fancy name for renaming variables) of the lambda expression prior to doing the beta reduction, so we can eliminate the conflict.</p>
-        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an alpha conversion.</p>
+        <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a parameter that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming to resolve the conflict, we'd get <Code>λb.bb</Code>. What originally was a free variable <Code>b</Code> is now (accidentally) bound to the parameter of the lambda expression!</p>
+        <p>To eliminate this conflict, we have to do an alpha-conversion prior to doing the beta reduction.</p>
+        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an alpha conversion to see how the REPL handles this situation.</p>
       </div>
     ),
     // lol this win condition.
@@ -532,7 +546,7 @@ export default [
       <div>
         <p>We're gonna work our way to defining the XOR (exclusive or) function on booleans.</p>
         <p>Our first step along the way is to define the NOT function. To do this, let's look at the structure of what a boolean looks like.</p>
-        <p>True is just a two argument function that selects the first, whereas false is just a two argument function that selects the second argument. We can therefore call a potential true or false value like a function to select either the first or second parameter!</p>
+        <p>True is just a two parameter function that selects the first, whereas false is just a two parameter function that selects the second argument. We can therefore call a potential true or false value like a function to select either the first or second parameter!</p>
         <p>For example, take the application <Code>mxy</Code>. If <Code>m</Code> is Church Boolean true, then <Code>mxy</Code> beta reduces to <Code>x</Code>. However, if <Code>m</Code> is Church Boolean false, <Code>mxy</Code> beta reduces to <Code>y</Code></p>
         <p>Try writing the NOT function, and assign that to <Code>NOT</Code>.</p>
         <p>Answer: <span className="secret">NOT := λm.m FALSE TRUE</span></p>
@@ -662,7 +676,7 @@ export default [
     prompt: (
       <div>
         <p>Well, that was a marathon. Take a little break, you've earned it.</p>
-        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. Church numerals are 2 argument functions in the following format:</p>
+        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. Church numerals are 2 parameter functions in the following format:</p>
         <p>
           <pre>
             {`
