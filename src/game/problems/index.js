@@ -84,7 +84,7 @@ export default [
     prompt: (
       <div>
         <p>Since lots of variables in the Lambda Calculus are single letters, there's often a semantic ambiguity when written down. For example, if I type in <Code>hi</Code>, do I mean one variable <Code>hi</Code>, or the variable <Code>h</Code> applied to variable <Code>i</Code>?</p>
-        <p>For ease of use in this REPL, we've made a small comprimise: upper case letters are interpreted as multi-letter variables, and lower case letters are interpreted as single-letter variables.</p>
+        <p>For ease of use in this REPL, we'll make a small comprimise: upper case letters are interpreted as multi-letter variables, and lower case letters are interpreted as single-letter variables.</p>
         <p>Try typing <Code>MULT</Code>, and observe that it's interpreted as one variable, and NOT an application.</p>
       </div>
     ),
@@ -94,7 +94,7 @@ export default [
     title: 'Identity',
     prompt: (
       <div>
-        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where [head] is the input, and [body] is the output.</p>
+        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where <Code>[head]</Code> is the parameter of the function, and <Code>[body]</Code> is what the function resolves to.</p>
         <p>Let's write the identity function; a function which takes its argument, does nothing to it, and spits it back out. In the lambda calculus, that looks something like <Code>λa.a</Code></p>
         <p>as a reminder, you can type backslash (<Code>\</Code>) for λ</p>
       </div>
@@ -123,6 +123,7 @@ export default [
       <div>
         <p>Perfect! In the lambda calculus, you can always wrap expressions in parentheses.</p>
         <p>Now in the same way that we can apply variables to other variables, we can apply lambda expressions to variables. Try applying your identity function to the variable <Code>b</Code>, by writing <Code>(λa.a)b</Code>.</p>
+        <p>Don't worry if this doesn't make sense yet, we'll go a bit more in depth in the future.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)b')),
@@ -132,32 +133,103 @@ export default [
     prompt: (
       <div>
         <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called <i>beta reduction</i>.</p>
-        <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll get into a little later.</p>
+        <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll also go through a little later.</p>
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('(λa.a)λb.b')),
   },
   {
-    title: 'Bound and Free Variables',
+    title: 'A primer on parsing',
     prompt: (
       <div>
-        <p>So we can perform beta reductions with other functions as the argument! We've probably driven the point home hard enough.</p>
-        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that argument.</p>
-        <p>For quick example, if you've got the expression <Code>λx.(xy)</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
-        <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
+        <p>So we can perform beta reductions with other functions as the argument!</p>
+        <p>With that, we've just introduced the main elements of the syntax of the lambda calculus:</p>
+        <table><tbody>
+          <tr><td>Variables</td><td><Code>a₁</Code></td></tr>
+          <tr><td>Applying one expression to another</td><td><Code>a₁b₁</Code></td></tr>
+          <tr><td>A lambda abstraction</td><td><Code>λx.y</Code></td></tr>
+          <tr><td>Parentheses</td><td><Code>(λx.y)</Code></td></tr>
+        </tbody></table>
+        <p>We've also introduced a few ways in which these can be combined.</p>
+        <table><tbody>
+          <tr><td>Applying one lambda expression to a variable</td><td><Code>(λx.x)b₁</Code></td></tr>
+          <tr><td>Applying one lambda expression to another</td><td><Code>(λa.a)λb.b</Code></td></tr>
+        </tbody></table>
+        <p>It's time to solidify our understanding of how these combine syntactically. Write any expression to continue.</p>
       </div>
     ),
-    winCondition: ({ast}) => ast && getFreeVars(ast).map(item => item.name).includes('c'),
+    winCondition: () => true,
+  },
+  {
+    title: 'Left-associativity',
+    prompt: (
+      <div>
+        <p>Repeated applications in the lambda calculus are what is called <i>left-associative</i>. This means that repeated applications are evaluated from left to right.</p>
+        <p>To make this clearer, if we were to explicity write out the parentheses for the expression <Code>abcd</Code>, we'd end up with <Code>((ab)c)d</Code>. That is, in the expression <Code>abcd</Code>, <Code>a</Code> will first be applied to <Code>b</Code>, then the result of <Code>ab</Code> will be applied to <Code>c</Code>, so on and so forth.</p>
+        <p>Write out the parentheses explicitly for <Code>ijkmn</Code></p>
+      </div>
+    ),
+    winCondition: ({text}) => {
+      // Any of these are valid interpretations and we should be permissive rather
+      // than enforcing dumb bullshit.
+      return [
+        '(((ij)k)m)n',
+        '((((ij)k)m)n)',
+        '((((i)j)k)m)n',
+        '(((((i)j)k)m)n)',
+      ].includes(text.replace(/\s/g, ''));
+    },
+  },
+  {
+    title: 'Tightly Binding Lambdas',
+    prompt: (
+      <div>
+        <p>Lambda abstractions have higher prescedence than applications.</p>
+        <p>This means that if we write the expression <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> and NOT <Code>(λx.y)z</Code>.</p>
+        <p>As a rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
+        <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
+        <p>Solution: <span className='secret'>λw.((xy)z)</span></p>
+      </div>
+    ),
+    winCondition: ({text}) => {
+      return [
+        'λw.((xy)z)',
+        '(λw.((xy)z))',
+        'λw.(((x)y)z)',
+        '(λw.(((x)y)z))',
+      ].includes(text.replace(/\s/g, ''));
+    },
+  },
+  {
+    title: 'Applying Lambdas to Variables',
+    prompt: (
+      <div>
+        <p>So what if we DID want to apply a lambda abstraction to a variable? We'd have to write it out a little more explicity, like we did back in problem 6.</p>
+        <p>For example, if we wanted to apply the lambda abstraction <Code>λx.y</Code> to variable <Code>z</Code>, we'd write it out as <Code>(λx.y)z</Code></p>
+        <p>Write an expression that applies the lambda abstraction <Code>λa.bc</Code> to the variable <Code>d</Code>.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('(λa.bc)d')),
+  },
+  {
+    title: 'Applying Variables to Lambdas',
+    prompt: (
+      <div>
+        <p>Fortunately, the other direction requires fewer parentheses. If we wanted to apply a variable to a lambda abstraction instead of the other way around, we'd just write them right next to each other, like any other application.</p>
+        <p>Concretely, applying <Code>a</Code> to lambda abstraction <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
+        <p>Try applying <Code>w</Code> to <Code>λx.yz</Code>!</p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('wλx.yz')),
   },
   {
     title: 'Curry',
     prompt: (
       <div>
-        <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
         <p>As you may have noticed before, functions can only take one argument, which is kind of annoying.</p>
-        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
-        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write a 'multi-argument' function!</p>
+        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when evaluated subsequently gives you the result. Make sense?</p>
+        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write any 'multi-argument' function!</p>
       </div>
     ),
     winCondition: ({ast}) => (
@@ -194,14 +266,154 @@ export default [
         tokenStream[2].type === 'identifier';
     },
   },
+  {
+    title: 'Summing up Syntax',
+    prompt: (
+      <div>
+        <p>We've just gone through a whirlwind of syntax in the Lambda Calculus, but fortuantely, it's almost everything you need to know.</p>
+        <p>As a final challenge for this section on syntax, try writing out the expression that applies the expression <Code>aλb.c</Code> to variable <Code>d</Code></p>
+      </div>
+    ),
+    winCondition: ({ast}) => safeEqual(ast, parse('(aλb.c)d')),
+  },
+  {
+    title: 'β-reducibility revisited',
+    prompt: (
+      <div>
+        <p>Let's take a deeper look at Beta Reductions.</p>
+        <p>When an expression is an application where the left side is a lambda abstraction, we say that the expression is <i>beta reducible</i>.</p>
+        <p>Here are a few examples of beta reducible expressions:</p>
+        <table>
+            <thead>
+              <tr>
+                  <th scope="col">Expression</th>
+                  <th scope="col">Explanation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><Code>(λx.y)z</Code></td><td>Lambda abstraction <Code>λx.y</Code> applied to <Code>z</Code></td></tr>
+              <tr><td><Code>(λa.b)λc.d</Code></td><td>Lambda abstraction <Code>λa.b</Code> applied to <Code>λc.d</Code></td></tr>
+              <tr><td><Code>(λzz.top)λy.ee</Code></td><td>Lambda abstraction <Code>λz.λz.top</Code> applied to <Code>λy.ee</Code></td></tr>
+            </tbody>
+          </table>
+        <p>And here are a few examples of expressions that are NOT beta reducible:</p>
+        <table>
+            <thead>
+              <tr>
+                  <th scope="col">Expression</th>
+                  <th scope="col">Explanation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><Code>zλx.y</Code></td><td>Variable <Code>z</Code> applied to <Code>λx.y</Code></td></tr>
+              <tr><td><Code>λa.bcd</Code></td><td>Lambda abstraction <Code>λa.bcd</Code>, but not applied to anything</td></tr>
+              <tr><td><Code>bee</Code></td><td>Application <Code>be</Code> applied to <Code>e</Code></td></tr>
+              <tr><td><Code>f(λg.h)i</Code></td><td>Application <Code>f(λg.h)</Code> applied to <Code>i</Code> (This one's tricky! Remember that applications are left-associative).</td></tr>
+            </tbody>
+          </table>
+        <p>Write any beta reducible expression that does not appear in the above table.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      const rejectList = [
+        '(λx.y)z',
+        '(λa.b)λc.d',
+        '(λz.λz.top)λy.ee',
+      ];
+      const isInList = !!rejectList.find(
+        rejectItem => safeEqual(ast, parse(rejectItem)));
+      return !isInList && ast && bReduce(ast);
+    }
+  },
+  {
+    title: 'A more precise look at β-reductions',
+    prompt: (
+      <div>
+        <p>As you might guess, if something is beta reducible, that means we can perform an operation called <i>beta reduction</i> on the expression.</p>
+        <p>Beta reduction works as follows:</p>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Expression</th>
+              <th scope="col">Step</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><Code>(λa.aba)c</Code></td><td>Start with a beta reducible expression.</td></tr>
+            <tr><td><Code>(λa.cbc)c</Code></td><td>In the body of the lambda abstraction, replace every occurrence of the parameter with the argument.</td></tr>
+            <tr><td><Code>λa.cbc</Code></td><td>Erase the argument.</td></tr>
+            <tr><td><Code>cbc</Code></td><td>Erase the head of the lambda expression.</td></tr>
+          </tbody>
+        </table>
+        <p>That's all there is to it!</p>
+        <p>Write any expression that beta reduces to <Code>pp</Code>.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      return ast && safeEqual(bReduce(ast), parse('pp'));
+    },
+  },
+  {
+    title: 'β-reduction function reprise',
+    prompt: (
+      <div>
+        <p>As we showed in the beginning, this works on functions as well!</p>
+        <p>Let's work through an example for a function:</p>
+        <table>
+          <thead>
+            <tr>
+                <th scope="col">Expression</th>
+                <th scope="col">Step</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><Code>(λx.yx)λa.a</Code></td><td>Start with a beta reducible expression.</td></tr>
+            <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>In the body of the lambda abstraction, replace every occurrence of the parameter with the argument.</td></tr>
+            <tr><td><Code>λx.y(λa.a)</Code></td><td>Erase the argument.</td></tr>
+            <tr><td><Code>y(λa.a)</Code></td><td>Erase the head of the lambda expression.</td></tr>
+          </tbody>
+        </table>
+        <p>Write any expression that beta reduces to <Code>iλj.k</Code>.</p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      return ast && safeEqual(bReduce(ast), parse('i(λj.k)'));
+    },
+  },
+  {
+    title: 'Bound and Free Variables',
+    prompt: (
+      <div>
+        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that parameter.</p>
+        <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
+        <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
+      </div>
+    ),
+    winCondition: ({ast}) => ast && getFreeVars(ast).map(item => item.name).includes('c'),
+  },
+  {
+    title: 'α conversions',
+    prompt: (
+      <div>
+        <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
+
+        <p>It might be obvious that there are multiple ways to write a single lambda abstraction. For example, let's take that identity function we wrote all the way in the beginning, <Code>λa.a</Code>. We could have just as easily used <Code>x</Code> as the parameter, yielding <Code>λx.x</Code>.</p>
+        <p>The lambda calculus's word for "renaming a parameter" is <i>alpha-conversion.</i></p>
+        <p>Manually perform an alpha conversion for the expression <Code>λz.yz</Code>, by replacing <Code>z</Code> with <Code>t</Code></p>
+      </div>
+    ),
+    winCondition: ({ast}) => {
+      return ast && safeEqual(ast, parse('λt.yt'));
+    },
+  }, 
   // --- Computation ---
   {
     title: 'β reductions + α conversions',
     prompt: (
       <div>
-        <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a variable that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming, we'd get <Code>λb.bb</Code>, which is  not quite what we intended. We likely wanted <Code>b</Code> to remain a free variable.</p>
-        <p>Instead, we have to do an alpha-conversion (fancy name for renaming variables) of the lambda expression prior to doing the beta reduction, so we can eliminate the conflict.</p>
-        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an alpha conversion.</p>
+        <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a parameter that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming to resolve the conflict, we'd get <Code>λb.bb</Code>. What originally was a free variable <Code>b</Code> is now (accidentally) bound to the parameter of the lambda expression!</p>
+        <p>To eliminate this conflict, we have to do an alpha-conversion prior to doing the beta reduction.</p>
+        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an alpha conversion to see how the REPL handles this situation.</p>
       </div>
     ),
     // lol this win condition.
@@ -227,7 +439,6 @@ export default [
     title: "Leftmost Outermost Redex",
     prompt: (
       <div>
-        <p>That probably makes sense.</p>
         <p>"But wait," I hear you shout. "What if I have more than one reducible subexpression in my expression? Which do I evaluate first?"</p>
         <p>Let's traverse the expression, left to right, outer scope to inner scope, find the <i>leftmost outermost redex</i>, and evaluate that one. This is called the <i>normal order</i>.</p>
         <p>Try typing and expanding <Code>((λb.b)c)((λd.d)e)</Code> to see what I mean.</p>
@@ -242,7 +453,7 @@ export default [
       <div>
         <p>If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact exactly what this REPL does when you enter an expression.</p>
         <p>In this REPL you can see the steps it took to get to normal form by pressing the (+) button beside the evaluated expression.</p>
-        <p>Otherwise, I can't think of a win condition for this, so just type in anything to continue.</p>
+        <p>Type in any expression to continue.</p>
       </div>
     ),
     winCondition: () => true,
@@ -335,7 +546,7 @@ export default [
       <div>
         <p>We're gonna work our way to defining the XOR (exclusive or) function on booleans.</p>
         <p>Our first step along the way is to define the NOT function. To do this, let's look at the structure of what a boolean looks like.</p>
-        <p>True is just a two argument function that selects the first, whereas false is just a two argument function that selects the second argument. We can therefore call a potential true or false value like a function to select either the first or second parameter!</p>
+        <p>True is just a two parameter function that selects the first, whereas false is just a two parameter function that selects the second argument. We can therefore call a potential true or false value like a function to select either the first or second parameter!</p>
         <p>For example, take the application <Code>mxy</Code>. If <Code>m</Code> is Church Boolean true, then <Code>mxy</Code> beta reduces to <Code>x</Code>. However, if <Code>m</Code> is Church Boolean false, <Code>mxy</Code> beta reduces to <Code>y</Code></p>
         <p>Try writing the NOT function, and assign that to <Code>NOT</Code>.</p>
         <p>Answer: <span className="secret">NOT := λm.m FALSE TRUE</span></p>
@@ -465,7 +676,7 @@ export default [
     prompt: (
       <div>
         <p>Well, that was a marathon. Take a little break, you've earned it.</p>
-        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. Church numerals are 2 argument functions in the following format:</p>
+        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. Church numerals are 2 parameter functions in the following format:</p>
         <p>
           <pre>
             {`

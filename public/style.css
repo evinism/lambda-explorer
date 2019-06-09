@@ -40,9 +40,8 @@ h1 {
 }
 
 .app-content {
-  width: 80%;
+  width: 90vw;
   margin-left: auto;
-  margin-right: auto;
   display: flex;
   font-weight: 300;
   overflow: hidden;
@@ -59,12 +58,35 @@ article {
 }
 
 aside {
-  width: 300px;
+  width: calc(300px + 10vw);
   min-width: 300px;
   border-left: 3px dashed #f0f0f0;
   margin-left: 5px;
   padding: 10px 27px 15px 27px;
   overflow: auto;
+}
+
+aside p,
+aside h3 {
+  max-width: 300px;
+}
+
+
+
+table {
+  width: 100%;
+  margin-left: -8px;
+  padding-left: 4px;
+  border-collapse: collapse;
+}
+
+td, th {
+  padding: 5px;
+}
+
+td {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .repl {
