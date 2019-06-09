@@ -94,7 +94,7 @@ export default [
     title: 'Identity',
     prompt: (
       <div>
-        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where [head] is the input, and [body] is the output.</p>
+        <p>Now we'll get into lambda abstractions. Lambda abstractions represent functions in the lambda calculus. A lambda abstraction takes the form <Code>λ [head] . [body]</Code> where <Code>[head]</Code> is the argument to the function, and <Code>[body]</Code> is what the function resolves to.</p>
         <p>Let's write the identity function; a function which takes its argument, does nothing to it, and spits it back out. In the lambda calculus, that looks something like <Code>λa.a</Code></p>
         <p>as a reminder, you can type backslash (<Code>\</Code>) for λ</p>
       </div>
@@ -133,7 +133,7 @@ export default [
     prompt: (
       <div>
         <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called <i>beta reduction</i>.</p>
-        <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll get into a little later.</p>
+        <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll also go through a little later.</p>
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
     ),
@@ -165,8 +165,8 @@ export default [
     title: 'Left-associativity',
     prompt: (
       <div>
-        <p>Repeated applications in the lambda calculus are what is called <i>left-associative</i>.</p>
-        <p>This means that if we were to write out the parentheses explicity for <Code>abcd</Code>, we'd end up with <Code>((ab)c)d</Code>. That is, in the expression <Code>abcd</Code>, <Code>a</Code> will first be applied to <Code>b</Code>, then the result of <Code>ab</Code> will be applied to <Code>c</Code>, so on and so forth.</p>
+        <p>Repeated applications in the lambda calculus are what is called <i>left-associative</i>. This means that repeated applications are evaluated from left to right.</p>
+        <p>To make this clearer, if we were to explicity write out the parentheses for the expression <Code>abcd</Code>, we'd end up with <Code>((ab)c)d</Code>. That is, in the expression <Code>abcd</Code>, <Code>a</Code> will first be applied to <Code>b</Code>, then the result of <Code>ab</Code> will be applied to <Code>c</Code>, so on and so forth.</p>
         <p>Write out the parentheses explicitly for <Code>ijkmn</Code></p>
       </div>
     ),
@@ -186,7 +186,7 @@ export default [
     prompt: (
       <div>
         <p>Lambda abstractions have higher prescedence than applications.</p>
-        <p>This means that if we write <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> instead of <Code>(λx.y)z</Code></p>
+        <p>This means that if we write the expression <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> and NOT <Code>(λx.y)z</Code>.</p>
         <p>As a rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
         <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
         <p>Solution: <span className='secret'>λw.((xy)z)</span></p>
@@ -205,9 +205,9 @@ export default [
     title: 'Applying Lambdas to Variables',
     prompt: (
       <div>
-        <p>So what if we DID want to apply a lambda abstraction to a variable? We'd have to write it out a little more explicity, like we did in an earlier problem.</p>
-        <p>For example, if we wanted to apply <Code>λx.y</Code> to variable <Code>z</Code>, we'd write it out as <Code>(λx.y)z</Code></p>
-        <p>Write an expression that applies the function <Code>λa.bc</Code> to the variable <Code>d</Code></p>
+        <p>So what if we DID want to apply a lambda abstraction to a variable? We'd have to write it out a little more explicity, like we did back in problem 6.</p>
+        <p>For example, if we wanted to apply the lambda abstraction <Code>λx.y</Code> to variable <Code>z</Code>, we'd write it out as <Code>(λx.y)z</Code></p>
+        <p>Write an expression that applies the lambda abstraction <Code>λa.bc</Code> to the variable <Code>d</Code>.</p>
       </div>
     ),
     winCondition: ({ast}) => safeEqual(ast, parse('(λa.bc)d')),
@@ -216,8 +216,8 @@ export default [
     title: 'Applying Variables to Lambdas',
     prompt: (
       <div>
-        <p>Fortunately, the other direction is a little easier. If we wanted to apply variable to a lambda abstraction instead of the other way around, we'd just write an application like normal.</p>
-        <p>So, applying <Code>a</Code> to <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
+        <p>Fortunately, the other direction requires fewer parentheses. If we wanted to apply variable to a lambda abstraction instead of the other way around, we'd just write them right next to each other, like any other application.</p>
+        <p>So concretely, applying <Code>a</Code> to lambda abstraction <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
         <p>Try applying <Code>w</Code> to <Code>λx.yz</Code>!</p>
       </div>
     ),
@@ -237,8 +237,8 @@ export default [
     title: 'β-reducibility revisited',
     prompt: (
       <div>
-        <p>Moving on. Let's take a deeper look at Beta Reductions.</p>
-        <p>When an expression is a lambda abstraction applied to literally anything else, we say that the expression is <i>beta reducible</i>.</p>
+        <p>Let's take a deeper look at Beta Reductions.</p>
+        <p>When an expression is an application where the left side is a lambda abstraction, we say that the expression is <i>beta reducible</i>.</p>
         <p>Here are a few examples of beta reducible expressions:</p>
         <table>
             <thead>
@@ -297,7 +297,7 @@ export default [
           </thead>
           <tbody>
             <tr><td><Code>(λa.aba)c</Code></td><td>Start with a beta reducible expression.</td></tr>
-            <tr><td><Code>(λa.cbc)c</Code></td><td>Replace the parameter of the first lambda expression with the argument.</td></tr>
+            <tr><td><Code>(λa.cbc)c</Code></td><td>In the body of the lambda abstraction, replace every occurrence of the parameter with the argument.</td></tr>
             <tr><td><Code>λa.cbc</Code></td><td>Erase the argument.</td></tr>
             <tr><td><Code>cbc</Code></td><td>Erase the head of the lambda expression.</td></tr>
           </tbody>
@@ -325,12 +325,12 @@ export default [
           </thead>
           <tbody>
             <tr><td><Code>(λx.yx)λa.a</Code></td><td>Start with a beta reducible expression.</td></tr>
-            <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>Replace the parameter of the first lambda expression with the argument.</td></tr>
+            <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>In the body of the lambda abstraction, replace every occurrence of the parameter with the argument.</td></tr>
             <tr><td><Code>λx.y(λa.a)</Code></td><td>Erase the argument.</td></tr>
             <tr><td><Code>y(λa.a)</Code></td><td>Erase the head of the lambda expression.</td></tr>
           </tbody>
         </table>
-        <p>Write any expression that beta reduces to <Code>i(λj.k)</Code>.</p>
+        <p>Write any expression that beta reduces to <Code>iλj.k</Code>.</p>
       </div>
     ),
     winCondition: ({ast}) => {
@@ -355,7 +355,7 @@ export default [
         <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
         <p>As you may have noticed before, functions can only take one argument, which is kind of annoying.</p>
         <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when executed subsequently gives you the result. Make sense?</p>
-        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write a 'multi-argument' function!</p>
+        <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write any 'multi-argument' function!</p>
       </div>
     ),
     winCondition: ({ast}) => (
