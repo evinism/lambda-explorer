@@ -11,6 +11,8 @@ then navigate to localhost:8082
 
 To not persist or destroy local copy of the game, visit `/?nopersist`
 
+To view the in progress inline definitions, visit `/?inlinedefs`
+
 ### Contributing
 
 [Please contribute!](https://github.com/evinism/lambda-explorer/issues)

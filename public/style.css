@@ -254,6 +254,10 @@ aside button {
   background: transparent;  /* optional: just make scrollbar invisible */
 }
 
+.inline-definition {
+  border-bottom: 1px dotted #888888;
+}
+
 /* Dark Mode */
 
 .dark-mode.app-wrapper {

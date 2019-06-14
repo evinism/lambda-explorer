@@ -1,4 +1,5 @@
 import React from 'react';
+import InlineDefinition from '../inlineDefinitions/InlineDefinition';
 import {
   equal,
   parseTerm as parse,
@@ -51,7 +52,10 @@ function satisfiesTruthTable(ast, rules){
   ).reduce((a, b) => a && b, true);
 };
 
-const Code = props => (<span className="code">{props.children}</span>)
+const Code = props => (<span className="code">{props.children}</span>);
+
+// just a dumb alias
+const Def = ({e, children}) => (<InlineDefinition entry={e}>{children}</InlineDefinition>);
 
 export default [
   {
@@ -69,7 +73,7 @@ export default [
     title: 'Application',
     prompt: (
       <div>
-        <p>You just wrote a lambda expression which contains only the variable <Code>a₁</Code>, which is just a symbol, and not currently bound to anything. In the lambda calculus, variables can be bound to functions, and variables can be applied to one another.</p>
+        <p>You just wrote an expression which contains only the variable <Code>a₁</Code>, which is just a symbol, and not currently bound to anything. In the lambda calculus, variables can be bound to functions, and variables can be applied to one another.</p>
         <p>To apply the variable <Code>a₁</Code> to the variable <Code>b₁</Code>, type in <Code>a₁b₁</Code>. This represents calling the function <Code>a₁</Code> with <Code>b₁</Code> as an argument.</p>
         <p>Remember, the variable or function you're applying always goes <i>first</i></p>
         <p>Try applying one variable to another.</p>
@@ -121,7 +125,7 @@ export default [
     title: "Baby's first β-reduction",
     prompt: (
       <div>
-        <p>Perfect! In the lambda calculus, you can always wrap expressions in parentheses.</p>
+        <p>Perfect! In the lambda calculus, you can always wrap <Def e={'expression'}>expressions</Def> in parentheses.</p>
         <p>Now in the same way that we can apply variables to other variables, we can apply lambda expressions to variables. Try applying your identity function to the variable <Code>b</Code>, by writing <Code>(λa.a)b</Code>.</p>
         <p>Don't worry if this doesn't make sense yet, we'll go a bit more in depth in the future.</p>
       </div>
@@ -165,7 +169,7 @@ export default [
     title: 'Left-associativity',
     prompt: (
       <div>
-        <p>Repeated applications in the lambda calculus are what is called <i>left-associative</i>. This means that repeated applications are evaluated from left to right.</p>
+        <p>Repeated <Def e='application'>applications</Def> in the lambda calculus are what is called <i>left-associative</i>. This means that repeated applications are evaluated from left to right.</p>
         <p>To make this clearer, if we were to explicity write out the parentheses for the expression <Code>abcd</Code>, we'd end up with <Code>((ab)c)d</Code>. That is, in the expression <Code>abcd</Code>, <Code>a</Code> will first be applied to <Code>b</Code>, then the result of <Code>ab</Code> will be applied to <Code>c</Code>, so on and so forth.</p>
         <p>Write out the parentheses explicitly for <Code>ijkmn</Code></p>
       </div>
@@ -185,7 +189,7 @@ export default [
     title: 'Tightly Binding Lambdas',
     prompt: (
       <div>
-        <p>Lambda abstractions have higher prescedence than applications.</p>
+        <p><Def e='lambda_abstraction'>Lambda abstractions</Def> have higher prescedence than <Def e='application'>applications</Def>.</p>
         <p>This means that if we write the expression <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> and NOT <Code>(λx.y)z</Code>.</p>
         <p>As a rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
         <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
@@ -205,7 +209,7 @@ export default [
     title: 'Applying Lambdas to Variables',
     prompt: (
       <div>
-        <p>So what if we DID want to apply a lambda abstraction to a variable? We'd have to write it out a little more explicity, like we did back in problem 6.</p>
+        <p>So what if we DID want to apply a <Def e='lambda_abstraction'>lambda abstraction</Def> to a variable? We'd have to write it out a little more explicity, like we did back in problem 6.</p>
         <p>For example, if we wanted to apply the lambda abstraction <Code>λx.y</Code> to variable <Code>z</Code>, we'd write it out as <Code>(λx.y)z</Code></p>
         <p>Write an expression that applies the lambda abstraction <Code>λa.bc</Code> to the variable <Code>d</Code>.</p>
       </div>
@@ -281,7 +285,7 @@ export default [
     prompt: (
       <div>
         <p>Let's take a deeper look at Beta Reductions.</p>
-        <p>When an expression is an application where the left side is a lambda abstraction, we say that the expression is <i>beta reducible</i>.</p>
+        <p>When an <Def e='expression'>expression</Def> is an <Def e='application'>application</Def> where the left side is a <Def e='lambda_abstraction'>lambda abstraction</Def>, we say that the expression is <i>beta reducible</i>.</p>
         <p>Here are a few examples of beta reducible expressions:</p>
         <table>
             <thead>
@@ -339,10 +343,10 @@ export default [
             </tr>
           </thead>
           <tbody>
-            <tr><td><Code>(λa.aba)c</Code></td><td>Start with a beta reducible expression.</td></tr>
-            <tr><td><Code>(λa.cbc)c</Code></td><td>In the body of the lambda abstraction, replace every occurrence of the parameter with the argument.</td></tr>
+            <tr><td><Code>(λa.aba)c</Code></td><td>Start with a <Def e="beta_reducible_intro">beta reducible</Def> expression.</td></tr>
+            <tr><td><Code>(λa.cbc)c</Code></td><td>In the <Def e='body'>body</Def> of the lambda abstraction, replace every occurrence of the <Def e='parameter'>parameter</Def> with the <Def e='argument'>argument</Def>.</td></tr>
             <tr><td><Code>λa.cbc</Code></td><td>Erase the argument.</td></tr>
-            <tr><td><Code>cbc</Code></td><td>Erase the head of the lambda expression.</td></tr>
+            <tr><td><Code>cbc</Code></td><td>Erase the <Def e="head">head</Def> of the lambda expression.</td></tr>
           </tbody>
         </table>
         <p>That's all there is to it!</p>
@@ -368,9 +372,9 @@ export default [
           </thead>
           <tbody>
             <tr><td><Code>(λx.yx)λa.a</Code></td><td>Start with a beta reducible expression.</td></tr>
-            <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>In the body of the lambda abstraction, replace every occurrence of the parameter with the argument.</td></tr>
+            <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>In the <Def e='body'>body</Def> of the lambda abstraction, replace every occurrence of the <Def e='parameter'>parameter</Def> with the <Def e='argument'>argument</Def>.</td></tr>
             <tr><td><Code>λx.y(λa.a)</Code></td><td>Erase the argument.</td></tr>
-            <tr><td><Code>y(λa.a)</Code></td><td>Erase the head of the lambda expression.</td></tr>
+            <tr><td><Code>y(λa.a)</Code></td><td>Erase the <Def e='head'>head</Def> of the lambda expression.</td></tr>
           </tbody>
         </table>
         <p>Write any expression that beta reduces to <Code>iλj.k</Code>.</p>
