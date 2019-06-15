@@ -229,6 +229,10 @@ aside button {
   white-space: nowrap;
 }
 
+.problem-text {
+  padding-bottom: 10px;
+}
+
 .solved-badge {
   margin-top: -14px;
   font-size: 10pt;
@@ -237,12 +241,22 @@ aside button {
 
 .problem-navigator {
   position: absolute;
-  bottom: 60px;
-  width: 47px;
+  bottom: 50px;
+  width: 120px;
+  padding: 4px;
+  display: flex;
+  background: aliceblue;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .problem-navigator > button {
   font-size: 10pt;
+  margin: 4px;
+}
+
+.problem-navigator > button.hidden {
+  visibility: hidden;
 }
 
 .problem-navigator > .next-problem {
@@ -341,4 +355,8 @@ aside button {
 
 .dark-mode aside a {
   color: whitesmoke;
+}
+
+.dark-mode .problem-navigator {
+  background: #333344;
 }
