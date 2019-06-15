@@ -108,21 +108,13 @@ class App extends React.Component {
               <StartPrompt start={this.startGame} />
             )}
             {gameStarted && (
-              <div>
-                <ProblemPrompter
-                  problems={problems}
-                  current={currentProblem}
-                  shown={shownProblem}
-                />
-                <div className="problem-navigator">
-                  {shownProblem > 0 && (
-                    <button className='prev-problem' onClick={this._handlePrev}>‹</button>
-                  )}
-                  {shownProblem < currentProblem && (
-                    <button className='next-problem' onClick={this._handleNext}>›</button>
-                  )}
-                </div>
-              </div>
+              <ProblemPrompter
+                problems={problems}
+                current={currentProblem}
+                shown={shownProblem}
+                handlePrevClick={this._handlePrev}
+                handleNextClick={this._handleNext}
+              />
             )}
           </aside>
         </div>
