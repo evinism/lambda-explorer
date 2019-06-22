@@ -1,10 +1,8 @@
 import React from 'react';
-import InlineDefinition from '../inlineDefinitions/InlineDefinition';
 import {
   equal,
   parseTerm as parse,
   leftmostOutermostRedex,
-  toNormalForm,
   bReduce,
   getFreeVars,
   tokenize,
@@ -12,6 +10,16 @@ import {
   renderAsChurchNumeral,
   renderAsChurchBoolean,
 } from '../../lib/lambda';
+
+import {safeEqual, Code, satisfiesTruthTable, makeDef} from './util';
+import definitions from './definitions';
+
+// Done like this to prevent circular dependencies
+const Def = makeDef(definitions);
+
+const t = parse('λab.a');
+const f = parse('λab.b');
+
 // interface for each should be roughly:
 /*
   {
@@ -20,43 +28,6 @@ import {
     winCondition: computationData => bool
   }
 */
-
-const safeEqual = (a, b) => (a && b) ? equal(a, b) : false;
-
-const t = parse('λab.a');
-const f = parse('λab.b');
-
-// (ast, [[arg, arg, result]])  => bool
-// should be able to handle non-boolean arguments too...
-function satisfiesTruthTable(ast, rules){
-  return rules.map(
-    rule => {
-      const mutable = [].concat(rule);
-      const target = mutable.pop();
-      const ruleArgs = mutable;
-
-      const testAst = ruleArgs.reduce((acc, cur) => ({
-        type: 'application',
-        left: acc,
-        right: cur,
-      }), ast);
-
-      try {
-        const res = equal(target, toNormalForm(testAst));
-        return res;
-      } catch (e) {
-        console.log("Error in test: " + e);
-        return false;
-      }
-    }
-  ).reduce((a, b) => a && b, true);
-};
-
-const Code = props => (<span className="code">{props.children}</span>);
-
-// just a dumb alias
-const Def = ({e, children}) => (<InlineDefinition entry={e}>{children}</InlineDefinition>);
-
 export default [
   {
     title: 'Simple Variable',

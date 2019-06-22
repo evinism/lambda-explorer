@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactjsPopup from 'reactjs-popup';
-import definitions from './definitions';
+import definitions from '../problems/definitions';
 
 
 export default ({entry, children}) => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Code} from './util';
 
 export default {
     redex: (
@@ -11,14 +12,14 @@ export default {
     ),
     application: (
         <div>
-            <p>An <i>application</i> is a term in the lambda calculus where two expressions are "applied" to each other.</p>
-            <p>This is akin to calling A with B as an argument</p>
+            <p>An <i>application</i> is a way in which you can join two expressions together to form a new expression. Applications represent calling a function with an argument.</p>
+            <p>To apply variable <Code>a</Code> to variable <Code>b</Code> simply write <Code>b</Code> right after <Code>a</Code>, like <Code>ab</Code>!</p>
         </div>
     ), 
     lambda_abstraction: (
         <div>
-            <p>A <i>lambda abstraction</i> term of the form λ [head] . [body]</p>
-            <p>Lambda abstractions represent functions in the lambda calculus.</p>
+            <p>A <i>lambda abstraction</i> term of the form <Code>λ [parameter] . [body]</Code></p>
+            <p>Lambda abstractions represent functions with one parameter.</p>
         </div>
     ),
     parameter: (
@@ -28,12 +29,14 @@ export default {
         </div>
     ),
     head: (
-        <div>TK</div>
+        <div>
+            <p>The <i>head</i> of a lambda abstraction is the part that comes before the dot. For example, given lambda abstraction <Code>λa.abc</Code>, <Code>λa</Code> is the head.</p>
+        </div>
     ),
     body: (
         <div>
-            <p>The <i>body</i> of a lambda abstraction is section that follows the dot</p>
-            <p>This represents what the function returns.</p>
+            <p>The <i>body</i> of a lambda abstraction is section that follows the dot. For example, given lambda abstraction <Code>λa.abc</Code>, <Code>abc</Code> is the body.</p>
+            <p>The body of the lambda abstraction represents what the function evaluates to.</p>
         </div>
     ),
     argument: (
