@@ -18,7 +18,7 @@ export default {
     ), 
     lambda_abstraction: (
         <div>
-            <p>A <i>lambda abstraction</i> term of the form <Code>λ [parameter] . [body]</Code></p>
+            <p>A <i>lambda abstraction</i> is a term of the form <Code>λ [parameter] . [body]</Code> where <Code>[parameter]</Code> is any variable, and <Code>[body]</Code> is any valid expression.</p>
             <p>Lambda abstractions represent functions with one parameter.</p>
         </div>
     ),
