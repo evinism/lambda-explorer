@@ -2,7 +2,6 @@ import { assert } from "chai";
 import { bReduce } from "../operations";
 import { purgeAstCache } from "../util";
 import { parseTerm } from "../parser";
-import { parse } from "ts-node";
 
 describe("Beta Reductions", function () {
   it("Beta reduces a redex", function () {
@@ -16,6 +15,7 @@ describe("Beta Reductions", function () {
       right: { type: "variable", name: "b" },
     };
     const expected = { type: "variable", name: "b" };
+    assert.deepEqual(purgeAstCache(bReduce(ast)), expected);
   });
 
   it("Avoids name conflicts when executing beta reductions", function () {
@@ -212,7 +212,7 @@ describe("Beta Reductions", function () {
     assert.deepEqual(purgeAstCache(bReduce(ast)), expected);
   });
 
-  it("avoids name conflict in this specific weird case", () => {
+  it("avoids name conflict in this odd specific case", () => {
     const ast = {
       type: "application",
       left: {
@@ -239,7 +239,6 @@ describe("Beta Reductions", function () {
         body: { type: "variable", name: "ε₁" },
       },
     };
-    console.log(JSON.stringify(parseTerm("λε₁.λb.ε₁")));
     assert.deepEqual(purgeAstCache(bReduce(ast)), expected);
   });
 });
