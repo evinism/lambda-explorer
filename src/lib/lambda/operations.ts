@@ -1,4 +1,4 @@
-import { getFreeVars } from "./util";
+import { getFreeVars, getAllArgumentNames } from "./util";
 import {
   LambdaExpression as Expr,
   Name,
@@ -112,11 +112,13 @@ function replace(nameToReplace: Name, replacer: Expr, expression: Expr): Expr {
         // Then we pick a new name that
         //  1: isn't free in the replacer
         //  2: isn't free in the expression body
+        //  3: isn't captured by an intermediate function in the expression body
         const freeInExpressionBody = getFreeVars(expression.body).map(
           (node) => node.name
         );
+        const argNames = getAllArgumentNames(expression.body);
         let newName = generateNewName(
-          freeInReplacer.concat(freeInExpressionBody)
+          freeInReplacer.concat(freeInExpressionBody, argNames)
         );
 
         // And make that the new function arg name
