@@ -1,27 +1,27 @@
-import { cannonize } from './cannonize';
+import { cannonize } from "./cannonize";
+import { LambdaExpression as Expr } from "./types";
+
+function sameType<A extends Expr>(a: A, b: Expr): b is A {
+  return a.type === b.type;
+}
 
 // Equality up to alpha conversion.
-function rEqual(a, b) : boolean {
-  if(a.type !== b.type) {
-    return false;
-  }
-  switch(a.type){
+function rEqual(a: Expr, b: Expr): boolean {
+  switch (a.type) {
     // if it's free, we should hope they're the same.
     // if it's not free, we should hope that whatever renaming scheme already converted it
-    case 'variable':
-      return a.name === b.name;
-    case 'application':
-      return rEqual(a.left, b.left) && rEqual(a.right, b.right);
-    case 'function':
-      return rEqual(a.body, b.body)
-    default:
-      throw { message: `what kind of ast node is ${a.type} you nerd?` };
+    case "variable":
+      return sameType(a, b) && a.name === b.name;
+    case "application":
+      return (
+        sameType(a, b) && rEqual(a.left, b.left) && rEqual(a.right, b.right)
+      );
+    case "function":
+      return sameType(a, b) && rEqual(a.body, b.body);
   }
 }
 
-
-// ast1, ast2 => bool
-export function equal(a, b) : boolean {
+export function equal(a: Expr, b: Expr): boolean {
   const cA = cannonize(a);
   const cB = cannonize(b);
   return rEqual(cA, cB);

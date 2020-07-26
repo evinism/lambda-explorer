@@ -1,14 +1,22 @@
-import { getFreeVars } from './util';
-import { LambdaExpression as Expr, Name, Maybe } from './types';
+import { getFreeVars } from "./util";
+import {
+  LambdaExpression as Expr,
+  Name,
+  Maybe,
+  FunctionExpression,
+  ApplicationExpression,
+  VariableExpression,
+} from "./types";
 
 // Expression -> bool
-function bReducable(exp : Expr) : boolean {
-  return (exp.type === 'application' && exp.left.type === 'function');
+function bReducable(
+  exp: Expr
+): exp is ApplicationExpression<FunctionExpression> {
+  return exp.type === "application" && exp.left.type === "function";
 }
 
 // We don't know whether we CAN beta reduce the term
-// Expression => Maybe(Expression)
-function bReduce(expression) : Maybe<Expr> {
+function bReduce(expression: Expr): Maybe<Expr> {
   if (!bReducable(expression)) {
     return undefined;
   }
@@ -19,12 +27,15 @@ function bReduce(expression) : Maybe<Expr> {
   );
 }
 
-// Expression => bool
-function eReducable(expression : Expr) : boolean {
+function eReducable(
+  expression: Expr
+): expression is FunctionExpression<
+  ApplicationExpression<Expr, VariableExpression>
+> {
   if (
-    expression.type !== 'function' ||
-    expression.body.type !== 'application' ||
-    expression.body.right.type !== 'variable'
+    expression.type !== "function" ||
+    expression.body.type !== "application" ||
+    expression.body.right.type !== "variable"
   ) {
     return false;
   }
@@ -33,108 +44,100 @@ function eReducable(expression : Expr) : boolean {
     return false;
   }
 
-  const freeInF = getFreeVars(expression.body.left).map(token => token.name);
+  const freeInF = getFreeVars(expression.body.left).map((token) => token.name);
   if (freeInF.includes(expression.argument)) {
     return false;
   }
   return true;
 }
 
-// Expr -> Maybe(Expr)
-function eReduce(expression) : Maybe<Expr> {
+function eReduce(expression: Expr): Maybe<Expr> {
   if (!eReducable(expression)) {
     return undefined;
   }
   return expression.body.left;
 }
 
-
 // Total garbage implementation
-const replacementMapping = {
-  0: '₀',
-  1: '₁',
-  2: '₂',
-  3: '₃',
-  4: '₄',
-  5: '₅',
-  6: '₆',
-  7: '₇',
-  8: '₈',
-  9: '₉',
-  'L': 'λ',
+const replacementMapping: { [key: string]: string } = {
+  0: "₀",
+  1: "₁",
+  2: "₂",
+  3: "₃",
+  4: "₄",
+  5: "₅",
+  6: "₆",
+  7: "₇",
+  8: "₈",
+  9: "₉",
+  L: "λ",
 };
 
-const replaceAll = str => str.split('').map(
-  letter => (replacementMapping[letter] || letter)
-).join('');
+const replaceAll = (str: string) =>
+  str
+    .split("")
+    .map((letter) => replacementMapping[letter] || letter)
+    .join("");
 
-// For some reason typescript doesn't think arrays have includes on them
-function generateNewName(freeVars) : string {
+function generateNewName(freeVars: string[]): string {
   let counter = 0;
-  let nextName : string;
+  let nextName: string;
   do {
     counter++;
-    nextName = replaceAll('ε' + counter);
-  } while(freeVars.includes(nextName));
+    nextName = replaceAll("ε" + counter);
+  } while (freeVars.includes(nextName));
   return nextName;
 }
 
 // Replaces everything named name in expression with replacer
 // Follows the rules for capture-avoiding substitutions
-function replace(nameToReplace : Name, replacer : Expr, expression : Expr) : Expr {
-  switch(expression.type) {
-    case 'application':
+function replace(nameToReplace: Name, replacer: Expr, expression: Expr): Expr {
+  switch (expression.type) {
+    case "application":
       return {
-        type: 'application',
+        type: "application",
         left: replace(nameToReplace, replacer, expression.left),
-        right: replace(nameToReplace, replacer, expression.right)
+        right: replace(nameToReplace, replacer, expression.right),
       };
-    case 'function':
+    case "function":
       // shadowing
       if (nameToReplace === expression.argument) {
         return expression;
       }
 
-      // capture avoidance 
-      const freeInReplacer = getFreeVars(replacer).map(node => node.name);
+      // capture avoidance
+      const freeInReplacer = getFreeVars(replacer).map((node) => node.name);
       let alphaSafeExpression = expression;
       if (freeInReplacer.includes(expression.argument)) {
-
         // Then we pick a new name that
         //  1: isn't free in the replacer
         //  2: isn't free in the expression body
-        const freeInExpressionBody = getFreeVars(expression.body).map(node => node.name);
-        let newName = generateNewName(freeInReplacer.concat(freeInExpressionBody));
+        const freeInExpressionBody = getFreeVars(expression.body).map(
+          (node) => node.name
+        );
+        let newName = generateNewName(
+          freeInReplacer.concat(freeInExpressionBody)
+        );
 
         // And make that the new function arg name
         alphaSafeExpression = {
-          type: 'function',
+          type: "function",
           argument: newName,
           body: replace(
             expression.argument,
-            { type: 'variable', name: newName },
+            { type: "variable", name: newName },
             expression.body
           ),
         };
       }
       return {
-        type: 'function',
+        type: "function",
         argument: alphaSafeExpression.argument,
-        body: replace(
-          nameToReplace,
-          replacer,
-          alphaSafeExpression.body,
-        )
+        body: replace(nameToReplace, replacer, alphaSafeExpression.body),
       };
-    case 'variable':
+    case "variable":
       return expression.name === nameToReplace ? replacer : expression;
   }
-};
-
-export {
-  bReducable,
-  bReduce,
-  eReducable,
-  eReduce,
-  replace
 }
+
+export { bReducable, bReduce, eReducable, eReduce, replace };
