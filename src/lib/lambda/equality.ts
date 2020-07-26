@@ -21,7 +21,6 @@ function rEqual(a: Expr, b: Expr): boolean {
   }
 }
 
-// ast1, ast2 => bool
 export function equal(a: Expr, b: Expr): boolean {
   const cA = cannonize(a);
   const cB = cannonize(b);

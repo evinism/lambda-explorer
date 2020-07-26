@@ -16,7 +16,6 @@ function bReducable(
 }
 
 // We don't know whether we CAN beta reduce the term
-// Expression => Maybe(Expression)
 function bReduce(expression: Expr): Maybe<Expr> {
   if (!bReducable(expression)) {
     return undefined;
@@ -28,7 +27,6 @@ function bReduce(expression: Expr): Maybe<Expr> {
   );
 }
 
-// Expression => bool
 function eReducable(
   expression: Expr
 ): expression is FunctionExpression<
