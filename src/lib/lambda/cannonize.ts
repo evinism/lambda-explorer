@@ -1,45 +1,39 @@
-import { replace } from './operations';
-import { cacheOnAst } from './util';
-import { LambdaExpression as Expr } from './types';
+import { replace } from "./operations";
+import { cacheOnAst } from "./util";
+import { LambdaExpression as Expr } from "./types";
 
 // Deterministically renames all variables in an expression
 // such that if there exists an alpha conversion between two ASTs,
 // the cannonized asts are identical
 // Expression => Expression
-function cannonizeUnmemoized(ast : Expr) : Expr {
+function cannonizeUnmemoized(ast: Expr): Expr {
   let count = 0;
   return rCannonize(ast);
 
-  function generateNewName(){
+  function generateNewName() {
     count++;
     return `[_c${count}]`;
   }
 
-  function rCannonize(a) {
-    switch(a.type){
-      case 'variable':
+  function rCannonize(a: Expr): Expr {
+    switch (a.type) {
+      case "variable":
         return a;
-      case 'application':
+      case "application":
         return {
-          type: 'application',
+          type: "application",
           left: rCannonize(a.left),
           right: rCannonize(a.right),
         };
-      case 'function':
+      case "function":
         let newName = generateNewName();
         return {
-          type: 'function',
+          type: "function",
           argument: newName,
           body: rCannonize(
-            replace(
-              a.argument,
-              { type: 'variable', name: newName },
-              a.body,
-            )
-          )
+            replace(a.argument, { type: "variable", name: newName }, a.body)
+          ),
         };
-      default:
-        throw { message: `what kind of ast node is ${a.type} you nerd?` };
     }
   }
 }

@@ -1,10 +1,10 @@
-interface SimpleToken {
-  type: "lambda" | "dot" | "openParen" | "closeParen" | "assignment"
+export interface SimpleToken {
+  type: "lambda" | "dot" | "openParen" | "closeParen" | "assignment";
 }
 
-interface ValuedToken {
-  type: "identifier",
-  value: string,
+export interface ValuedToken {
+  type: "identifier";
+  value: string;
 }
 
 export type LambdaToken = SimpleToken | ValuedToken;
@@ -14,30 +14,47 @@ export type Name = string;
 /* Lexer types */
 
 /* AST types */
-export interface FunctionExpression {
-  type: "function",
-  argument: Name,
-  body: LambdaExpression,
+export interface FunctionExpression<T = LambdaExpression> {
+  type: "function";
+  argument: Name;
+  body: T;
 }
 
 export interface VariableExpression {
-  type: "variable",
-  name: Name,
+  type: "variable";
+  name: Name;
 }
 
-export interface ApplicationExpression {
-  type: "application",
-  left: LambdaExpression,
-  right: LambdaExpression
+export interface ApplicationExpression<
+  L = LambdaExpression,
+  R = LambdaExpression
+> {
+  type: "application";
+  left: L;
+  right: R;
 }
 
-export interface AssignmentExpression {
-  type: "assignment"
-  lhs: Name
-  rhs: LambdaExpression
+export interface AssignmentExpression<T = LambdaExpression> {
+  type: "assignment";
+  lhs: Name;
+  rhs: T;
 }
 
-export type LambdaExpression = FunctionExpression | VariableExpression | ApplicationExpression;
+interface CacheEntry<T> {
+  computedWith: LambdaExpression;
+  value: T;
+}
+
+type Cacheable<T = any> = {
+  __cache__?: { [key: string]: CacheEntry<T> };
+};
+
+export type LambdaExpression = (
+  | FunctionExpression
+  | VariableExpression
+  | ApplicationExpression
+) &
+  Cacheable;
 export type LambdaStatement = AssignmentExpression | LambdaExpression;
 
 // util type:
