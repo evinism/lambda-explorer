@@ -232,11 +232,11 @@ describe("Beta Reductions", function () {
     };
     const expected = {
       type: "function",
-      argument: "ε₁",
+      argument: "ε₂",
       body: {
         type: "function",
-        argument: "ε₂",
-        body: { type: "variable", name: "ε₁" },
+        argument: "ε₁",
+        body: { type: "variable", name: "ε₂" },
       },
     };
     assert.deepEqual(purgeAstCache(bReduce(ast)), expected);

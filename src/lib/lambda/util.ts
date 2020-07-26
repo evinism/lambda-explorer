@@ -73,4 +73,19 @@ const getFreeVars = cacheOnAst(function getFreeVarsUnmemoized(
   }
 });
 
-export { getFreeVars, cacheOnAst, purgeAstCache };
+const getAllArgumentNames = cacheOnAst(function getAllArgumentNamesUnmemoized(
+  expression: Expr
+): string[] {
+  switch (expression.type) {
+    case "variable":
+      return [];
+    case "function":
+      return [...getAllArgumentNames(expression.body), expression.argument];
+    case "application":
+      const leftArgs = getAllArgumentNames(expression.left);
+      const rightArgs = getAllArgumentNames(expression.right);
+      return [...leftArgs, ...rightArgs];
+  }
+});
+
+export { getFreeVars, getAllArgumentNames, cacheOnAst, purgeAstCache };
