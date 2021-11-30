@@ -274,7 +274,7 @@ export default [
     title: 'Summing up Syntax',
     prompt: (
       <div>
-        <p>We've just gone through a whirlwind of syntax in the Lambda Calculus, but fortuantely, it's almost everything you need to know.</p>
+        <p>We've just gone through a whirlwind of syntax in the Lambda Calculus, but fortunately, it's almost everything you need to know.</p>
         <p>As a final challenge for this section on syntax, try writing out the expression that applies the expression <Code>aλb.c</Code> to variable <Code>d</Code></p>
       </div>
     ),
@@ -409,7 +409,7 @@ export default [
     winCondition: ({ast}) => {
       return ast && safeEqual(ast, parse('λt.yt'));
     },
-  }, 
+  },
   // --- Computation ---
   {
     title: 'β reductions + α conversions',
