@@ -1,7 +1,6 @@
 import { assert } from "chai";
 import { bReduce } from "../operations";
 import { purgeAstCache } from "../util";
-import { parseTerm } from "../parser";
 
 describe("Beta Reductions", function () {
   it("Beta reduces a redex", function () {
@@ -238,6 +237,44 @@ describe("Beta Reductions", function () {
         argument: "ε₁",
         body: { type: "variable", name: "ε₂" },
       },
+    };
+    assert.deepEqual(purgeAstCache(bReduce(ast)), expected);
+  });
+
+  it("can't replace a variable with itself.", () => {
+    const ast = {
+      type: "application",
+      left: {
+        type: "function",
+        argument: "ε₁",
+        body: {
+          type: "application",
+          left: {
+            type: "function",
+            argument: "a",
+            body: {
+              type: "function",
+              argument: "b",
+              body: { type: "variable", name: "b" },
+            },
+          },
+          right: { type: "variable", name: "ε₁" },
+        },
+      },
+      right: { type: "variable", name: "b" },
+    };
+    const expected = {
+      type: "application",
+      left: {
+        type: "function",
+        argument: "a",
+        body: {
+          type: "function",
+          argument: "b",
+          body: { type: "variable", name: "b" },
+        },
+      },
+      right: { type: "variable", name: "b" },
     };
     assert.deepEqual(purgeAstCache(bReduce(ast)), expected);
   });
