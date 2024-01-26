@@ -2,7 +2,7 @@ import { LambdaExpression as Expr, Maybe } from "./types";
 import { bReducable, bReduce } from "./operations";
 import { LambdaExecutionTimeoutError } from "./errors";
 
-function toNormalForm(expression: Expr, depthOverflow: Number = 1000): Expr {
+function toNormalForm(expression: Expr, depthOverflow: number = 1000): Expr {
   let count = 0;
   let current: Maybe<Expr>;
   let reduced: Maybe<Expr> = expression;
