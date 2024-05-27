@@ -189,7 +189,7 @@ export default [
     title: 'Tightly Binding Lambdas',
     prompt: (
       <div>
-        <p><Def e='lambda_abstraction'>Lambda abstractions</Def> have higher prescedence than <Def e='application'>applications</Def>.</p>
+        <p><Def e='lambda_abstraction'>Lambda abstractions</Def> have higher precedence than <Def e='application'>applications</Def>.</p>
         <p>This means that if we write the expression <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> and NOT <Code>(λx.y)z</Code>.</p>
         <p>As a rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
         <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
