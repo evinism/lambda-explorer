@@ -113,12 +113,13 @@ function replace(nameToReplace: Name, replacer: Expr, expression: Expr): Expr {
         //  1: isn't free in the replacer
         //  2: isn't free in the expression body
         //  3: isn't captured by an intermediate function in the expression body
+        //  4: isn't the argument name that is being replaced.
         const freeInExpressionBody = getFreeVars(expression.body).map(
           (node) => node.name
         );
         const argNames = getAllArgumentNames(expression.body);
         let newName = generateNewName(
-          freeInReplacer.concat(freeInExpressionBody, argNames)
+          freeInReplacer.concat(freeInExpressionBody, argNames, [nameToReplace])
         );
 
         // And make that the new function arg name
