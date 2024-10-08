@@ -5,7 +5,7 @@ import {
   renderAsChurchNumeral,
   renderAsChurchBoolean,
   renderExpression,
-} from '../../lib/lambda';
+} from "../../lib/lambda/index.ts";
 
 const LambdaMetadata = ({ast, err}) => {
   if(!ast){

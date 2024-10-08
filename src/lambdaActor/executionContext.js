@@ -2,15 +2,15 @@
 // import MetadataWorker from 'worker-loader?inline!./worker.js';
 // import TimeoutWatcher from './TimeoutWatcher';
 // stick these in on move to async interface.
-import astToMetadata from './astToMetadata';
-import { FreeVarInDefinitionError } from './errors';
+import astToMetadata from "./astToMetadata.js";
+import { FreeVarInDefinitionError } from "./errors.js";
 
 import {
   parseExtendedSyntax,
   getFreeVars,
   replace,
   toNormalForm,
-} from '../lib/lambda';
+} from "../lib/lambda/index.ts";
 
 // There's a better way of doing this I swear.
 // Might want to make a whole "Execution" object

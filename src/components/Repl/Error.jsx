@@ -2,7 +2,7 @@ import React from 'react';
 import {
   leftmostOutermostRedex,
   renderExpression,
-} from '../../lib/lambda';
+} from "../../lib/lambda/index.ts";
 
 
 const shownSteps = 25;

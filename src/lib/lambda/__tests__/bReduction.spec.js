@@ -1,7 +1,7 @@
 import { assert } from "chai";
-import { bReduce } from "../operations";
-import { purgeAstCache } from "../util";
-import { parseTerm } from "../parser";
+import { bReduce } from "../operations.js";
+import { purgeAstCache } from "../util.js";
+import { parseTerm } from "../parser.js";
 
 describe("Beta Reductions", function () {
   it("Beta reduces a redex", function () {

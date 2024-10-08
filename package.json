@@ -4,11 +4,12 @@
   "description": "exploration in webdev",
   "repository": "https://github.com/evinism/lambda-explorer",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 8082 --static public --mode=development",
     "webpack": "webpack",
-    "test": "mocha -r ts-node/register -r @babel/register src/util/testhelper.js"
+    "test": "mocha"
   },
   "author": "evin",
   "license": "MIT",
@@ -20,9 +21,8 @@
     "babel-loader": "^9.1.3",
     "chai": "^5.0.0",
     "mocha": "^10.2.0",
-    "questy": "^1.1.1",
     "ts-loader": "^9.5.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.1",
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",

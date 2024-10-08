@@ -1,1 +1,0 @@
-const questy = require('questy')();

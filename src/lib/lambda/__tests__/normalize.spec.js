@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { toNormalForm, leftmostOutermostRedex } from '../normalize';
+import { toNormalForm, leftmostOutermostRedex } from "../normalize.js";
 
 describe('Normalize', function(){
   it('Handles top level beta reductions', function(done){
