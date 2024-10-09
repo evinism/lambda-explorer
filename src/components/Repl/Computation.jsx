@@ -1,5 +1,5 @@
 import React from 'react';
-import Metadata from './LambdaMetadata';
+import Metadata from "./LambdaMetadata.jsx";
 
 export default class Computation extends React.Component {
   state = { expanded: false };

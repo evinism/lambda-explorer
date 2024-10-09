@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { tokenize } from '../lexer';
+import { tokenize } from "../lexer.js";
 
 describe('Lexer', function(){
   it('should correctly lex all valid token types', function(done){

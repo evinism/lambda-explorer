@@ -1,6 +1,5 @@
 import { assert } from "chai";
-import { cacheOnAst, purgeAstCache } from "../util";
-import { LambdaExpression as Expr } from "../types";
+import { cacheOnAst, purgeAstCache } from "../util.js";
 
 describe("Caching Util", function () {
   it("creates cache keys on ASTs", function (done) {

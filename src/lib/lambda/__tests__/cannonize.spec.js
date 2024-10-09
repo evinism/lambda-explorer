@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { cannonize } from '../cannonize';
+import { cannonize } from "../cannonize.js";
 
 describe('Cannonize', function(){
   it('cannonizes two alpha-equivalent church numerals equivalently', function(done){

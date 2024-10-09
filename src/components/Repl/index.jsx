@@ -1,7 +1,7 @@
 import React from 'react';
 import cx from 'classnames';
 
-import persistComponent from '../../util/persist';
+import persistComponent from "../../util/persist.js";
 
 import LambdaInput from '../LambdaInput';
 import LambdaActor from '../../lambdaActor/actor.js';
@@ -11,7 +11,10 @@ import Computation from './Computation';
 import Error from './Error'
 import Info from './Info';
 
-import { renderExpression, parseExtendedSyntax } from '../../lib/lambda';
+import {
+  renderExpression,
+  parseExtendedSyntax,
+} from "../../lib/lambda/index.ts";
 
 const initialOutput = (
   <Info>

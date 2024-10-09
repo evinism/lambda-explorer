@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { parseExpression, parseStatement } from '../parser';
+import { parseExpression, parseStatement } from "../parser.js";
 
 describe('Parser', function(){
   it('correctly parses a lambda expression', function(done){

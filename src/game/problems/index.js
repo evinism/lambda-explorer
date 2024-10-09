@@ -1,5 +1,5 @@
 import React from 'react';
-import InlineDefinition from '../inlineDefinitions/InlineDefinition';
+import InlineDefinition from "../inlineDefinitions/InlineDefinition.jsx";
 import {
   equal,
   parseTerm as parse,
@@ -11,7 +11,7 @@ import {
   renderExpression,
   renderAsChurchNumeral,
   renderAsChurchBoolean,
-} from '../../lib/lambda';
+} from "../../lib/lambda/index.ts";
 // interface for each should be roughly:
 /*
   {

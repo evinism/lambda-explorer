@@ -8,7 +8,7 @@ import {
   toNormalForm,
   leftmostOutermostRedex,
   tokenize,
-} from '../lib/lambda';
+} from "../lib/lambda/index.ts";
 
 function astToMetadata(ast){
   const freeVars = getFreeVars(ast);

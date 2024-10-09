@@ -1,9 +1,8 @@
 import { assert } from 'chai';
-import { resetEpsilonCounter } from '../operations';
-import { toNormalForm } from '../normalize';
-import { parseTerm } from '../parser';
-import { purgeAstCache } from '../util';
-import suiteData from './generated_suite.data.js';
+import { toNormalForm } from "../normalize.js";
+import { parseTerm } from "../parser.js";
+import { purgeAstCache } from "../util.js";
+import suiteData from "./generated_suite.data.js";
 
 /*
   Tests evaluation of expressions end to end based on previous versions.

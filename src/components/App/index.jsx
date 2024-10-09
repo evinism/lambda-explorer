@@ -1,12 +1,9 @@
 import React from 'react';
 
-import ProblemPrompter from './ProblemPrompter';
-import Repl from '../Repl';
-
-import persistComponent from '../../util/persist';
-
-import LambdaInput from '../LambdaInput';
-import problems from '../../game/problems';
+import ProblemPrompter from "./ProblemPrompter.jsx";
+import Repl from "../Repl/index.jsx";
+import persistComponent from "../../util/persist.js";
+import problems from "../../game/problems/index.js";
 
 const StartPrompt = ({start}) => (
   <div>
