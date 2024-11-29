@@ -272,6 +272,34 @@ aside button {
   border-bottom: 1px dotted #888888;
 }
 
+/* Metamenu */
+
+.meta-menu-expander {
+  position: absolute;
+  transform: translateY(calc(-100% + 20px));
+  top: 0;
+  right: 0;
+  transition: transform 100ms ease-out;
+}
+
+.expand-meta-menu {
+  display: block;
+  margin-left: auto;
+}
+
+.meta-menu-expander.expanded {
+  transform: translateY(0);
+}
+
+.meta-menu {
+  background: white;
+  border: 0 #f0f0f0 dashed;
+  border-bottom-width: 3px;
+  border-left-width: 3px;
+  padding: 10px;
+  margin-bottom: 3px;
+}
+
 /* Dark Mode */
 
 .dark-mode.app-wrapper {
