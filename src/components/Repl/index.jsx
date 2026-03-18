@@ -106,32 +106,38 @@ class Repl extends React.Component {
     }
   }
 
-  _receiveEvaluation = (evaluation) => {
-    evaluation = {
-      ...evaluation,
-      executionContext: this.lambdaActor.executionContext, //this is a garbage hack to allow win conditions
-    };
+  _enrichEvaluation = (evaluation) => ({
+    ...evaluation,
+    executionContext: this.lambdaActor.executionContext, //this is a garbage hack to allow win conditions
+  })
 
-    const result = renderEvaluation(evaluation);
+  _buildOutputEntry = (evaluation) => {
     const text = evaluation.text;
-
-    let nextOutput = [
-      ...this.state.output,
+    return [
       (
         <div className='command' title={text}>
           <span className='caret'>> </span>
           {text}
         </div>
       ),
-      result,
+      renderEvaluation(evaluation),
     ];
+  }
 
-    const nextHistory = [...this.state.commandHistory, text];
-
+  _fireEvaluationCallbacks = (evaluation) => {
     this.props.onCompute && this.props.onCompute(evaluation);
     this.props.onDefinitionsChange && this.props.onDefinitionsChange(
       {...this.lambdaActor.executionContext.definedVariables}
     );
+  }
+
+  _receiveEvaluation = (evaluation) => {
+    evaluation = this._enrichEvaluation(evaluation);
+
+    const nextOutput = [...this.state.output, ...this._buildOutputEntry(evaluation)];
+    const nextHistory = [...this.state.commandHistory, evaluation.text];
+
+    this._fireEvaluationCallbacks(evaluation);
 
     this.setError('');
     this.setState({
@@ -155,6 +161,42 @@ class Repl extends React.Component {
     }
 
     this.lambdaActor.send(text);
+  }
+
+  _submitMultipleSync = (lines) => {
+    // A bit hacky: temporarily override the receive function to capture
+    // evaluations synchronously, then restore it after we're done. This is to
+    // ensure that the output from multiple lines is added to the output in the
+    // correct order, and that the command history is updated correctly.
+    const evaluations = [];
+    const originalReceive = this.lambdaActor.receive;
+
+    this.lambdaActor.receive = (evaluation) => {
+      evaluations.push(this._enrichEvaluation(evaluation));
+    };
+
+    for (const line of lines) {
+      this.lambdaActor.send(line);
+    }
+
+    this.lambdaActor.receive = originalReceive;
+
+    let output = [...this.state.output];
+    let commandHistory = [...this.state.commandHistory];
+
+    for (const evaluation of evaluations) {
+      output = [...output, ...this._buildOutputEntry(evaluation)];
+      commandHistory = [...commandHistory, evaluation.text];
+      this._fireEvaluationCallbacks(evaluation);
+    }
+
+    this.setError('');
+    this.setState({
+      commandHistory,
+      mutableHistory: [...commandHistory, ''],
+      currentPos: commandHistory.length,
+      output,
+    });
   }
 
   _nextInHistory = () => {
@@ -242,6 +284,7 @@ class Repl extends React.Component {
           <LambdaInput
             onChange={this._onChange}
             submit={this._submit}
+            submitMultiple={this._submitMultipleSync}
             history={this.state.commandHistory}
             value={this.state.mutableHistory[this.state.currentPos]}
             className="lambda-input"
