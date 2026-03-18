@@ -112,6 +112,9 @@ class Repl extends React.Component {
     const nextHistory = [...this.state.commandHistory, text];
 
     this.props.onCompute && this.props.onCompute(evaluation);
+    this.props.onDefinitionsChange && this.props.onDefinitionsChange(
+      {...this.lambdaActor.executionContext.definedVariables}
+    );
 
     this.setError('');
     this.setState({

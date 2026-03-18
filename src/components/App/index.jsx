@@ -1,9 +1,16 @@
 import React from 'react';
 
 import ProblemPrompter from "./ProblemPrompter.jsx";
+import DefinitionsExplorer from "../DefinitionsExplorer/index.jsx";
 import Repl from "../Repl/index.jsx";
 import persistComponent from "../../util/persist.js";
 import problems from "../../game/problems/index.js";
+
+import {
+  renderExpression,
+  renderAsChurchNumeral,
+  renderAsChurchBoolean,
+} from "../../lib/lambda/index.ts";
 
 const StartPrompt = ({start}) => (
   <div>
@@ -21,6 +28,8 @@ const defaultState = {
   gameStarted: false,
   shownProblem: 0,
   darkMode: false,
+  definitions: [],
+  definitionsCollapsed: false,
 };
 
 class App extends React.Component {
@@ -41,6 +50,20 @@ class App extends React.Component {
         this.setState({gameStarted: false});
       }
     }
+  }
+
+  _handleDefinitionsChange = (rawDefs) => {
+    const definitions = Object.entries(rawDefs).map(([name, ast]) => ({
+      name,
+      expression: renderExpression(ast),
+      churchNumeral: renderAsChurchNumeral(ast),
+      churchBoolean: renderAsChurchBoolean(ast),
+    }));
+    this.setState({ definitions });
+  }
+
+  _toggleDefinitions = () => {
+    this.setState({ definitionsCollapsed: !this.state.definitionsCollapsed });
   }
 
   startGame = () => {
@@ -72,9 +95,20 @@ class App extends React.Component {
   componentWillMount() {
     persistComponent (
       'component/App',
-      () => this.state,
+      () => {
+        const { definitions, ...rest } = this.state;
+        return rest;
+      },
       newState => this.setState(newState || {})
     );
+
+    if (window.location.search.includes('devmode')) {
+      this.setState({
+        gameStarted: true,
+        currentProblem: problems.length - 1,
+        shownProblem: 0,
+      });
+    }
   }
 
   _toggleDarkLight = () => {
@@ -98,7 +132,10 @@ class App extends React.Component {
         </header>
         <div className="app-content">
           <article>
-            <Repl onCompute={this._handleOnCompute}/>
+            <Repl
+              onCompute={this._handleOnCompute}
+              onDefinitionsChange={this._handleDefinitionsChange}
+            />
           </article>
           <aside>
             {!gameStarted && (
@@ -113,6 +150,11 @@ class App extends React.Component {
                 handleNextClick={this._handleNext}
               />
             )}
+            <DefinitionsExplorer
+              definitions={this.state.definitions}
+              collapsed={this.state.definitionsCollapsed}
+              onToggle={this._toggleDefinitions}
+            />
           </aside>
         </div>
         <footer>
