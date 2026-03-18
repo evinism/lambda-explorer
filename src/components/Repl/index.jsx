@@ -207,7 +207,7 @@ class Repl extends React.Component {
     this.lambdaActor = new LambdaActor();
     this.lambdaActor.receive = this._receiveEvaluation;
 
-    const saved = this.props.savedDefinitions;
+    const saved = this.props.stringDefinitions;
     if (saved && Object.keys(saved).length > 0) {
       for (const [name, expr] of Object.entries(saved)) {
         this.lambdaActor.executionContext.definedVariables[name] = parseTerm(expr);

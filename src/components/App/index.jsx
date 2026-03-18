@@ -28,8 +28,8 @@ const defaultState = {
   gameStarted: false,
   shownProblem: 0,
   darkMode: false,
-  definitions: [],
-  savedDefinitions: {},
+  renderedDefinitions: [],
+  stringDefinitions: {}, // persisted to localStorage, re-parsed on reload
   definitionsCollapsed: false,
 };
 
@@ -53,20 +53,20 @@ class App extends React.Component {
     }
   }
 
-  _handleDefinitionsChange = (rawDefs) => {
-    const definitions = [];
-    const savedDefinitions = {};
-    for (const [name, ast] of Object.entries(rawDefs)) {
+  _handleDefinitionsChange = (defs) => {
+    const renderedDefinitions = [];
+    const stringDefinitions = {};
+    for (const [name, ast] of Object.entries(defs)) {
       const expression = renderExpression(ast);
-      definitions.push({
+      renderedDefinitions.push({
         name,
         expression,
         churchNumeral: renderAsChurchNumeral(ast),
         churchBoolean: renderAsChurchBoolean(ast),
       });
-      savedDefinitions[name] = expression;
+      stringDefinitions[name] = expression;
     }
-    this.setState({ definitions, savedDefinitions });
+    this.setState({ renderedDefinitions, stringDefinitions });
   }
 
   _handleInsertDefinition = (name) => {
@@ -111,7 +111,7 @@ class App extends React.Component {
     persistComponent (
       'component/App',
       () => {
-        const { definitions, ...rest } = this.state; // eslint-disable-line no-unused-vars
+        const { renderedDefinitions, ...rest } = this.state; // eslint-disable-line no-unused-vars
         return rest;
       },
       newState => this.setState(newState || {})
@@ -151,7 +151,7 @@ class App extends React.Component {
               ref={r => this.replRef = r}
               onCompute={this._handleOnCompute}
               onDefinitionsChange={this._handleDefinitionsChange}
-              savedDefinitions={this.state.savedDefinitions}
+              stringDefinitions={this.state.stringDefinitions}
             />
           </article>
           <aside>
@@ -168,7 +168,7 @@ class App extends React.Component {
               />
             )}
             <DefinitionsExplorer
-              definitions={this.state.definitions}
+              definitions={this.state.renderedDefinitions}
               collapsed={this.state.definitionsCollapsed}
               onToggle={this._toggleDefinitions}
               onInsert={this._handleInsertDefinition}
