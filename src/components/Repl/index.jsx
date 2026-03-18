@@ -83,7 +83,7 @@ class Repl extends React.Component {
   setError = (text) => {
     // should probably be done in the render function anyways..
     let error = false;
-    if (text === '') {
+    if (text === '' || text.startsWith('#')) {
       this.setState({error: false});
       return;
     }
@@ -124,6 +124,13 @@ class Repl extends React.Component {
     ];
   }
 
+  _buildCommentEntry = (text) => [(
+    <div className='command' title={text}>
+      <span className='caret'>> </span>
+      {text}
+    </div>
+  )]
+
   _fireEvaluationCallbacks = (evaluation) => {
     this.props.onCompute && this.props.onCompute(evaluation);
     this.props.onDefinitionsChange && this.props.onDefinitionsChange(
@@ -160,6 +167,19 @@ class Repl extends React.Component {
       return;
     }
 
+    if (text.startsWith('#')) {
+      const nextOutput = [...this.state.output, ...this._buildCommentEntry(text)];
+      const nextHistory = [...this.state.commandHistory, text];
+      this.setError('');
+      this.setState({
+        commandHistory: nextHistory,
+        mutableHistory: [...nextHistory, ''],
+        currentPos: nextHistory.length,
+        output: nextOutput,
+      });
+      return;
+    }
+
     this.lambdaActor.send(text);
   }
 
@@ -168,15 +188,19 @@ class Repl extends React.Component {
     // evaluations synchronously, then restore it after we're done. This is to
     // ensure that the output from multiple lines is added to the output in the
     // correct order, and that the command history is updated correctly.
-    const evaluations = [];
+    const results = [];
     const originalReceive = this.lambdaActor.receive;
 
     this.lambdaActor.receive = (evaluation) => {
-      evaluations.push(this._enrichEvaluation(evaluation));
+      results.push({ type: 'eval', evaluation: this._enrichEvaluation(evaluation) });
     };
 
     for (const line of lines) {
-      this.lambdaActor.send(line);
+      if (line.startsWith('#')) {
+        results.push({ type: 'comment', text: line });
+      } else {
+        this.lambdaActor.send(line);
+      }
     }
 
     this.lambdaActor.receive = originalReceive;
@@ -184,10 +208,15 @@ class Repl extends React.Component {
     let output = [...this.state.output];
     let commandHistory = [...this.state.commandHistory];
 
-    for (const evaluation of evaluations) {
-      output = [...output, ...this._buildOutputEntry(evaluation)];
-      commandHistory = [...commandHistory, evaluation.text];
-      this._fireEvaluationCallbacks(evaluation);
+    for (const result of results) {
+      if (result.type === 'comment') {
+        output = [...output, ...this._buildCommentEntry(result.text)];
+        commandHistory = [...commandHistory, result.text];
+      } else {
+        output = [...output, ...this._buildOutputEntry(result.evaluation)];
+        commandHistory = [...commandHistory, result.evaluation.text];
+        this._fireEvaluationCallbacks(result.evaluation);
+      }
     }
 
     this.setError('');
