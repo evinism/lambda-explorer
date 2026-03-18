@@ -73,6 +73,10 @@ class App extends React.Component {
     this.replRef && this.replRef.insertText(name);
   }
 
+  _handleDeleteDefinition = (name) => {
+    this.replRef && this.replRef.deleteDefinition(name);
+  }
+
   _toggleDefinitions = () => {
     this.setState({ definitionsCollapsed: !this.state.definitionsCollapsed });
   }
@@ -168,6 +172,7 @@ class App extends React.Component {
               collapsed={this.state.definitionsCollapsed}
               onToggle={this._toggleDefinitions}
               onInsert={this._handleInsertDefinition}
+              onDelete={this._handleDeleteDefinition}
             />
           </aside>
         </div>

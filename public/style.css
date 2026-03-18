@@ -313,6 +313,17 @@ aside button {
   text-overflow: ellipsis;
 }
 
+.definition-delete {
+  color: #cccccc;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 9pt;
+}
+
+.definition-delete:hover {
+  color: #ff3333;
+}
+
 .definition-name {
   font-weight: 500;
   cursor: pointer;
@@ -422,6 +433,14 @@ aside button {
 
 .dark-mode .definitions-empty {
   color: #777777;
+}
+
+.dark-mode .definition-delete {
+  color: #555555;
+}
+
+.dark-mode .definition-delete:hover {
+  color: #ff3333;
 }
 
 .dark-mode .definition-annotation {

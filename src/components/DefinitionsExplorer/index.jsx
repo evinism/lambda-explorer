@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DefinitionsExplorer = ({ definitions, collapsed, onToggle, onInsert }) => {
+const DefinitionsExplorer = ({ definitions, collapsed, onToggle, onInsert, onDelete }) => {
   const count = definitions.length;
 
   return (
@@ -25,6 +25,10 @@ const DefinitionsExplorer = ({ definitions, collapsed, onToggle, onInsert }) => 
 
             return (
               <div key={name} className="definition-entry">
+                <span
+                  className="definition-delete"
+                  onClick={() => onDelete && onDelete(name)}
+                >x</span>
                 <span
                   className="definition-name"
                   onClick={() => onInsert && onInsert(name)}

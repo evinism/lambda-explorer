@@ -56,9 +56,16 @@ class Repl extends React.Component {
     output: [initialOutput],
   }
 
+  deleteDefinition = (name) => {
+    delete this.lambdaActor.executionContext.definedVariables[name];
+    this.props.onDefinitionsChange && this.props.onDefinitionsChange(
+      {...this.lambdaActor.executionContext.definedVariables}
+    );
+  }
+
   insertText = (text) => {
     const current = this.state.mutableHistory[this.state.currentPos] || '';
-    const newText = current + text;
+    const newText = current + text + ' ';
     const newArr = [].concat(this.state.mutableHistory);
     newArr[this.state.currentPos] = newText;
     this.setError(newText);
