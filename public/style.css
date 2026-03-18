@@ -315,6 +315,11 @@ aside button {
 
 .definition-name {
   font-weight: 500;
+  cursor: pointer;
+}
+
+.definition-name:hover {
+  text-decoration: underline;
 }
 
 .definition-annotation {

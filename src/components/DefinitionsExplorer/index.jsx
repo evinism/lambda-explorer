@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DefinitionsExplorer = ({ definitions, collapsed, onToggle }) => {
+const DefinitionsExplorer = ({ definitions, collapsed, onToggle, onInsert }) => {
   const count = definitions.length;
 
   return (
@@ -25,7 +25,10 @@ const DefinitionsExplorer = ({ definitions, collapsed, onToggle }) => {
 
             return (
               <div key={name} className="definition-entry">
-                <span className="definition-name">{name}</span>
+                <span
+                  className="definition-name"
+                  onClick={() => onInsert && onInsert(name)}
+                >{name}</span>
                 {' := '}
                 <span className="definition-expression">{expression}</span>
                 {annotationStr && (

@@ -56,6 +56,15 @@ class Repl extends React.Component {
     output: [initialOutput],
   }
 
+  insertText = (text) => {
+    const current = this.state.mutableHistory[this.state.currentPos] || '';
+    const newText = current + text;
+    const newArr = [].concat(this.state.mutableHistory);
+    newArr[this.state.currentPos] = newText;
+    this.setError(newText);
+    this.setState({ mutableHistory: newArr });
+  }
+
   _onChange = (text) => {
     let error = false;
     const newArr = [].concat(this.state.mutableHistory);

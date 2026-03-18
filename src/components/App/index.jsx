@@ -69,6 +69,10 @@ class App extends React.Component {
     this.setState({ definitions, savedDefinitions });
   }
 
+  _handleInsertDefinition = (name) => {
+    this.replRef && this.replRef.insertText(name);
+  }
+
   _toggleDefinitions = () => {
     this.setState({ definitionsCollapsed: !this.state.definitionsCollapsed });
   }
@@ -140,6 +144,7 @@ class App extends React.Component {
         <div className="app-content">
           <article>
             <Repl
+              ref={r => this.replRef = r}
               onCompute={this._handleOnCompute}
               onDefinitionsChange={this._handleDefinitionsChange}
               savedDefinitions={this.state.savedDefinitions}
@@ -162,6 +167,7 @@ class App extends React.Component {
               definitions={this.state.definitions}
               collapsed={this.state.definitionsCollapsed}
               onToggle={this._toggleDefinitions}
+              onInsert={this._handleInsertDefinition}
             />
           </aside>
         </div>
