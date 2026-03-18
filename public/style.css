@@ -305,6 +305,21 @@ aside button {
   font-size: 10pt;
 }
 
+.definitions-copy {
+  background: none;
+  border: 1px solid #cccccc;
+  color: #666666;
+  cursor: pointer;
+  font-size: 9pt;
+  padding: 1px 6px;
+  margin-bottom: 4px;
+}
+
+.definitions-copy:hover {
+  border-color: #999999;
+  color: #333333;
+}
+
 .definition-entry {
   font-family: 'Roboto Mono';
   padding: 2px 0;
@@ -429,6 +444,16 @@ aside button {
 
 .dark-mode .definitions-explorer {
   border-top: 1px solid #33333a;
+}
+
+.dark-mode .definitions-copy {
+  border-color: #555555;
+  color: #aaaaaa;
+}
+
+.dark-mode .definitions-copy:hover {
+  border-color: #888888;
+  color: #dddddd;
 }
 
 .dark-mode .definitions-empty {

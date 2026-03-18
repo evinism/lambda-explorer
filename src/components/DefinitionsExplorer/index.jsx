@@ -17,6 +17,17 @@ const DefinitionsExplorer = ({ definitions, collapsed, onToggle, onInsert, onDel
           {count === 0 && (
             <p className="definitions-empty">No definitions yet. Use <span className="code">NAME := expr</span> to define.</p>
           )}
+          {count > 0 && (
+            <button
+              className="definitions-copy"
+              onClick={() => {
+                const text = definitions
+                  .map(({ name, expression }) => `${name} := ${expression}`)
+                  .join('\n');
+                navigator.clipboard.writeText(text);
+              }}
+            >copy-all</button>
+          )}
           {definitions.map(({ name, expression, churchNumeral, churchBoolean }) => {
             let annotation = [];
             if (churchNumeral !== undefined) annotation.push(churchNumeral);
