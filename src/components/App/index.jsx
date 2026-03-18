@@ -29,6 +29,7 @@ const defaultState = {
   shownProblem: 0,
   darkMode: false,
   definitions: [],
+  savedDefinitions: {},
   definitionsCollapsed: false,
 };
 
@@ -53,13 +54,19 @@ class App extends React.Component {
   }
 
   _handleDefinitionsChange = (rawDefs) => {
-    const definitions = Object.entries(rawDefs).map(([name, ast]) => ({
-      name,
-      expression: renderExpression(ast),
-      churchNumeral: renderAsChurchNumeral(ast),
-      churchBoolean: renderAsChurchBoolean(ast),
-    }));
-    this.setState({ definitions });
+    const definitions = [];
+    const savedDefinitions = {};
+    for (const [name, ast] of Object.entries(rawDefs)) {
+      const expression = renderExpression(ast);
+      definitions.push({
+        name,
+        expression,
+        churchNumeral: renderAsChurchNumeral(ast),
+        churchBoolean: renderAsChurchBoolean(ast),
+      });
+      savedDefinitions[name] = expression;
+    }
+    this.setState({ definitions, savedDefinitions });
   }
 
   _toggleDefinitions = () => {
@@ -96,7 +103,7 @@ class App extends React.Component {
     persistComponent (
       'component/App',
       () => {
-        const { definitions, ...rest } = this.state;
+        const { definitions, ...rest } = this.state; // eslint-disable-line no-unused-vars
         return rest;
       },
       newState => this.setState(newState || {})
@@ -135,6 +142,7 @@ class App extends React.Component {
             <Repl
               onCompute={this._handleOnCompute}
               onDefinitionsChange={this._handleDefinitionsChange}
+              savedDefinitions={this.state.savedDefinitions}
             />
           </article>
           <aside>

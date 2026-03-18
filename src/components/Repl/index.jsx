@@ -14,6 +14,7 @@ import Info from './Info';
 import {
   renderExpression,
   parseExtendedSyntax,
+  parseTerm,
 } from "../../lib/lambda/index.ts";
 
 const initialOutput = (
@@ -189,6 +190,16 @@ class Repl extends React.Component {
   componentWillMount(){
     this.lambdaActor = new LambdaActor();
     this.lambdaActor.receive = this._receiveEvaluation;
+
+    const saved = this.props.savedDefinitions;
+    if (saved && Object.keys(saved).length > 0) {
+      for (const [name, expr] of Object.entries(saved)) {
+        this.lambdaActor.executionContext.definedVariables[name] = parseTerm(expr);
+      }
+      this.props.onDefinitionsChange && this.props.onDefinitionsChange(
+        {...this.lambdaActor.executionContext.definedVariables}
+      );
+    }
   }
 
   render(){
