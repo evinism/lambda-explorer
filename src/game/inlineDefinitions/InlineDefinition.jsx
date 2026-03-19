@@ -13,8 +13,9 @@ export default ({entry, children}) => {
       position="left center"
       on="hover"
     >
-      {console.log(definitions, entry)}
-      {definitions[entry] || (<h2>No definition found!!!</h2>)}
+      <div className="inline-definitions-popup">
+        {definitions[entry] || <h2>No definition found!!!</h2>}
+      </div>
     </ReactjsPopup>
   );
 }
