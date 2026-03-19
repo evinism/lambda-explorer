@@ -40,6 +40,19 @@ export default class LambdaInput extends React.Component {
     }
   }
 
+  _handlePaste = (e) => {
+    const pastedText = e.clipboardData.getData('text');
+    if (pastedText.includes('\n') && this.props.submitMultiple) {
+      e.preventDefault();
+      const lines = pastedText.split('\n')
+        .map(line => replaceAll(line.trim()))
+        .filter(line => line !== '');
+      if (lines.length > 0) {
+        this.props.submitMultiple(lines);
+      }
+    }
+  }
+
   componentDidUpdate(){
     this.refs.input.selectionStart = this.state.selStart;
     this.refs.input.selectionEnd = this.state.selEnd;
@@ -56,6 +69,7 @@ export default class LambdaInput extends React.Component {
         autoFocus={this.props.autoFocus}
         onChange={this._handleChange}
         onKeyPress={this._handleKeyPress}
+        onPaste={this._handlePaste}
         value={value}
         ref='input'
       />

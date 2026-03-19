@@ -106,39 +106,56 @@ class Repl extends React.Component {
     }
   }
 
-  _receiveEvaluation = (evaluation) => {
-    evaluation = {
-      ...evaluation,
-      executionContext: this.lambdaActor.executionContext, //this is a garbage hack to allow win conditions
-    };
+  _submitMultiple = async (lines) => {
+    let output = [...this.state.output];
+    let commandHistory = [...this.state.commandHistory];
 
-    const result = renderEvaluation(evaluation);
-    const text = evaluation.text;
+    for (const line of lines) {
+      const evaluation = await this.lambdaActor.send(line);
+      // Line is purely a comment. Format output and then just pass it through
+      // without calling onCompute or onDefinitionsChange.
+      if (!evaluation) {
+        output = [...output, (
+          <div className='command' title={line}>
+            <span className='caret'>> </span>
+            {line}
+          </div>
+        )];
+        commandHistory = [...commandHistory, line];
+        continue;
+      }
 
-    let nextOutput = [
-      ...this.state.output,
-      (
-        <div className='command' title={text}>
+      // Add execution context so _handleOnCompute can check win conditions that
+      // depend on variable definitions.
+      const enriched = {
+        ...evaluation,
+        executionContext: this.lambdaActor.executionContext,
+      };
+      // Format command.
+      output = [...output, (
+        <div className='command' title={enriched.text}>
           <span className='caret'>> </span>
-          {text}
+          {enriched.text}
         </div>
-      ),
-      result,
-    ];
+      ), renderEvaluation(enriched)];
+      // Add to history and pass to onCompute callback and onDefinitionsChange callback.
+      commandHistory = [...commandHistory, enriched.text];
+      this.props.onCompute && this.props.onCompute(enriched);
+      this.props.onDefinitionsChange && this.props.onDefinitionsChange(
+        {...this.lambdaActor.executionContext.definedVariables}
+      );
 
-    const nextHistory = [...this.state.commandHistory, text];
-
-    this.props.onCompute && this.props.onCompute(evaluation);
-    this.props.onDefinitionsChange && this.props.onDefinitionsChange(
-      this.lambdaActor.executionContext.getDefinedVariables()
-    );
+      if (enriched.type === 'error') {
+        break;
+      }
+    }
 
     this.setError('');
     this.setState({
-      commandHistory: nextHistory,
-      mutableHistory: [...nextHistory, ''],
-      currentPos: nextHistory.length,
-      output: nextOutput,
+      commandHistory,
+      mutableHistory: [...commandHistory, ''],
+      currentPos: commandHistory.length,
+      output,
     });
   }
 
@@ -154,7 +171,7 @@ class Repl extends React.Component {
       return;
     }
 
-    this.lambdaActor.send(text);
+    await this._submitMultiple([text]);
   }
 
   _nextInHistory = () => {
@@ -205,7 +222,6 @@ class Repl extends React.Component {
 
   componentWillMount(){
     this.lambdaActor = new LambdaActor();
-    this.lambdaActor.receive = this._receiveEvaluation;
 
     const saved = this.props.stringDefinitions;
     if (saved && Object.keys(saved).length > 0) {
@@ -244,6 +260,7 @@ class Repl extends React.Component {
           <LambdaInput
             onChange={this._onChange}
             submit={this._submit}
+            submitMultiple={this._submitMultiple}
             history={this.state.commandHistory}
             value={this.state.mutableHistory[this.state.currentPos]}
             className="lambda-input"

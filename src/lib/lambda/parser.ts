@@ -2,13 +2,17 @@ import {
   LambdaExpression as Expr,
   LambdaStatement as Statement,
   LambdaToken as Token,
+  Maybe,
   ValuedToken,
 } from "./types";
 import { tokenize } from "./lexer";
 import { LambdaSyntaxError } from "./errors";
 
 // this one'll be a better entry point
-export function parseStatement(tokenStream: Token[]): Statement {
+export function parseStatement(tokenStream: Token[]): Maybe<Statement> {
+  if (tokenStream.length === 0) {
+    return undefined;
+  }
   // could handle errors better-- this one just will say unexpected token
   // when it reaches a nonstandard assignment token.
   if (tokenStream.length >= 2) {
@@ -118,6 +122,6 @@ export function parseTerm(str: string) {
 
 // This isn't understood by most helper functions, as it's an extension of the lambda calculus.
 // TODO: make this more well supported.
-export function parseExtendedSyntax(str: string) {
+export function parseExtendedSyntax(str: string): Maybe<Statement> {
   return parseStatement(tokenize(str));
 }

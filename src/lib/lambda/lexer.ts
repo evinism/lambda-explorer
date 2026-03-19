@@ -11,6 +11,8 @@ function tokenize(str: string) : LambdaToken[] {
     const nextChar = str.slice(pos, pos + 1);
     if (/\s/.test(nextChar)){ // skip whitespace.
       continue;
+    } if (nextChar === '#') {
+      break;
     } if (nextChar === 'λ') {
       tokenStream.push({
         type: 'lambda'
