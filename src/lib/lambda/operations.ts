@@ -105,20 +105,28 @@ function replace(nameToReplace: Name, replacer: Expr, expression: Expr): Expr {
         return expression;
       }
 
-      // capture avoidance
+      // capture avoidance requires:
+      // 1: a free variable in the replacer matches this function's argument name
+      // 2: nameToReplace is free in this function's body (i.e. substitution can occur)
+      // e.g.
+      // replace("a", (b c), \b. a b)    ("b" free in replacer, "a" free in body)
+      // replace("a", (b c), \b. b)      ("b" free in replacer, "a" not free in body)
+      // replace("a", (c d), \b. a b)    ("b" not free in replacer, "a" free in body)
+      // replace("a", (b c), \b. c)      ("b" not free in replacer, "a" not free in body)
       const freeInReplacer = getFreeVars(replacer).map((node) => node.name);
       let alphaSafeExpression = expression;
-      if (freeInReplacer.includes(expression.argument)) {
+      const freeInExpressionBody = getFreeVars(expression.body).map(
+        (node) => node.name
+      );
+      if (freeInReplacer.includes(expression.argument) && freeInExpressionBody.includes(nameToReplace)) {
         // Then we pick a new name that
         //  1: isn't free in the replacer
         //  2: isn't free in the expression body
         //  3: isn't captured by an intermediate function in the expression body
-        const freeInExpressionBody = getFreeVars(expression.body).map(
-          (node) => node.name
-        );
+        //  4: isn't the argument name that is being replaced.
         const argNames = getAllArgumentNames(expression.body);
         let newName = generateNewName(
-          freeInReplacer.concat(freeInExpressionBody, argNames)
+          freeInReplacer.concat(freeInExpressionBody, argNames, [nameToReplace])
         );
 
         // And make that the new function arg name
