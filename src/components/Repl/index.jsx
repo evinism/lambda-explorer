@@ -106,21 +106,6 @@ class Repl extends React.Component {
     }
   }
 
-  _submit = async () => {
-    const text = this.state.mutableHistory[this.state.currentPos];
-    if (text === '') {
-      this.setState({
-        output: [
-          ...this.state.output,
-          (<span className='command'><span className='caret'>> </span></span>)
-        ],
-      });
-      return;
-    }
-
-    await this._submitMultiple([text]);
-  }
-
   _submitMultiple = async (lines) => {
     let output = [...this.state.output];
     let commandHistory = [...this.state.commandHistory];
@@ -172,6 +157,21 @@ class Repl extends React.Component {
       currentPos: commandHistory.length,
       output,
     });
+  }
+
+  _submit = async () => {
+    const text = this.state.mutableHistory[this.state.currentPos];
+    if (text === '') {
+      this.setState({
+        output: [
+          ...this.state.output,
+          (<span className='command'><span className='caret'>> </span></span>)
+        ],
+      });
+      return;
+    }
+
+    await this._submitMultiple([text]);
   }
 
   _nextInHistory = () => {
