@@ -50,6 +50,18 @@ class ExecutionContext {
     this.definedVariables[name] = ast;
   }
 
+  deleteVariable(name){
+    delete this.definedVariables[name];
+  }
+
+  getDefinedVariables(){
+    return {...this.definedVariables};
+  }
+
+  loadVariables(variables){
+    Object.assign(this.definedVariables, variables);
+  }
+
   clearVariables(){
     this.definedVariables = {};
   }

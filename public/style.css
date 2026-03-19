@@ -272,6 +272,71 @@ aside button {
   border-bottom: 1px dotted #888888;
 }
 
+/* Definitions Explorer */
+
+.definitions-explorer {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 15px;
+  padding-top: 5px;
+}
+
+.definitions-header {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 400;
+  font-size: 12pt;
+  margin: 5px 0;
+}
+
+.definitions-toggle {
+  font-size: 10px;
+  display: inline-block;
+  width: 12px;
+}
+
+.definitions-list {
+  overflow-y: auto;
+  font-size: 10pt;
+}
+
+.definitions-empty {
+  color: #999999;
+  font-size: 10pt;
+}
+
+.definition-entry {
+  font-family: 'Roboto Mono';
+  padding: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.definition-delete {
+  color: #cccccc;
+  cursor: pointer;
+  margin-right: 6px;
+  font-size: 9pt;
+}
+
+.definition-delete:hover {
+  color: #ff3333;
+}
+
+.definition-name {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.definition-name:hover {
+  text-decoration: underline;
+}
+
+.definition-annotation {
+  color: #888888;
+  font-size: 9pt;
+}
+
 /* Dark Mode */
 
 .dark-mode.app-wrapper {
@@ -359,4 +424,24 @@ aside button {
 
 .dark-mode .problem-navigator {
   background: #333344;
+}
+
+.dark-mode .definitions-explorer {
+  border-top: 1px solid #33333a;
+}
+
+.dark-mode .definitions-empty {
+  color: #777777;
+}
+
+.dark-mode .definition-delete {
+  color: #555555;
+}
+
+.dark-mode .definition-delete:hover {
+  color: #ff3333;
+}
+
+.dark-mode .definition-annotation {
+  color: #7777aa;
 }

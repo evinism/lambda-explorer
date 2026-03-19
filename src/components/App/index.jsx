@@ -1,9 +1,16 @@
 import React from 'react';
 
 import ProblemPrompter from "./ProblemPrompter.jsx";
+import DefinitionsExplorer from "../DefinitionsExplorer/index.jsx";
 import Repl from "../Repl/index.jsx";
 import persistComponent from "../../util/persist.js";
 import problems from "../../game/problems/index.js";
+
+import {
+  renderExpression,
+  renderAsChurchNumeral,
+  renderAsChurchBoolean,
+} from "../../lib/lambda/index.ts";
 
 const StartPrompt = ({start}) => (
   <div>
@@ -21,6 +28,9 @@ const defaultState = {
   gameStarted: false,
   shownProblem: 0,
   darkMode: false,
+  renderedDefinitions: [],
+  stringDefinitions: {}, // persisted to localStorage, re-parsed on reload
+  definitionsCollapsed: false,
 };
 
 class App extends React.Component {
@@ -41,6 +51,34 @@ class App extends React.Component {
         this.setState({gameStarted: false});
       }
     }
+  }
+
+  _handleDefinitionsChange = (defs) => {
+    const renderedDefinitions = [];
+    const stringDefinitions = {};
+    for (const [name, ast] of Object.entries(defs)) {
+      const expression = renderExpression(ast);
+      renderedDefinitions.push({
+        name,
+        expression,
+        churchNumeral: renderAsChurchNumeral(ast),
+        churchBoolean: renderAsChurchBoolean(ast),
+      });
+      stringDefinitions[name] = expression;
+    }
+    this.setState({ renderedDefinitions, stringDefinitions });
+  }
+
+  _handleInsertDefinition = (name) => {
+    this.replRef && this.replRef.insertText(name);
+  }
+
+  _handleDeleteDefinition = (name) => {
+    this.replRef && this.replRef.deleteDefinition(name);
+  }
+
+  _toggleDefinitions = () => {
+    this.setState({ definitionsCollapsed: !this.state.definitionsCollapsed });
   }
 
   startGame = () => {
@@ -72,9 +110,20 @@ class App extends React.Component {
   componentWillMount() {
     persistComponent (
       'component/App',
-      () => this.state,
+      () => {
+        const { renderedDefinitions, ...rest } = this.state; // eslint-disable-line no-unused-vars
+        return rest;
+      },
       newState => this.setState(newState || {})
     );
+
+    if (window.location.search.includes('devmode')) {
+      this.setState({
+        gameStarted: true,
+        currentProblem: problems.length - 1,
+        shownProblem: 0,
+      });
+    }
   }
 
   _toggleDarkLight = () => {
@@ -98,7 +147,12 @@ class App extends React.Component {
         </header>
         <div className="app-content">
           <article>
-            <Repl onCompute={this._handleOnCompute}/>
+            <Repl
+              ref={r => this.replRef = r}
+              onCompute={this._handleOnCompute}
+              onDefinitionsChange={this._handleDefinitionsChange}
+              stringDefinitions={this.state.stringDefinitions}
+            />
           </article>
           <aside>
             {!gameStarted && (
@@ -113,6 +167,13 @@ class App extends React.Component {
                 handleNextClick={this._handleNext}
               />
             )}
+            <DefinitionsExplorer
+              definitions={this.state.renderedDefinitions}
+              collapsed={this.state.definitionsCollapsed}
+              onToggle={this._toggleDefinitions}
+              onInsert={this._handleInsertDefinition}
+              onDelete={this._handleDeleteDefinition}
+            />
           </aside>
         </div>
         <footer>
