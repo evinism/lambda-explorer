@@ -105,7 +105,7 @@ describe("Normalize (comprehensive)", function () {
     it("respects custom depth limit", function () {
       const ast = parseTerm("(λx.x x)(λx.x x)");
       assert.throws(
-        () => toNormalForm(ast, 5),
+        () => toNormalForm(ast, { depthOverflow: 5 }),
         LambdaExecutionTimeoutError
       );
     });
@@ -113,7 +113,7 @@ describe("Normalize (comprehensive)", function () {
     it("error has correct name", function () {
       const ast = parseTerm("(λx.x x)(λx.x x)");
       try {
-        toNormalForm(ast, 5);
+        toNormalForm(ast, { depthOverflow: 5 });
         assert.fail("should have thrown");
       } catch (e) {
         assert.equal(e.name, "LambdaExecutionTimeoutError");
@@ -123,7 +123,7 @@ describe("Normalize (comprehensive)", function () {
     it("succeeds within depth limit for simple expressions", function () {
       const ast = parseTerm("(λx.x) a");
       // Should not throw even with a small limit
-      const result = purgeAstCache(toNormalForm(ast, 5));
+      const result = purgeAstCache(toNormalForm(ast, { depthOverflow: 5 }));
       assert.deepEqual(result, { type: "variable", name: "a" });
     });
   });

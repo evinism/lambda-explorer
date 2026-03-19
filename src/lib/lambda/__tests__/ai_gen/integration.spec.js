@@ -166,7 +166,7 @@ describe("Integration Tests (comprehensive)", function () {
 
     it("omega combinator diverges", function () {
       const ast = parseTerm("(λx.x x)(λx.x x)");
-      assert.throws(() => toNormalForm(ast, 50), LambdaExecutionTimeoutError);
+      assert.throws(() => toNormalForm(ast, { depthOverflow: 50 }), LambdaExecutionTimeoutError);
     });
 
     it("Y combinator applied to non-recursive function terminates", function () {
@@ -178,7 +178,7 @@ describe("Integration Tests (comprehensive)", function () {
       const Y = "λf.(λx.f(x x))(λx.f(x x))";
       const K = "λxy.x";
       assert.throws(
-        () => toNormalForm(parseTerm(`(${Y})(${K})`), 100),
+        () => toNormalForm(parseTerm(`(${Y})(${K})`), { depthOverflow: 100 }),
         LambdaExecutionTimeoutError
       );
     });

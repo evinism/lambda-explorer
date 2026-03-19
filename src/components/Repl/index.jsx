@@ -221,11 +221,15 @@ class Repl extends React.Component {
     if (prevProps.evaluationDepth !== this.props.evaluationDepth) {
       this.lambdaActor.setMaxDepth(this.props.evaluationDepth);
     }
+    if (prevProps.etaReduce !== this.props.etaReduce) {
+      this.lambdaActor.setEtaReduce(this.props.etaReduce);
+    }
   }
 
   componentWillMount(){
     this.lambdaActor = new LambdaActor();
     this.lambdaActor.setMaxDepth(this.props.evaluationDepth);
+    this.lambdaActor.setEtaReduce(this.props.etaReduce);
 
     const saved = this.props.stringDefinitions;
     if (saved && Object.keys(saved).length > 0) {

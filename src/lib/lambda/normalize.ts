@@ -1,14 +1,20 @@
 import { LambdaExpression as Expr, Maybe } from "./types";
-import { bReducable, bReduce } from "./operations";
+import { bReducable, bReduce, eReducable, eReduce } from "./operations";
 import { LambdaExecutionTimeoutError } from "./errors";
 
-function toNormalForm(expression: Expr, depthOverflow: number = 1000): Expr {
+interface NormalFormConfig {
+  depthOverflow?: number;
+  etaReduce?: boolean;
+}
+
+function toNormalForm(expression: Expr, config: NormalFormConfig = {}): Expr {
+  const { depthOverflow = 1000, etaReduce = false } = config;
   let count = 0;
   let current: Maybe<Expr>;
   let reduced: Maybe<Expr> = expression;
   do {
     current = reduced;
-    reduced = leftmostOutermostRedex(current);
+    reduced = leftmostOutermostRedex(current, etaReduce);
     count++;
     if (count >= depthOverflow && reduced !== undefined) {
       throw new LambdaExecutionTimeoutError(
@@ -19,12 +25,15 @@ function toNormalForm(expression: Expr, depthOverflow: number = 1000): Expr {
   return current;
 }
 
-function leftmostOutermostRedex(expression: Expr): Maybe<Expr> {
+function leftmostOutermostRedex(expression: Expr, etaReduce: boolean = false): Maybe<Expr> {
   if (bReducable(expression)) {
     return bReduce(expression);
   }
+  if (etaReduce && eReducable(expression)) {
+    return eReduce(expression);
+  }
   if (expression.type === "function") {
-    const res = leftmostOutermostRedex(expression.body);
+    const res = leftmostOutermostRedex(expression.body, etaReduce);
     if (res === undefined) {
       return undefined;
     } else {
@@ -39,7 +48,7 @@ function leftmostOutermostRedex(expression: Expr): Maybe<Expr> {
     return undefined;
   }
   if (expression.type === "application") {
-    const leftReduced = leftmostOutermostRedex(expression.left);
+    const leftReduced = leftmostOutermostRedex(expression.left, etaReduce);
     if (leftReduced !== undefined) {
       return {
         type: "application",
@@ -47,7 +56,7 @@ function leftmostOutermostRedex(expression: Expr): Maybe<Expr> {
         right: expression.right,
       };
     }
-    const rightReduced = leftmostOutermostRedex(expression.right);
+    const rightReduced = leftmostOutermostRedex(expression.right, etaReduce);
     if (rightReduced !== undefined) {
       return {
         type: "application",
@@ -60,3 +69,4 @@ function leftmostOutermostRedex(expression: Expr): Maybe<Expr> {
 }
 
 export { toNormalForm, leftmostOutermostRedex };
+export type { NormalFormConfig };
