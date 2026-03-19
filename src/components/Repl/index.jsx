@@ -106,59 +106,6 @@ class Repl extends React.Component {
     }
   }
 
-  _enrichEvaluation = (evaluation) => ({
-    ...evaluation,
-    // Add execution context so _handleOnCompute can check win conditions that
-    // depend on variable definitions.
-    executionContext: this.lambdaActor.executionContext,
-  })
-
-  _buildOutputEntry = (evaluation) => {
-    const text = evaluation.text;
-    return [
-      (
-        <div className='command' title={text}>
-          <span className='caret'>> </span>
-          {text}
-        </div>
-      ),
-      renderEvaluation(evaluation),
-    ];
-  }
-
-  _buildCommentEntry = (text) => [(
-    <div className='command' title={text}>
-      <span className='caret'>> </span>
-      {text}
-    </div>
-  )]
-
-  _fireEvaluationCallbacks = (evaluation) => {
-    this.props.onCompute && this.props.onCompute(evaluation);
-    this.props.onDefinitionsChange && this.props.onDefinitionsChange(
-      {...this.lambdaActor.executionContext.definedVariables}
-    );
-  }
-
-  _evaluateLine = async (line, output, commandHistory) => {
-    const evaluation = await this.lambdaActor.send(line);
-    if (!evaluation) {
-      return {
-        output: [...output, ...this._buildCommentEntry(line)],
-        commandHistory: [...commandHistory, line],
-        stop: false,
-      };
-    }
-
-    const enriched = this._enrichEvaluation(evaluation);
-    this._fireEvaluationCallbacks(enriched);
-    return {
-      output: [...output, ...this._buildOutputEntry(enriched)],
-      commandHistory: [...commandHistory, enriched.text],
-      stop: enriched.type === 'error',
-    };
-  }
-
   _submit = async () => {
     const text = this.state.mutableHistory[this.state.currentPos];
     if (text === '') {
@@ -179,10 +126,43 @@ class Repl extends React.Component {
     let commandHistory = [...this.state.commandHistory];
 
     for (const line of lines) {
-      const result = await this._evaluateLine(line, output, commandHistory);
-      output = result.output;
-      commandHistory = result.commandHistory;
-      if (result.stop) break;
+      const evaluation = await this.lambdaActor.send(line);
+      // Line is purely a comment. Format output and then just pass it through
+      // without calling onCompute or onDefinitionsChange.
+      if (!evaluation) {
+        output = [...output, (
+          <div className='command' title={line}>
+            <span className='caret'>> </span>
+            {line}
+          </div>
+        )];
+        commandHistory = [...commandHistory, line];
+        continue;
+      }
+
+      // Add execution context so _handleOnCompute can check win conditions that
+      // depend on variable definitions.
+      const enriched = {
+        ...evaluation,
+        executionContext: this.lambdaActor.executionContext,
+      };
+      // Format command.
+      output = [...output, (
+        <div className='command' title={enriched.text}>
+          <span className='caret'>> </span>
+          {enriched.text}
+        </div>
+      ), renderEvaluation(enriched)];
+      // Add to history and pass to onCompute callback and onDefinitionsChange callback.
+      commandHistory = [...commandHistory, enriched.text];
+      this.props.onCompute && this.props.onCompute(enriched);
+      this.props.onDefinitionsChange && this.props.onDefinitionsChange(
+        {...this.lambdaActor.executionContext.definedVariables}
+      );
+
+      if (enriched.type === 'error') {
+        break;
+      }
     }
 
     this.setError('');
