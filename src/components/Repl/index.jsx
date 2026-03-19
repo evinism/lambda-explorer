@@ -108,7 +108,9 @@ class Repl extends React.Component {
 
   _enrichEvaluation = (evaluation) => ({
     ...evaluation,
-    executionContext: this.lambdaActor.executionContext, //this is a garbage hack to allow win conditions
+    // Add execution context so _handleOnCompute can check win conditions that
+    // depend on variable definitions.
+    executionContext: this.lambdaActor.executionContext,
   })
 
   _buildOutputEntry = (evaluation) => {
@@ -138,21 +140,22 @@ class Repl extends React.Component {
     );
   }
 
-  _receiveEvaluation = (evaluation) => {
-    evaluation = this._enrichEvaluation(evaluation);
+  _evaluateLine = async (line, output, commandHistory) => {
+    if (line.startsWith('#')) {
+      return {
+        output: [...output, ...this._buildCommentEntry(line)],
+        commandHistory: [...commandHistory, line],
+        stop: false,
+      };
+    }
 
-    const nextOutput = [...this.state.output, ...this._buildOutputEntry(evaluation)];
-    const nextHistory = [...this.state.commandHistory, evaluation.text];
-
+    const evaluation = this._enrichEvaluation(await this.lambdaActor.send(line));
     this._fireEvaluationCallbacks(evaluation);
-
-    this.setError('');
-    this.setState({
-      commandHistory: nextHistory,
-      mutableHistory: [...nextHistory, ''],
-      currentPos: nextHistory.length,
-      output: nextOutput,
-    });
+    return {
+      output: [...output, ...this._buildOutputEntry(evaluation)],
+      commandHistory: [...commandHistory, evaluation.text],
+      stop: evaluation.type === 'error',
+    };
   }
 
   _submit = async () => {
@@ -167,56 +170,18 @@ class Repl extends React.Component {
       return;
     }
 
-    if (text.startsWith('#')) {
-      const nextOutput = [...this.state.output, ...this._buildCommentEntry(text)];
-      const nextHistory = [...this.state.commandHistory, text];
-      this.setError('');
-      this.setState({
-        commandHistory: nextHistory,
-        mutableHistory: [...nextHistory, ''],
-        currentPos: nextHistory.length,
-        output: nextOutput,
-      });
-      return;
-    }
-
-    this.lambdaActor.send(text);
+    await this._submitMultiple([text]);
   }
 
-  _submitMultipleSync = (lines) => {
-    // A bit hacky: temporarily override the receive function to capture
-    // evaluations synchronously, then restore it after we're done. This is to
-    // ensure that the output from multiple lines is added to the output in the
-    // correct order, and that the command history is updated correctly.
-    const results = [];
-    const originalReceive = this.lambdaActor.receive;
-
-    this.lambdaActor.receive = (evaluation) => {
-      results.push({ type: 'eval', evaluation: this._enrichEvaluation(evaluation) });
-    };
-
-    for (const line of lines) {
-      if (line.startsWith('#')) {
-        results.push({ type: 'comment', text: line });
-      } else {
-        this.lambdaActor.send(line);
-      }
-    }
-
-    this.lambdaActor.receive = originalReceive;
-
+  _submitMultiple = async (lines) => {
     let output = [...this.state.output];
     let commandHistory = [...this.state.commandHistory];
 
-    for (const result of results) {
-      if (result.type === 'comment') {
-        output = [...output, ...this._buildCommentEntry(result.text)];
-        commandHistory = [...commandHistory, result.text];
-      } else {
-        output = [...output, ...this._buildOutputEntry(result.evaluation)];
-        commandHistory = [...commandHistory, result.evaluation.text];
-        this._fireEvaluationCallbacks(result.evaluation);
-      }
+    for (const line of lines) {
+      const result = await this._evaluateLine(line, output, commandHistory);
+      output = result.output;
+      commandHistory = result.commandHistory;
+      if (result.stop) break;
     }
 
     this.setError('');
@@ -276,7 +241,6 @@ class Repl extends React.Component {
 
   componentWillMount(){
     this.lambdaActor = new LambdaActor();
-    this.lambdaActor.receive = this._receiveEvaluation;
 
     const saved = this.props.stringDefinitions;
     if (saved && Object.keys(saved).length > 0) {
@@ -313,7 +277,7 @@ class Repl extends React.Component {
           <LambdaInput
             onChange={this._onChange}
             submit={this._submit}
-            submitMultiple={this._submitMultipleSync}
+            submitMultiple={this._submitMultiple}
             history={this.state.commandHistory}
             value={this.state.mutableHistory[this.state.currentPos]}
             className="lambda-input"

@@ -5,17 +5,9 @@ import ExecutionContext from "./executionContext.js";
 export default class LambdaActor {
   constructor() {
     this.executionContext = new ExecutionContext();
-    this.executionContext.receive = this._postBack;
   }
 
   send = (text) => {
-    this.executionContext.send(text);
+    return Promise.resolve(this.executionContext.send(text));
   };
-
-  _postBack = (msg) => {
-    this.receive(msg);
-  };
-
-  // to be overwritten
-  receive = () => {};
 }

@@ -66,40 +66,32 @@ class ExecutionContext {
         ast = ast.rhs;
         ast = this.resolveVariables(ast);
         this.defineVariable(lhs, ast);
-        // duped, but we can continue separating them.
-        this._postBack({
+        return {
           type: 'assignment',
           text,
           lhs,
           ast,
-        });
+        };
       } else {
         ast = this.resolveVariables(ast);
         const metadata = astToMetadata(ast);
-        this._postBack({
+        return {
           type: 'computation',
           text,
           ast,
           ...metadata
-        });
+        };
       }
     } catch(error){
       // we pass AST, executionContext because in the case that we parsed
       // successfully, we still want to be able to use it in win conditions
-
-      // TODO: Make sure max call stack doesn't really happen, or is handled
-      // This looks like: (λa.aa)(λa.aaa)
-      this._postBack({
+      return {
         type: 'error',
         error,
         text,
         ast,
-      });
+      };
     }
-  }
-
-  _handleMetadataMessage(msg){
-    this._postBack(msg);
   }
 
   // ast => ast
@@ -119,15 +111,8 @@ class ExecutionContext {
     return currentAst;
   }
 
-  // should be replaced with a subscribe handler.
-  receive = () => {};
-
   send = (text) => {
-    this.evaluate(text);
-  };
-
-  _postBack = (msg) => {
-    this.receive(msg);
+    return this.evaluate(text);
   };
 }
 
