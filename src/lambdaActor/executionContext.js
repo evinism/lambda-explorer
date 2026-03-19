@@ -61,6 +61,9 @@ class ExecutionContext {
     try {
       // lambda + assignment
       ast = parseExtendedSyntax(text);
+      if (!ast) {
+        return undefined;
+      }
       if (ast.type === 'assignment') {
         const lhs = ast.lhs;
         ast = ast.rhs;

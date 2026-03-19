@@ -83,7 +83,7 @@ class Repl extends React.Component {
   setError = (text) => {
     // should probably be done in the render function anyways..
     let error = false;
-    if (text === '' || text.startsWith('#')) {
+    if (text === '') {
       this.setState({error: false});
       return;
     }
@@ -141,7 +141,8 @@ class Repl extends React.Component {
   }
 
   _evaluateLine = async (line, output, commandHistory) => {
-    if (line.startsWith('#')) {
+    const evaluation = await this.lambdaActor.send(line);
+    if (!evaluation) {
       return {
         output: [...output, ...this._buildCommentEntry(line)],
         commandHistory: [...commandHistory, line],
@@ -149,12 +150,12 @@ class Repl extends React.Component {
       };
     }
 
-    const evaluation = this._enrichEvaluation(await this.lambdaActor.send(line));
-    this._fireEvaluationCallbacks(evaluation);
+    const enriched = this._enrichEvaluation(evaluation);
+    this._fireEvaluationCallbacks(enriched);
     return {
-      output: [...output, ...this._buildOutputEntry(evaluation)],
-      commandHistory: [...commandHistory, evaluation.text],
-      stop: evaluation.type === 'error',
+      output: [...output, ...this._buildOutputEntry(enriched)],
+      commandHistory: [...commandHistory, enriched.text],
+      stop: enriched.type === 'error',
     };
   }
 
