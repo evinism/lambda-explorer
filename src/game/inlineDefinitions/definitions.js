@@ -5,50 +5,61 @@ export default {
   variable: (
     <div>
       <p>
-        A <i>variable</i> is a symbol that can stand for any expression.
+        A <i>variable</i> is a name — like <code>x</code> or <code>a</code> —
+        that represents a value. Variables can be free or bound by a lambda
+        abstraction.
       </p>
       <p>
-        In this REPL, lowercase letters are single-letter variables (e.g.{" "}
-        <code>a</code>, <code>b</code>) and uppercase letters form multi-letter
-        variables (e.g. <code>TRUE</code>).
+        In this REPL, lowercase letters are single-letter variables and
+        uppercase letters form multi-letter variables (e.g. <code>TRUE</code>).
       </p>
     </div>
   ),
   expression: (
     <div>
       <p>
-        An <i>expression</i> is any valid combination of lambda abstractions,
-        applications, and variables. You're typing expressions into the
-        interpreter!
+        An <i>expression</i> is anything you can write in the lambda calculus: a
+        variable, an application, a lambda abstraction, or any nesting of these.
+      </p>
+      <p>
+        For example, <code>x</code>, <code>xy</code>, <code>λx.x</code>, and{" "}
+        <code>(λx.x)λy.y</code> are all expressions.
       </p>
     </div>
   ),
   application: (
     <div>
       <p>
-        An <i>application</i> is a term in the lambda calculus where two
-        expressions are "applied" to each other.
+        An <i>application</i> is two expressions written side by side, like{" "}
+        <code>ab</code>. It represents calling the left expression as a function
+        with the right expression as its argument.
       </p>
-      <p>This is akin to calling A with B as an argument.</p>
     </div>
   ),
   lambda_abstraction: (
     <div>
       <p>
-        A <i>lambda abstraction</i> is a term of the form λ [head] . [body]
+        A <i>lambda abstraction</i> is a function, written as λ [parameter] .
+        [body].
       </p>
-      <p>Lambda abstractions represent functions in the lambda calculus.</p>
+      <p>
+        For example, <code>λx.x</code> is a function that takes <code>x</code>{" "}
+        and returns <code>x</code>.
+      </p>
     </div>
   ),
   parameter: (
     <div>
       <p>
-        The <i>parameter</i> is the variable in the head of a lambda
-        abstraction.
+        The <i>parameter</i> is the variable between the λ and the dot in a
+        lambda abstraction.
       </p>
       <p>
-        When beta-reducing, all instances of the parameter in the body get
-        replaced with the argument.
+        For example, in <code>λx.xy</code>, the parameter is <code>x</code>.
+      </p>
+      <p>
+        During beta reduction, every occurrence of the parameter in the body
+        gets replaced with the argument.
       </p>
     </div>
   ),
@@ -56,45 +67,44 @@ export default {
     <div>
       <p>
         The <i>head</i> of a lambda abstraction is the part between the λ and
-        the dot.
+        the dot — it declares the parameter.
       </p>
       <p>
-        It contains the parameter — the variable that will be replaced during
-        beta reduction.
+        For example, in <code>λx.xy</code>, the head is <code>x</code>.
       </p>
     </div>
   ),
   body: (
     <div>
       <p>
-        The <i>body</i> of a lambda abstraction is the section that follows the
-        dot.
+        The <i>body</i> of a lambda abstraction is everything after the dot — it
+        defines what the function returns.
       </p>
-      <p>This represents what the function returns.</p>
+      <p>
+        For example, in <code>λx.xy</code>, the body is <code>xy</code>.
+      </p>
     </div>
   ),
   argument: (
     <div>
       <p>
-        When your expression is an application, the <i>argument</i> is the right
-        side of the application.
+        The <i>argument</i> is the right-hand expression in an application — the
+        value being passed to the function.
       </p>
       <p>
-        For example, in the expression <code>ab</code>, the argument is{" "}
-        <code>b</code>.
+        For example, in <code>(λx.x)y</code>, the argument is <code>y</code>.
       </p>
     </div>
   ),
   left_associative: (
     <div>
       <p>
-        <i>Left-associative</i> means that repeated applications group from the
-        left.
+        <i>Left-associative</i> means repeated applications group from the left.
       </p>
       <p>
-        So <code>abcd</code> is parsed as <code>((ab)c)d</code> — <code>a</code>{" "}
-        is applied to <code>b</code> first, then the result is applied to{" "}
-        <code>c</code>, and so on.
+        So <code>abcd</code> is parsed as <code>((ab)c)d</code>: first{" "}
+        <code>a</code> is applied to <code>b</code>, then the result to{" "}
+        <code>c</code>, then the result to <code>d</code>.
       </p>
     </div>
   ),
@@ -105,9 +115,8 @@ export default {
         function as a chain of single-argument functions.
       </p>
       <p>
-        For example, <code>λa.λb.expr</code> takes one argument and returns a
-        function that takes the next. The shorthand <code>λab.expr</code> means
-        the same thing.
+        <code>λa.λb.ab</code> takes one argument and returns a function that
+        takes the next. The shorthand <code>λab.ab</code> means the same thing.
       </p>
     </div>
   ),
@@ -116,68 +125,74 @@ export default {
   beta_reduction: (
     <div>
       <p>
-        <i>Beta reduction</i> is the process of applying a function to its
-        argument.
+        <i>Beta reduction</i> is the fundamental operation of the lambda
+        calculus: applying a function to an argument.
       </p>
       <p>
-        Take the body of the lambda abstraction, replace every occurrence of the
-        parameter with the argument, then discard the head and argument.
+        Replace every occurrence of the parameter in the body with the argument,
+        then drop the λ-header. For example, <code>(λx.xy)z</code> reduces to{" "}
+        <code>zy</code>.
       </p>
     </div>
   ),
   beta_reducible: (
     <div>
       <p>
-        An expression is <i>beta reducible</i> if it is an application where the
-        left side is a lambda abstraction.
+        An expression is <i>beta reducible</i> if it is an application whose
+        left side is a lambda abstraction — meaning a function is being applied
+        to something.
       </p>
       <p>
         For example, <code>(λx.x)y</code> is beta reducible, but{" "}
-        <code>x(λy.y)</code> is not.
+        <code>x(λy.y)</code> is not (the lambda is on the wrong side).
       </p>
     </div>
   ),
   redex: (
     <div>
       <p>
-        A <i>redex</i> (short for "reducible expression") is a beta-reducible
-        subexpression — an application where the left side is a lambda
-        abstraction.
+        A <i>redex</i> (reducible expression) is any beta-reducible
+        subexpression within a larger expression.
       </p>
-      <p>An expression can contain multiple redexes nested within it.</p>
+      <p>
+        For example, <code>(λx.x)y</code> inside the expression{" "}
+        <code>a((λx.x)y)</code> is a redex. An expression can contain several
+        redexes at once.
+      </p>
     </div>
   ),
   alpha_conversion: (
     <div>
       <p>
-        An <i>alpha conversion</i> is the process of renaming a parameter (and
-        all its bound occurrences) in a lambda abstraction.
+        An <i>alpha conversion</i> renames a parameter and all of its bound
+        occurrences in a lambda abstraction, without changing the meaning.
       </p>
       <p>
-        For example, <code>λx.x</code> can be alpha-converted to{" "}
-        <code>λy.y</code>. The two expressions are equivalent.
+        For example, <code>λx.xy</code> can be equivalently alpha-converted to{" "}
+        <code>λz.zy</code>. This is needed to avoid name collisions during beta
+        reduction.
       </p>
     </div>
   ),
   normal_form: (
     <div>
       <p>
-        The <i>normal form</i> of an expression is what you get after performing
-        all possible beta reductions.
+        An expression is in <i>normal form</i> when it contains no more redexes
+        — no further beta reductions are possible.
       </p>
       <p>
-        It's analogous to fully executing a program. Some expressions have no
-        normal form — they reduce forever!
+        Finding the normal form is like fully running a program. Not every
+        expression has one: some reduce forever.
       </p>
     </div>
   ),
   normal_order: (
     <div>
       <p>
-        <i>Normal order</i> is an evaluation strategy where you always reduce
-        the leftmost outermost redex first.
+        <i>Normal order</i> is an evaluation strategy: always reduce the
+        leftmost outermost redex first.
       </p>
-      <p>This is the strategy used by this REPL.</p>
+      <p>If a normal form exists, normal order is guaranteed to find it.</p>
     </div>
   ),
 
@@ -185,12 +200,12 @@ export default {
   bound_variable: (
     <div>
       <p>
-        A <i>bound variable</i> is a variable that appears in the body of a
-        lambda abstraction and matches that abstraction's parameter.
+        A <i>bound variable</i> is a variable that is captured by an enclosing
+        lambda's parameter.
       </p>
       <p>
-        For example, in <code>λx.xy</code>, the variable <code>x</code> is
-        bound.
+        In <code>λx.xy</code>, <code>x</code> is bound (it matches the
+        parameter), while <code>y</code> is not.
       </p>
     </div>
   ),
@@ -198,22 +213,22 @@ export default {
     <div>
       <p>
         A <i>free variable</i> is a variable that is not bound by any enclosing
-        lambda abstraction.
+        lambda abstraction — it refers to something defined elsewhere.
       </p>
       <p>
-        For example, in <code>λx.xy</code>, the variable <code>y</code> is free.
+        In <code>λx.xy</code>, <code>y</code> is free.
       </p>
     </div>
   ),
   lexical_environment: (
     <div>
       <p>
-        The <i>lexical environment</i> is a set of named definitions that you
-        can reference by name in expressions.
+        The <i>lexical environment</i> is the set of named definitions you've
+        built up with <code>:=</code> (e.g. <code>ID := λa.a</code>).
       </p>
       <p>
-        You add to it using the <code>:=</code> syntax, e.g.{" "}
-        <code>ID := λa.a</code>.
+        When you use a defined name in an expression, it gets replaced with the
+        definition before evaluation.
       </p>
     </div>
   ),
@@ -222,36 +237,37 @@ export default {
   church_boolean: (
     <div>
       <p>
-        A <i>Church boolean</i> encodes true/false as a two-argument function.
+        <i>Church booleans</i> encode true and false as two-argument selector
+        functions.
       </p>
       <p>
-        TRUE (<code>λab.a</code>) selects its first argument; FALSE (
-        <code>λab.b</code>) selects its second. You can use this structure to
-        branch by applying a boolean to two choices.
+        TRUE is <code>λab.a</code> (picks the first); FALSE is{" "}
+        <code>λab.b</code> (picks the second). To branch, apply a boolean to two
+        choices: it selects one.
       </p>
     </div>
   ),
   church_numeral: (
     <div>
       <p>
-        A <i>Church numeral</i> encodes a number <i>n</i> as a function that
-        applies <code>f</code> to <code>x</code> <i>n</i> times.
+        A <i>Church numeral</i> encodes the number <i>n</i> as a function that
+        applies <code>f</code> to <code>x</code> exactly <i>n</i> times.
       </p>
       <p>
-        For example, 0 is <code>λfn.n</code>, 1 is <code>λfn.fn</code>, 2 is{" "}
-        <code>λfn.f(fn)</code>, and so on.
+        0 = <code>λfx.x</code>, 1 = <code>λfx.fx</code>, 2 ={" "}
+        <code>λfx.f(fx)</code>, 3 = <code>λfx.f(f(fx))</code>, and so on.
       </p>
     </div>
   ),
   successor_function: (
     <div>
       <p>
-        The <i>successor function</i> takes a Church numeral and returns the
-        next one (i.e. adds 1).
+        The <i>successor function</i> takes a Church numeral <i>n</i> and
+        returns <i>n + 1</i>.
       </p>
       <p>
-        It works by wrapping one additional application of <code>f</code> around
-        the original numeral: <code>λn.λf.λx.f(nfx)</code>.
+        It wraps one extra application of <code>f</code> around the original:{" "}
+        <code>SUCC := λn.λf.λx.f(nfx)</code>.
       </p>
     </div>
   ),
@@ -260,12 +276,12 @@ export default {
   beta_reducible_intro: (
     <div>
       <p>
-        An expression is <i>beta reducible</i> if the expression is an
-        application where the left side is a lambda abstraction.
+        An expression is <i>beta reducible</i> if it is an application whose
+        left side is a lambda abstraction.
       </p>
       <p>
-        In this case, the left side of the application is λa.aba and the right
-        side is c
+        In this case, the left side is <code>λa.aba</code> and the right side
+        (the argument) is <code>c</code>.
       </p>
     </div>
   ),
