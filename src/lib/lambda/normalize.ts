@@ -10,7 +10,7 @@ function toNormalForm(expression: Expr, depthOverflow: number = 1000): Expr {
     current = reduced;
     reduced = leftmostOutermostRedex(current);
     count++;
-    if (count >= depthOverflow) {
+    if (count >= depthOverflow && reduced !== undefined) {
       throw new LambdaExecutionTimeoutError(
         "Normal form execution exceeded. This expression may not have a normal form."
       );
