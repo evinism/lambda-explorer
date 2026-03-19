@@ -540,3 +540,17 @@ aside button {
   border-color: #555566;
   color: #eeeeee;
 }
+
+
+.inline-definitions-popup {
+  max-width: 400px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 4px 12px;
+  color: black;
+}
+
+.dark-mode .inline-definitions-popup {
+  border-color: #555566;
+  color: #eeeeee;
+}
