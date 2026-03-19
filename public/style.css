@@ -295,7 +295,6 @@ aside button {
 }
 
 .definitions-list {
-  max-height: 200px;
   overflow-y: auto;
   font-size: 10pt;
 }
