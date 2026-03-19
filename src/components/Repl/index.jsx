@@ -57,9 +57,9 @@ class Repl extends React.Component {
   }
 
   deleteDefinition = (name) => {
-    delete this.lambdaActor.executionContext.definedVariables[name];
+    this.lambdaActor.executionContext.deleteVariable(name);
     this.props.onDefinitionsChange && this.props.onDefinitionsChange(
-      {...this.lambdaActor.executionContext.definedVariables}
+      this.lambdaActor.executionContext.getDefinedVariables()
     );
   }
 
@@ -130,7 +130,7 @@ class Repl extends React.Component {
 
     this.props.onCompute && this.props.onCompute(evaluation);
     this.props.onDefinitionsChange && this.props.onDefinitionsChange(
-      {...this.lambdaActor.executionContext.definedVariables}
+      this.lambdaActor.executionContext.getDefinedVariables()
     );
 
     this.setError('');
@@ -209,11 +209,13 @@ class Repl extends React.Component {
 
     const saved = this.props.stringDefinitions;
     if (saved && Object.keys(saved).length > 0) {
+      const parsed = {};
       for (const [name, expr] of Object.entries(saved)) {
-        this.lambdaActor.executionContext.definedVariables[name] = parseTerm(expr);
+        parsed[name] = parseTerm(expr);
       }
+      this.lambdaActor.executionContext.loadVariables(parsed);
       this.props.onDefinitionsChange && this.props.onDefinitionsChange(
-        {...this.lambdaActor.executionContext.definedVariables}
+        this.lambdaActor.executionContext.getDefinedVariables()
       );
     }
   }
