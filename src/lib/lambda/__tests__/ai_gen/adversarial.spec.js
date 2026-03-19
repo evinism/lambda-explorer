@@ -58,7 +58,7 @@ describe("Adversarial: trying to break the implementation", function () {
       // But the counter hits 1 before the loop checks `reduced === undefined`.
       const ast = parseTerm("x");
       try {
-        toNormalForm(ast, 1);
+        toNormalForm(ast, { depthOverflow: 1 });
         // If this doesn't throw, the bug is fixed
       } catch (e) {
         if (e instanceof LambdaExecutionTimeoutError) {
@@ -74,7 +74,7 @@ describe("Adversarial: trying to break the implementation", function () {
     it("BUG: toNormalForm(lambda, 1) throws for already-normal lambda", function () {
       const ast = parseTerm("λx.x");
       try {
-        toNormalForm(ast, 1);
+        toNormalForm(ast, { depthOverflow: 1 });
       } catch (e) {
         if (e instanceof LambdaExecutionTimeoutError) {
           assert.fail(
@@ -92,7 +92,7 @@ describe("Adversarial: trying to break the implementation", function () {
       // step 2 finds no redex (count=2, 2>=2 → throws!)
       const ast = parseTerm("(λx.x) a");
       try {
-        toNormalForm(ast, 2);
+        toNormalForm(ast, { depthOverflow: 2 });
       } catch (e) {
         if (e instanceof LambdaExecutionTimeoutError) {
           assert.fail(
@@ -635,7 +635,7 @@ describe("Adversarial: trying to break the implementation", function () {
       // This diverges.
       const ast = parseTerm("(λx.x x)(λx.λy.x x y)");
       assert.throws(
-        () => toNormalForm(ast, 100),
+        () => toNormalForm(ast, { depthOverflow: 100 }),
         LambdaExecutionTimeoutError
       );
     });

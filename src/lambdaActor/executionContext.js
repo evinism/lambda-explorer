@@ -19,6 +19,7 @@ class ExecutionContext {
   constructor(){
     this.definedVariables = {};
     this.maxDepth = 1000;
+    this.etaReduce = false;
     // this.metadataWrapper = new TimeoutWatcher(MetadataWorker);
     // this.metadataWrapper.receive = msg => this._handleMetadataMessage(msg);
   }
@@ -90,7 +91,7 @@ class ExecutionContext {
         };
       } else {
         ast = this.resolveVariables(ast);
-        const metadata = astToMetadata(ast, this.maxDepth);
+        const metadata = astToMetadata(ast, { maxDepth: this.maxDepth, etaReduce: this.etaReduce });
         return {
           type: 'computation',
           text,

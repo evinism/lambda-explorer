@@ -7,6 +7,7 @@ import { renderAsChurchNumeral, renderAsChurchBoolean } from './churchPrimitives
 import { getFreeVars, purgeAstCache } from './util';
 import { bReduce, eReduce, replace } from './operations';
 import { toNormalForm, leftmostOutermostRedex } from './normalize';
+import type { NormalFormConfig } from './normalize';
 import { tokenize } from './lexer';
 import { equal } from './equality';
 import { LambdaSyntaxError, LambdaLexingError, LambdaExecutionTimeoutError } from './errors';
@@ -28,5 +29,7 @@ export {
   purgeAstCache,
   LambdaSyntaxError,
   LambdaLexingError,
-  LambdaExecutionTimeoutError
+  LambdaExecutionTimeoutError,
 }
+
+export type { NormalFormConfig }

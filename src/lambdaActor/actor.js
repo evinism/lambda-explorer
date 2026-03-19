@@ -11,6 +11,10 @@ export default class LambdaActor {
     this.executionContext.maxDepth = depth;
   };
 
+  setEtaReduce = (etaReduce) => {
+    this.executionContext.etaReduce = etaReduce;
+  };
+
   send = (text) => {
     return Promise.resolve(this.executionContext.send(text));
   };

@@ -23,7 +23,7 @@ describe('Generated Expression Suite', function(){
   it('is unchanged from previous versions', function(done){
     suiteData.forEach(datum => {
       assert.deepEqual(
-        purgeAstCache(toNormalForm(parseTerm(datum.text), 1000)),
+        purgeAstCache(toNormalForm(parseTerm(datum.text), { depthOverflow: 1000 })),
         datum.normalForm
       );
     });

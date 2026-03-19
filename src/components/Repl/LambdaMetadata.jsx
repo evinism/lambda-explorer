@@ -80,15 +80,18 @@ const LambdaMetadata = ({ast, err}) => {
   );
 
   return (
-    <div className='metadata'>
+    <div className="metadata">
       <div>Free Variables: {renderedFreeVars}</div>
       <div>Rendered from AST: {renderedFromAst}</div>
       <div>Beta-reduced: {renderedBetaReduced}</div>
       <div>Eta-reduced: {renderedEtaReduced}</div>
-      <div>Normal Form: {renderedNormalForm}</div>
+      <div>Beta Normal Form: {renderedNormalForm}</div>
       <div>Normal As Church Numeral: {renderedNormNumeral}</div>
       <div>Normal As Church Boolean: {renderedNormBoolean}</div>
-      <div><h3>steps to normal form:</h3>{renderedStepsToNormal}</div>
+      <div>
+        <h3>steps to normal form:</h3>
+        {renderedStepsToNormal}
+      </div>
     </div>
   );
 };
