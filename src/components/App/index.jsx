@@ -31,6 +31,8 @@ const defaultState = {
   renderedDefinitions: [],
   stringDefinitions: {}, // persisted to localStorage, re-parsed on reload
   definitionsCollapsed: false,
+  evaluationDepth: parseInt(localStorage.getItem('evaluationDepth'), 10) || 1000,
+  settingsOpen: false,
 };
 
 class App extends React.Component {
@@ -79,6 +81,32 @@ class App extends React.Component {
 
   _toggleDefinitions = () => {
     this.setState({ definitionsCollapsed: !this.state.definitionsCollapsed });
+  }
+
+  _toggleSettings = () => {
+    this.setState(prev => ({ settingsOpen: !prev.settingsOpen }));
+  }
+
+  _handleDocumentClick = (e) => {
+    if (this.state.settingsOpen && this.settingsRef && !this.settingsRef.contains(e.target)) {
+      this.setState({ settingsOpen: false });
+    }
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this._handleDocumentClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this._handleDocumentClick);
+  }
+
+  _setEvaluationDepth = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value > 0) {
+      this.setState({ evaluationDepth: value });
+      localStorage.setItem('evaluationDepth', value);
+    }
   }
 
   startGame = () => {
@@ -143,7 +171,28 @@ class App extends React.Component {
     return (
       <div className={'app-wrapper' + (darkMode ? ' dark-mode' : '')}>
         <header>
-          <h1>Lambda Explorer</h1>
+          <div className="header-content">
+            <h1>Lambda Explorer</h1>
+            <div className="header-settings" ref={r => this.settingsRef = r}>
+              <span className='settings-gear' onClick={this._toggleSettings} title="Settings">
+                {'⚙'}
+              </span>
+              {this.state.settingsOpen && (
+                <div className='settings-popover'>
+                  <label className='settings-label'>
+                    Evaluation depth
+                    <input
+                      type='number'
+                      className='settings-input'
+                      value={this.state.evaluationDepth}
+                      onChange={this._setEvaluationDepth}
+                      min='1'
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
+          </div>
         </header>
         <div className="app-content">
           <article>
@@ -152,6 +201,7 @@ class App extends React.Component {
               onCompute={this._handleOnCompute}
               onDefinitionsChange={this._handleDefinitionsChange}
               stringDefinitions={this.state.stringDefinitions}
+              evaluationDepth={this.state.evaluationDepth}
             />
           </article>
           <aside>
