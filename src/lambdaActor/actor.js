@@ -7,6 +7,10 @@ export default class LambdaActor {
     this.executionContext = new ExecutionContext();
   }
 
+  setMaxDepth = (depth) => {
+    this.executionContext.maxDepth = depth;
+  };
+
   send = (text) => {
     return Promise.resolve(this.executionContext.send(text));
   };

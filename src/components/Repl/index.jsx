@@ -216,12 +216,16 @@ class Repl extends React.Component {
     }
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps){
     this._scrollToBottom();
+    if (prevProps.evaluationDepth !== this.props.evaluationDepth) {
+      this.lambdaActor.setMaxDepth(this.props.evaluationDepth);
+    }
   }
 
   componentWillMount(){
     this.lambdaActor = new LambdaActor();
+    this.lambdaActor.setMaxDepth(this.props.evaluationDepth);
 
     const saved = this.props.stringDefinitions;
     if (saved && Object.keys(saved).length > 0) {
@@ -256,7 +260,7 @@ class Repl extends React.Component {
           ref='prompt'
           onKeyDown={this._captureUpDown}
         >
-          <span className='prompt-caret'>> </span>
+          <span className='prompt-caret'>{'> '}</span>
           <LambdaInput
             onChange={this._onChange}
             submit={this._submit}
