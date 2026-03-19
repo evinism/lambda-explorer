@@ -136,8 +136,8 @@ export default [
     title: 'β-reduction function',
     prompt: (
       <div>
-        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called <i>beta reduction</i>.</p>
-        <p>The result you're seeing here is in what's called <i>normal form</i>, which we'll also go through a little later.</p>
+        <p>Nice! What happened here is your identity function took <Code>b</Code> as the input and spit it right back out. The process of evaluating a function like this is called <Def e='beta_reduction'><i>beta reduction</i></Def>.</p>
+        <p>The result you're seeing here is in what's called <Def e='normal_form'><i>normal form</i></Def>, which we'll also go through a little later.</p>
         <p>Just like we can evaluate functions with variables, we can also evaluate them with other functions! Try typing <Code>(λa.a)λb.b</Code></p>
       </div>
     ),
@@ -147,7 +147,7 @@ export default [
     title: 'A primer on parsing',
     prompt: (
       <div>
-        <p>So we can perform beta reductions with other functions as the argument!</p>
+        <p>So we can perform <Def e='beta_reduction'>beta reductions</Def> with other functions as the argument!</p>
         <p>With that, we've just introduced the main elements of the syntax of the lambda calculus:</p>
         <table><tbody>
           <tr><td>Variables</td><td><Code>a₁</Code></td></tr>
@@ -191,7 +191,7 @@ export default [
       <div>
         <p><Def e='lambda_abstraction'>Lambda abstractions</Def> have higher precedence than <Def e='application'>applications</Def>.</p>
         <p>This means that if we write the expression <Code>λx.yz</Code>, it would be parenthesized as <Code>λx.(yz)</Code> and NOT <Code>(λx.y)z</Code>.</p>
-        <p>As a rule of thumb, the body of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
+        <p>As a rule of thumb, the <Def e='body'>body</Def> of a lambda abstraction (i.e. the part of the lambda expression after the dot) extends all the way to the end of the expression unless parentheses tell it not to.</p>
         <p>Explicitly write the parentheses around <Code>λw.xyz</Code>, combining this new knowledge with what you learned in the last question around how applications are parenthesized.</p>
         <p>Solution: <span className='secret'>λw.((xy)z)</span></p>
       </div>
@@ -220,7 +220,7 @@ export default [
     title: 'Applying Variables to Lambdas',
     prompt: (
       <div>
-        <p>Fortunately, the other direction requires fewer parentheses. If we wanted to apply a variable to a lambda abstraction instead of the other way around, we'd just write them right next to each other, like any other application.</p>
+        <p>Fortunately, the other direction requires fewer parentheses. If we wanted to apply a <Def e='variable'>variable</Def> to a <Def e='lambda_abstraction'>lambda abstraction</Def> instead of the other way around, we'd just write them right next to each other, like any other <Def e='application'>application</Def>.</p>
         <p>Concretely, applying <Code>a</Code> to lambda abstraction <Code>λb.c</Code> is written as <Code>aλb.c</Code></p>
         <p>Try applying <Code>w</Code> to <Code>λx.yz</Code>!</p>
       </div>
@@ -232,7 +232,7 @@ export default [
     prompt: (
       <div>
         <p>As you may have noticed before, functions can only take one argument, which is kind of annoying.</p>
-        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when evaluated subsequently gives you the result. Make sense?</p>
+        <p>Let's say we quite reasonably want to write a function which takes more than one argument. Fortunately, we can sort of get around the single argument restriction by making it so that a function returns another function, which when evaluated subsequently gives you the result. This technique is called <Def e='currying'><i>currying</i></Def>. Make sense?</p>
         <p>In practice, this looks like <Code>λa.λb. [some expression]</Code>. Go ahead and write any 'multi-argument' function!</p>
       </div>
     ),
@@ -285,7 +285,7 @@ export default [
     prompt: (
       <div>
         <p>Let's take a deeper look at Beta Reductions.</p>
-        <p>When an <Def e='expression'>expression</Def> is an <Def e='application'>application</Def> where the left side is a <Def e='lambda_abstraction'>lambda abstraction</Def>, we say that the expression is <i>beta reducible</i>.</p>
+        <p>When an <Def e='expression'>expression</Def> is an <Def e='application'>application</Def> where the left side is a <Def e='lambda_abstraction'>lambda abstraction</Def>, we say that the expression is <Def e='beta_reducible'><i>beta reducible</i></Def>.</p>
         <p>Here are a few examples of beta reducible expressions:</p>
         <table>
             <thead>
@@ -312,7 +312,7 @@ export default [
               <tr><td><Code>zλx.y</Code></td><td>Variable <Code>z</Code> applied to <Code>λx.y</Code></td></tr>
               <tr><td><Code>λa.bcd</Code></td><td>Lambda abstraction <Code>λa.bcd</Code>, but not applied to anything</td></tr>
               <tr><td><Code>bee</Code></td><td>Application <Code>be</Code> applied to <Code>e</Code></td></tr>
-              <tr><td><Code>f(λg.h)i</Code></td><td>Application <Code>f(λg.h)</Code> applied to <Code>i</Code> (This one's tricky! Remember that applications are left-associative).</td></tr>
+              <tr><td><Code>f(λg.h)i</Code></td><td>Application <Code>f(λg.h)</Code> applied to <Code>i</Code> (This one's tricky! Remember that applications are <Def e='left_associative'>left-associative</Def>).</td></tr>
             </tbody>
           </table>
         <p>Write any beta reducible expression that does not appear in the above table.</p>
@@ -333,7 +333,7 @@ export default [
     title: 'A more precise look at β-reductions',
     prompt: (
       <div>
-        <p>As you might guess, if something is beta reducible, that means we can perform an operation called <i>beta reduction</i> on the expression.</p>
+        <p>As you might guess, if something is <Def e='beta_reducible'>beta reducible</Def>, that means we can perform an operation called <Def e='beta_reduction'><i>beta reduction</i></Def> on the expression.</p>
         <p>Beta reduction works as follows:</p>
         <table>
           <thead>
@@ -371,7 +371,7 @@ export default [
             </tr>
           </thead>
           <tbody>
-            <tr><td><Code>(λx.yx)λa.a</Code></td><td>Start with a beta reducible expression.</td></tr>
+            <tr><td><Code>(λx.yx)λa.a</Code></td><td>Start with a <Def e='beta_reducible'>beta reducible</Def> expression.</td></tr>
             <tr><td><Code>(λx.y(λa.a))λa.a</Code></td><td>In the <Def e='body'>body</Def> of the lambda abstraction, replace every occurrence of the <Def e='parameter'>parameter</Def> with the <Def e='argument'>argument</Def>.</td></tr>
             <tr><td><Code>λx.y(λa.a)</Code></td><td>Erase the argument.</td></tr>
             <tr><td><Code>y(λa.a)</Code></td><td>Erase the <Def e='head'>head</Def> of the lambda expression.</td></tr>
@@ -388,8 +388,8 @@ export default [
     title: 'Bound and Free Variables',
     prompt: (
       <div>
-        <p>It's prudent to make a distinction between bound and free variables. When a function takes an argument, every occurrence of the variable in the body of the function is <i>bound</i> to that parameter.</p>
-        <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is bound in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <i>free variables</i>.</p>
+        <p>It's prudent to make a distinction between <Def e='bound_variable'>bound</Def> and <Def e='free_variable'>free</Def> variables. When a function takes an argument, every occurrence of the variable in the <Def e='body'>body</Def> of the function is <i>bound</i> to that <Def e='parameter'>parameter</Def>.</p>
+        <p>For quick example, if you've got the expression <Code>λx.xy</Code>, the variable <Code>x</Code> is <Def e='bound_variable'>bound</Def> in the lambda expression, whereas the variable <Code>y</Code> is currently unbound. We call unbound variables like <Code>y</Code> <Def e='free_variable'><i>free variables</i></Def>.</p>
         <p>Write a lambda expression with a free variable <Code>c</Code> (hint: this can be extremely simple).</p>
       </div>
     ),
@@ -399,10 +399,10 @@ export default [
     title: 'α conversions',
     prompt: (
       <div>
-        <p>Easy enough. In this REPL you can see what free variables are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
+        <p>Easy enough. In this REPL you can see what <Def e='free_variable'>free variables</Def> are in an expression (as well as a lot of other information) by clicking the (+) that appears next to results.</p>
 
-        <p>It might be obvious that there are multiple ways to write a single lambda abstraction. For example, let's take that identity function we wrote all the way in the beginning, <Code>λa.a</Code>. We could have just as easily used <Code>x</Code> as the parameter, yielding <Code>λx.x</Code>.</p>
-        <p>The lambda calculus's word for "renaming a parameter" is <i>alpha-conversion.</i></p>
+        <p>It might be obvious that there are multiple ways to write a single <Def e='lambda_abstraction'>lambda abstraction</Def>. For example, let's take that identity function we wrote all the way in the beginning, <Code>λa.a</Code>. We could have just as easily used <Code>x</Code> as the <Def e='parameter'>parameter</Def>, yielding <Code>λx.x</Code>.</p>
+        <p>The lambda calculus's word for "renaming a parameter" is <Def e='alpha_conversion'><i>alpha-conversion.</i></Def></p>
         <p>Manually perform an alpha conversion for the expression <Code>λz.yz</Code>, by replacing <Code>z</Code> with <Code>t</Code></p>
       </div>
     ),
@@ -415,9 +415,9 @@ export default [
     title: 'β reductions + α conversions',
     prompt: (
       <div>
-        <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly bound to a parameter that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming to resolve the conflict, we'd get <Code>λb.bb</Code>. What originally was a free variable <Code>b</Code> is now (accidentally) bound to the parameter of the lambda expression!</p>
-        <p>To eliminate this conflict, we have to do an alpha-conversion prior to doing the beta reduction.</p>
-        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an alpha conversion to see how the REPL handles this situation.</p>
+        <p>Occasionally, we'll get into a situation where a variable that previously was unbound is suddenly <Def e='bound_variable'>bound</Def> to a <Def e='parameter'>parameter</Def> that it shouldn't be. For example, if we tried beta-reducing <Code>(λab.ab)b</Code> without renaming to resolve the conflict, we'd get <Code>λb.bb</Code>. What originally was a <Def e='free_variable'>free variable</Def> <Code>b</Code> is now (accidentally) bound to the parameter of the lambda expression!</p>
+        <p>To eliminate this conflict, we have to do an <Def e='alpha_conversion'>alpha-conversion</Def> prior to doing the <Def e='beta_reduction'>beta reduction</Def>.</p>
+        <p>Try inputting an expression (like <Code>(λab.ab)b</Code>) that requires an <Def e='alpha_conversion'>alpha conversion</Def> to see how the REPL handles this situation.</p>
       </div>
     ),
     // lol this win condition.
@@ -430,8 +430,8 @@ export default [
     prompt: (
       <div>
         <p>Notice that epsilon that pops up? That's this REPL's placeholder variable for when it needs to rename a variable due to a conflict.</p>
-        <p>Often, an expression is not beta reducible itself, but contains one or more beta reducible expressions (redexes) nested within. We can still evaluate the expression!</p>
-        <p>Try writing a function with a nested redex!</p>
+        <p>Often, an expression is not <Def e='beta_reducible'>beta reducible</Def> itself, but contains one or more beta reducible expressions (<Def e='redex'>redexes</Def>) nested within. We can still evaluate the expression!</p>
+        <p>Try writing a function with a nested <Def e='redex'>redex</Def>!</p>
         <p>Possible solution: <span className='secret'>λa.(λb.b)c</span></p>
       </div>
     ),
@@ -444,7 +444,7 @@ export default [
     prompt: (
       <div>
         <p>"But wait," I hear you shout. "What if I have more than one reducible subexpression in my expression? Which do I evaluate first?"</p>
-        <p>Let's traverse the expression, left to right, outer scope to inner scope, find the <i>leftmost outermost redex</i>, and evaluate that one. This is called the <i>normal order</i>.</p>
+        <p>Let's traverse the expression, left to right, outer scope to inner scope, find the leftmost outermost <Def e='redex'>redex</Def>, and evaluate that one. This is called the <Def e='normal_order'><i>normal order</i></Def>.</p>
         <p>Try typing and expanding <Code>((λb.b)c)((λd.d)e)</Code> to see what I mean.</p>
       </div>
     ),
@@ -455,7 +455,7 @@ export default [
     title: 'Normal Form',
     prompt: (
       <div>
-        <p>If we do this repeatedly until there's nothing more to reduce, we get to what's called the "normal form". Finding the normal form is analogous to executing the lambda expression, and is in fact exactly what this REPL does when you enter an expression.</p>
+        <p>If we do this repeatedly until there's nothing more to reduce, we get to what's called the <Def e='normal_form'>"normal form"</Def>. Finding the normal form is analogous to executing the lambda expression, and is in fact exactly what this REPL does when you enter an expression.</p>
         <p>In this REPL you can see the steps it took to get to normal form by pressing the (+) button beside the evaluated expression.</p>
         <p>Type in any expression to continue.</p>
       </div>
@@ -466,7 +466,7 @@ export default [
     title: 'Or Not',
     prompt: (
       <div>
-        <p>It's possible that this process never halts, meaning that a normal form for that expression doesn't exist.</p>
+        <p>It's possible that this process never halts, meaning that a <Def e='normal_form'>normal form</Def> for that expression doesn't exist.</p>
         <p>See if you can find an expression whose normal form doesn't exist!</p>
         <p>Possible answer: <span className="secret">(λa.aa)λa.aa</span></p>
       </div>
@@ -480,8 +480,8 @@ export default [
     title: 'The Y-Combinator',
     prompt: (
       <div>
-        <p>You can expand that error that pops up to see the first few iterations. If you went with <Code>(λa.aa)λa.aa</Code>, you can see that performing a beta reduction gives you the exact same expression back!</p>
-        <p>The famed Y-Combinator is one of these expressions without a normal form. Try inputting the Y-Combinator, and see what happens:</p>
+        <p>You can expand that error that pops up to see the first few iterations. If you went with <Code>(λa.aa)λa.aa</Code>, you can see that performing a <Def e='beta_reduction'>beta reduction</Def> gives you the exact same expression back!</p>
+        <p>The famed Y-Combinator is one of these expressions without a <Def e='normal_form'>normal form</Def>. Try inputting the Y-Combinator, and see what happens:</p>
         <p>Y: <Code>λg.(λx.g(xx))(λx.g(xx))</Code></p>
       </div>
     ),
@@ -492,8 +492,8 @@ export default [
     prompt: (
       <div>
         <p>In the lambda calculus, there's no formal notion of assigning variables, but it's far easier for us to refer to functions by name than just copy/paste the expression every time we want to use it.</p>
-        <p>In this REPL, we've added a basic syntax around assign variables. (Note: You can't assign an expression with free variables.)</p>
-        <p>This kind of <i>lexical environment</i> around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
+        <p>In this REPL, we've added a basic syntax around assign variables. (Note: You can't assign an expression with <Def e='free_variable'>free variables</Def>.)</p>
+        <p>This kind of <Def e='lexical_environment'><i>lexical environment</i></Def> around the lambda calculus comes very close to the original sense of a <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)" target="blank">closure</a>, as presented in <a href="https://www.cs.cmu.edu/~crary/819-f09/Landin64.pdf" target="blank">The mechanical evaluation of expressions</a>.</p>
         <p>Try assigning <Code>ID</Code> to your identity function by typing <Code>ID := λa.a</Code></p>
       </div>
     ),
@@ -510,7 +510,7 @@ export default [
     title: 'Using assigned variables',
     prompt: (
       <div>
-        <p>Now that <Code>ID</Code> is defined in the <i>lexical environment</i>, we can use it as if it's a previously bound variable</p>
+        <p>Now that <Code>ID</Code> is defined in the <Def e='lexical_environment'><i>lexical environment</i></Def>, we can use it as if it's a previously bound variable</p>
         <p>Try writing <Code>ID b</Code> in order to apply your newly defined identity function to <Code>b</Code>, with predictable results.</p>
       </div>
     ),
@@ -531,7 +531,7 @@ export default [
         <p>Let's start off by introducing the booleans! The two booleans are:</p>
         <p>true: <Code>λab.a</Code></p>
         <p>false: <Code>λab.b</Code></p>
-        <p>You'll notice that these values themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a certain form. They're called the Church booleans, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
+        <p>You'll notice that these values themselves are just functions. That's true of any value in the lambda calculus -- all values are just functions that take a certain form. They're called the <Def e='church_boolean'>Church booleans</Def>, after Alonzo Church, the mathematician who came up with the lambda calculus, as well as these specific encodings.</p>
         <p>It'll be helpful to assign them to <Code>TRUE</Code> and <Code>FALSE</Code> respectively. Do that.</p>
       </div>
     ),
@@ -551,7 +551,7 @@ export default [
         <p>We're gonna work our way to defining the XOR (exclusive or) function on booleans.</p>
         <p>Our first step along the way is to define the NOT function. To do this, let's look at the structure of what a boolean looks like.</p>
         <p>True is just a two parameter function that selects the first, whereas false is just a two parameter function that selects the second argument. We can therefore call a potential true or false value like a function to select either the first or second parameter!</p>
-        <p>For example, take the application <Code>mxy</Code>. If <Code>m</Code> is Church Boolean true, then <Code>mxy</Code> beta reduces to <Code>x</Code>. However, if <Code>m</Code> is Church Boolean false, <Code>mxy</Code> beta reduces to <Code>y</Code></p>
+        <p>For example, take the <Def e='application'>application</Def> <Code>mxy</Code>. If <Code>m</Code> is <Def e='church_boolean'>Church Boolean</Def> true, then <Code>mxy</Code> <Def e='beta_reduction'>beta reduces</Def> to <Code>x</Code>. However, if <Code>m</Code> is <Def e='church_boolean'>Church Boolean</Def> false, <Code>mxy</Code> beta reduces to <Code>y</Code></p>
         <p>Try writing the NOT function, and assign that to <Code>NOT</Code>.</p>
         <p>Answer: <span className="secret">NOT := λm.m FALSE TRUE</span></p>
       </div>
@@ -680,7 +680,7 @@ export default [
     prompt: (
       <div>
         <p>Well, that was a marathon. Take a little break, you've earned it.</p>
-        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. Church numerals are 2 parameter functions in the following format:</p>
+        <p>Now we're getting into the meat of it. We can encode numbers in the lambda calculus. <Def e='church_numeral'>Church numerals</Def> are 2 parameter functions in the following format:</p>
         <p>
           <pre>
             {`
@@ -701,7 +701,7 @@ export default [
     title: 'The Successor Function',
     prompt: (
       <div>
-        <p>We can write functions for these numbers. For example, let's look at the <i>successor function</i>, a function which simply adds 1 to its argument.</p>
+        <p>We can write functions for these numbers. For example, let's look at the <Def e='successor_function'><i>successor function</i></Def>, a function which simply adds 1 to its argument.</p>
         <p>If you're feeling brave, you can attempt to write the successor function yourself. It's a pretty interesting exercise. Otherwise, just copy/paste from the answer key, but feel a little defeated while doing so.</p>
         <p>Answer: <span className="secret">λn.λf.λx.f(nfx)</span></p>
       </div>
@@ -721,7 +721,7 @@ export default [
     prompt: (
       <div>
         <p>So here's what we just did: Let's say we were adding 1 to <Code>λfn.f(f(f(f(n))))</Code>. We just wrote a function that replaced all the <Code>f</Code>'s with <Code>f</Code>'s again, and then replaced the <Code>n</Code> with a <Code>f(n)</Code>, thus creating a stack one higher than we had before! Magic!</p>
-        <p>Assign the successor function to <Code>SUCC</Code>, we'll need it later</p>
+        <p>Assign the <Def e='successor_function'>successor function</Def> to <Code>SUCC</Code>, we'll need it later</p>
       </div>
     ),
     winCondition: ({executionContext}) => (
@@ -740,9 +740,9 @@ export default [
     title: "Adding Numbers bigger than 1",
     prompt: (
       <div>
-        <p>The nice thing about Church numerals as we've defined them is they encode "compose this function n times", so in order to compose a function 3 times, just apply the target function to the Church numeral 3.</p>
+        <p>The nice thing about <Def e='church_numeral'>Church numerals</Def> as we've defined them is they encode "compose this function n times", so in order to compose a function 3 times, just apply the target function to the Church numeral 3.</p>
         <p>For example, let's say we had the function <Code>APPLY_C := λa.a c</Code> that applied free variable <Code>c</Code> to whatever function was passed in. If we wanted to write a function that applied c 3 times, we would write <Code>(λfn.f(f(fn))) APPLY_C</Code></p>
-        <p>Write the "add 4" function by composing the successor function 4 times.</p>
+        <p>Write the "add 4" function by composing the <Def e='successor_function'>successor function</Def> 4 times.</p>
       </div>
     ),
     winCondition: ({ast}) => (
