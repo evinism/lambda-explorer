@@ -20,7 +20,11 @@ const replaceAll = str => str.split('').map(
 ).join('');
 
 export default class LambdaInput extends React.Component {
-  state = {text: ''};
+  constructor(props) {
+    super(props);
+    this.state = {text: ''};
+    this.inputRef = React.createRef();
+  }
 
   _handleChange = (e) => {
     const text = replaceAll(e.target.value);
@@ -54,8 +58,8 @@ export default class LambdaInput extends React.Component {
   }
 
   componentDidUpdate(){
-    this.refs.input.selectionStart = this.state.selStart;
-    this.refs.input.selectionEnd = this.state.selEnd;
+    this.inputRef.current.selectionStart = this.state.selStart;
+    this.inputRef.current.selectionEnd = this.state.selEnd;
   }
 
   render(){
@@ -71,7 +75,7 @@ export default class LambdaInput extends React.Component {
         onKeyPress={this._handleKeyPress}
         onPaste={this._handlePaste}
         value={value}
-        ref='input'
+        ref={this.inputRef}
       />
     )
   }

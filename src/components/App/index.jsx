@@ -253,7 +253,7 @@ class App extends React.Component {
           <a href="https://github.com/evinism/lambda-explorer/issues">
             Something not right?
           </a>
-          <a href="javascript:;" onClick={this._toggleDarkLight}>
+          <a href="#" onClick={(e) => { e.preventDefault(); this._toggleDarkLight(); }}>
             {darkMode ? "Light Theme" : "Dark Theme"}
           </a>
         </footer>

@@ -48,12 +48,17 @@ const renderEvaluation = (evaluation) => {
 };
 
 class Repl extends React.Component {
-  state = {
-    text: '',
-    commandHistory: [],
-    mutableHistory: [''],
-    currentPos: 0,
-    output: [initialOutput],
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: '',
+      commandHistory: [],
+      mutableHistory: [''],
+      currentPos: 0,
+      output: [initialOutput],
+    };
+    this.replRef = React.createRef();
+    this.promptRef = React.createRef();
   }
 
   deleteDefinition = (name) => {
@@ -96,13 +101,13 @@ class Repl extends React.Component {
   }
 
   _scrollToBottom = () => {
-    const repl = this.refs.repl;
+    const repl = this.replRef.current;
     repl.scrollTop = repl.scrollHeight;
   }
 
   _handleClick = () => {
     if(window.getSelection().isCollapsed){
-      this.refs.prompt.querySelector('.lambda-input').focus();
+      this.promptRef.current.querySelector('.lambda-input').focus();
     }
   }
 
@@ -201,7 +206,7 @@ class Repl extends React.Component {
     // this should be added into the lambda input tbh
     // this is garbage
     window.setTimeout(() => {
-      const input = this.refs.prompt.querySelector('input');
+      const input = this.promptRef.current.querySelector('input');
       const selectionPos = input.value.length;
       input.selectionStart = selectionPos;
       input.selectionEnd = selectionPos;
@@ -226,7 +231,7 @@ class Repl extends React.Component {
     }
   }
 
-  componentWillMount(){
+  componentDidMount(){
     this.lambdaActor = new LambdaActor();
     this.lambdaActor.setMaxDepth(this.props.evaluationDepth);
     this.lambdaActor.setEtaReduce(this.props.etaReduce);
@@ -251,7 +256,7 @@ class Repl extends React.Component {
       </div>
     ));
     return (
-      <div className='repl' ref='repl' onClick={this._handleClick}>
+      <div className='repl' ref={this.replRef} onClick={this._handleClick}>
         <div className='output'>
           {this.state.output.map((elem, idx) => (
             <div key={idx}>
@@ -261,7 +266,7 @@ class Repl extends React.Component {
         </div>
         <div
           className={cx('prompt', {error: this.state.error})}
-          ref='prompt'
+          ref={this.promptRef}
           onKeyDown={this._captureUpDown}
         >
           <span className='prompt-caret'>{'> '}</span>
