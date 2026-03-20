@@ -168,6 +168,8 @@ class App extends React.Component {
       darkMode,
     } = this.state;
 
+    document.body.classList.toggle('dark-mode', darkMode);
+
     return (
       <div className={'app-wrapper' + (darkMode ? ' dark-mode' : '')}>
         <header>

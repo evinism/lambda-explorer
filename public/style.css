@@ -550,7 +550,18 @@ aside button {
   color: black;
 }
 
-.dark-mode .inline-definitions-popup {
+body.dark-mode .inline-definitions-popup {
+  background: #222233;
   border-color: #555566;
   color: #eeeeee;
+}
+
+body.dark-mode .popup-content {
+  background: #222233;
+  border-color: #555566;
+}
+
+body.dark-mode .popup-arrow {
+  color: #222233;
+  stroke: #555566;
 }
