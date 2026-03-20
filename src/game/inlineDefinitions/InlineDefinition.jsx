@@ -4,9 +4,6 @@ import definitions from "./definitions.js";
 
 
 export default ({entry, children}) => {
-  if (window.location.search !== '?inlinedefs') {
-    return children;
-  }
   return (
     <ReactjsPopup
       trigger={<span className="inline-definition">{children}</span>}
