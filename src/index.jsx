@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import generateGoldens from './util/generateGoldens';
 
 window.generateGoldens = generateGoldens;
@@ -7,5 +7,5 @@ window.generateGoldens = generateGoldens;
 import App from './components/App';
 
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(<App />, document.getElementById('react-mount'));
+  createRoot(document.getElementById('react-mount')).render(<App />);
 });

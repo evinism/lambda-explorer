@@ -1,6 +1,6 @@
 module.exports = {
   context: __dirname + "/src",
-  entry: ["@babel/polyfill", "./index"],
+  entry: "./index",
   output: {
     path: __dirname + "/public/build",
     filename: "bundle.js",

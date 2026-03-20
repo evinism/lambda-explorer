@@ -1,5 +1,17 @@
 {
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
